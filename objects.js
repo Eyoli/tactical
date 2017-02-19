@@ -2,12 +2,12 @@
 
 var _objectKey = 1;
 
-function PhysicalObject(x_0, y_0, r_0, v_0, alpha_0) {
+function PhysicalObject(x_0, y_0, r_0) {
 	this.x = x_0;
 	this.y = y_0;
 	this.r = r_0;
-	this.v = v_0;
-	this.alpha = alpha_0;
+	
+	this.destroyed = false;
 	
 	this.key = _objectKey.toString();
 	_objectKey++;
@@ -17,7 +17,6 @@ function PhysicalObject(x_0, y_0, r_0, v_0, alpha_0) {
 		var dy = physicalObject.y - this.y;
 		var rayon = physicalObject.r + this.r;
 		
-		//console.log(dx*dx + dy*dy + " | " + rayon*rayon);
 		if(dx*dx + dy*dy < rayon*rayon) {
 			return true;
 		}
@@ -40,49 +39,53 @@ function PhysicalObject(x_0, y_0, r_0, v_0, alpha_0) {
 	};
 	
 	this.animate = function() {
+	};
+	
+	this.setPosition = function(x, y) {
+		this.x = x;
+		this.y = y;
+	};
+}
+
+function ConstantSpeedObject(x_0, y_0, r_0, v_0, alpha_0) {
+	PhysicalObject.call(this, x_0, y_0, r_0);
+	
+	this.v = v_0;
+	this.alpha = alpha_0;
+	
+	this.animate = function() {
 		this.x = this.x + this.v * Math.cos(this.alpha);
 		this.y = this.y + this.v * Math.sin(this.alpha);
 	};
 }
 
 function DestructibleObject(x_0, y_0, r_0, v_0, alpha_0, pvMax) {
-	PhysicalObject.call(this, x_0, y_0, r_0, v_0, alpha_0);
+	ConstantSpeedObject.call(this, x_0, y_0, r_0, v_0, alpha_0);
 	
 	this.pv = pvMax;
 	this.pvMax = pvMax;
+	this.rawDamage = 10;
 	this.side = 0;
 	
 	this.getHP = function() {
 		return this.pv;
-	}
+	};
 	
 	this.damage = function(damage) {
 		this.pv = Math.max(0, this.pv - damage);
-	}
+		if(this.pv === 0) {
+			this.destroyed = true;
+		}
+	};
 	
 	this.setSide = function(side) {
 		this.side = side;
-	}
+	};
 	
 	this.onCollisionWith = function(physicalObject) {
-		if(this.pv > 0 && physicalObject.pv && physicalObject.side !== this.side) {
-			physicalObject.damage(10);
+		if(!this.destroyed && physicalObject.pv && physicalObject.side !== this.side) {
+			physicalObject.damage(this.rawDamage);
+			this.damage(physicalObject.rawDamage);
 		}
 	}
-}
-
-function MouseLinkedPhysicalObject() {
-	PhysicalObject.call(this, 0, 0, 20, 0, 0);
-	
-	this.isCollidingWith = function(physicalObject) {
-		return false;
-	};
-	
-	this.onCollisionWith = function(physicalObject) {
-	};
-	
-	this.animate = function(x, y) {
-		this.x = x;
-		this.y = y;
-	};
 }

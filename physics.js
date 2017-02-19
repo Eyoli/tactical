@@ -4,8 +4,8 @@ function Physics2d(wholeArea) {
 	this.wholeArea = wholeArea;
 	this.objects = [];
 	this.wrappers = [];
-	this.mouseObject = new MouseLinkedPhysicalObject();
-	this.targetAssociations = [];
+	this.mouseObject = new PhysicalObject(0, 0, 20);
+	this.associations = [];
 	
 	document.onmousemove = function(e){
 		e = e || window.event;
@@ -13,7 +13,7 @@ function Physics2d(wholeArea) {
 		if(e) {
 			//console.log(e.clientX + " " + e.clientY);
 			//console.log(this);
-			this.mouseObject.animate(e.clientX, e.clientY);
+			this.mouseObject.setPosition(e.clientX, e.clientY);
 		}
 		
 	}.bind(this);
@@ -26,45 +26,37 @@ function Physics2d(wholeArea) {
 		this.wrappers.push(wrapper);
 	};
 	
-	this.remove = function(object) {
-		// Suppression des wrappers
-		var i = 0, found = false;
-		while(i < this.wrappers.length && !found) {
-			found = this.wrappers[i].physicalObject.key === object.key;
-			i++;
-		}
-		if(i < this.wrappers.length) {
-			this.wrappers.splice(i, 1);
-		}
-		
-		// Suppression de l'objet
-		i = 0;
-		found = false;
-		while(i < this.objects.length && !found) {
-			found = this.objects[i].key === object.key;
-			i++;
-		}
-		if(i < this.objects.length) {
-			this.objects.splice(i, 1);
-		}
-	};
-	
 	this.addTargetAssociation = function(targetAssociation) {
-		this.targetAssociations.push(targetAssociation);
+		this.associations.push(targetAssociation);
 	};
 	
-	this.animate = function() {
-		var indexToDelete = [];
-		for(var i = 0; i < this.objects.length; i++) {
-			if(this.objects[i].pv && this.objects[i].pv <= 0) {
-				indexToDelete.push(i);
+	this.removeLinkedElements = function(object) {
+		console.log("destroying object " + + object.key); 
+		
+		// Suppression des wrappers liés à l'objet
+		var i = 0;
+		while(i < this.wrappers.length) {
+			if(this.wrappers[i].physicalObject.key === object.key) {
+				this.wrappers.splice(i, 1);
+			} else {
+				i++;
 			}
-			
-			this.objects[i].animate();
 		}
 		
-		for(var i = 0; i < indexToDelete.length; i++) {
-			this.objects.splice(indexToDelete[i], 1);
+		// Supression des associations liées à l'objet
+		i = 0;
+		while(i < this.associations.length) {
+			if(this.associations[i].object.key === object.key || (this.associations[i].target && this.associations[i].target.key === object.key)) {
+				this.associations.splice(i, 1);
+			} else {
+				i++;
+			}
+		}
+	};
+
+	this.animate = function() {
+		for(var i = 0; i < this.objects.length; i++) {
+			this.objects[i].animate();
 		}
 	};
 	
@@ -75,19 +67,31 @@ function Physics2d(wholeArea) {
 	};
 	
 	this.triggerActionOnTarget = function() {
-		for(var i = 0; i < this.targetAssociations.length; i++) {
-			this.targetAssociations[i].actionOnTarget(this);
+		for(var i = 0; i < this.associations.length; i++) {
+			this.associations[i].actionOnTarget(this);
+		}
+	};
+	
+	this.removeDestroyedObjects = function() {
+		var i = 0;
+		while(i < this.objects.length) {
+			if(this.objects[i].destroyed) {
+				this.removeLinkedElements(this.objects[i]);
+				this.objects.splice(i, 1);
+			} else {
+				i++;
+			}
 		}
 	};
 
 	/**
-	* Basic collision detection
+	* Basic collision detection. Could be improved, this is way too slow with a lot of objects...
 	**/
 	this.detectCollisions = function(depth) {
 		for(var i = 0; i < this.objects.length; i++) {
-			for(var j = i; j < this.objects.length; j++) {
-				if(i !== j && this.objects[i].isCollidingWith(this.objects[j])) {
-					// console.log("collision (" + i + ", " + j + ")");
+			for(var j = i + 1; j < this.objects.length; j++) {
+				if(this.objects[i].isCollidingWith(this.objects[j])) {
+					console.log("collision between object " + this.objects[i].key + " and object " + this.objects[j].key);
 					this.objects[i].onCollisionWith(this.objects[j]);
 					this.objects[j].onCollisionWith(this.objects[i]);
 				}

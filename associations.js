@@ -1,92 +1,101 @@
 "use strict";
 
-function RetardedTargetAssociation(hunter, target, farthest) {
-	this.hunter = hunter;
+function AbstractBehavior(object) {
+	this.object = object;
+	
+	this.actionOnTarget = function(physics) {};
+}
+
+function RetardedTargetAssociation(object, target, farthest) {
+	AbstractBehavior.call(this, object);
+	
 	this.target = target;
 	
 	this.actionOnTarget = function(physics) {
-		var dx = this.target.x - this.hunter.x;
-		var dy = this.target.y - this.hunter.y;
+		var dx = this.target.x - this.object.x;
+		var dy = this.target.y - this.object.y;
 		var d = Math.sqrt(dx*dx + dy*dy);
 		if(d > farthest) {
 			if(dx > 0) {
-				this.hunter.alpha = Math.atan(dy / dx);
+				this.object.alpha = Math.atan(dy / dx);
 			} else {
-				this.hunter.alpha = Math.PI + Math.atan(dy / dx);
+				this.object.alpha = Math.PI + Math.atan(dy / dx);
 			}
 		}
 	};
 }
 
-function InitialTargetAssociation(hunter, target, farthest) {
-	this.hunter = hunter;
-	this.target = target;
-	this.farthest = farthest;
+function InitialTargetAssociation(object, target, farthest) {
+	AbstractBehavior.call(this, object);
 	
-	var dx = this.target.x - this.hunter.x;
-	var dy = this.target.y - this.hunter.y;
+	this.farthest = farthest;
+	this.distance = 0;
+	
+	var dx = target.x - this.object.x;
+	var dy = target.y - this.object.y;
 	var d = Math.sqrt(dx*dx + dy*dy);
 	if(dx > 0) {
-		this.hunter.alpha = Math.atan(dy / dx);
+		this.object.alpha = Math.atan(dy / dx);
 	} else {
-		this.hunter.alpha = Math.PI + Math.atan(dy / dx);
+		this.object.alpha = Math.PI + Math.atan(dy / dx);
 	}
 	
 	this.actionOnTarget = function(physics) {
-		/*var dx = this.target.x - this.hunter.x;
-		var dy = this.target.y - this.hunter.y;
-		var d = Math.sqrt(dx*dx + dy*dy);
+		this.distance += this.object.v;
 	
-		if(this.farthest && d > this.farthest) {
-			physics.remove(this.hunter);
-		}*/
+		if(this.farthest && this.distance > this.farthest) {
+			this.object.destroyed = true;
+		}
 	};
 }
 
-function BasicTargetAssociation(hunter, target) {
-	this.hunter = hunter;
+function BasicTargetAssociation(object, target) {
+	AbstractBehavior.call(this, object);
+	
 	this.target = target;
 	
 	this.actionOnTarget = function(physics) {
-		var dx = this.target.x - this.hunter.x;
-		var dy = this.target.y - this.hunter.y;
+		var dx = this.target.x - this.object.x;
+		var dy = this.target.y - this.object.y;
 
 		if(dx > 0) {
-			this.hunter.alpha = Math.atan(dy / dx);
+			this.object.alpha = Math.atan(dy / dx);
 		} else {
-			this.hunter.alpha = Math.PI + Math.atan(dy / dx);
+			this.object.alpha = Math.PI + Math.atan(dy / dx);
 		}
 		
 	};
 }
 
-function StayAwayTargetAssociation(hunter, target, closest) {
-	this.hunter = hunter;
+function StayAwayTargetAssociation(object, target, closest) {
+	AbstractBehavior.call(this, object);
+	
 	this.target = target;
 	
 	this.actionOnTarget = function(physics) {
-		var dx = this.target.x - this.hunter.x;
-		var dy = this.target.y - this.hunter.y;
+		var dx = this.target.x - this.object.x;
+		var dy = this.target.y - this.object.y;
 		var d = Math.sqrt(dx*dx + dy*dy);
 
 		if(d > closest) {
 			if(dx > 0) {
-				this.hunter.alpha = Math.atan(dy / dx);
+				this.object.alpha = Math.atan(dy / dx);
 			} else {
-				this.hunter.alpha = Math.PI + Math.atan(dy / dx);
+				this.object.alpha = Math.PI + Math.atan(dy / dx);
 			}
 		} else {
 			if(dx > 0) {
-				this.hunter.alpha = Math.PI + Math.atan(dy / dx);
+				this.object.alpha = Math.PI + Math.atan(dy / dx);
 			} else {
-				this.hunter.alpha = Math.atan(dy / dx);
+				this.object.alpha = Math.atan(dy / dx);
 			}
 		}
 	};
 }
 
-function MissileTargetAssociation(hunter, target, timeBetweenShot, maxRange, minRange) {
-	this.hunter = hunter;
+function MissileTargetAssociation(object, target, timeBetweenShot, maxRange, minRange) {
+	AbstractBehavior.call(this, object);
+	
 	this.target = target;
 	this.timeBetweenShot = timeBetweenShot;
 	this.lastShot = 0;
@@ -96,13 +105,13 @@ function MissileTargetAssociation(hunter, target, timeBetweenShot, maxRange, min
 	this.actionOnTarget = function(physics) {
 		var currentTime = (new Date()).getTime();
 		
-		var dx = this.target.x - this.hunter.x;
-		var dy = this.target.y - this.hunter.y;
+		var dx = this.target.x - this.object.x;
+		var dy = this.target.y - this.object.y;
 		var d = Math.sqrt(dx*dx + dy*dy);
 	
 		if(currentTime - this.lastShot > this.timeBetweenShot && d <= this.maxRange && d >= this.minRange) {
-			var p = new DestructibleObject(this.hunter.x, this.hunter.y, 10, 4, 0, 1);
-			p.setSide(this.hunter.side);
+			var p = new DestructibleObject(this.object.x, this.object.y, 10, 4, 0, 1);
+			p.setSide(this.object.side);
 			
 			physics.addObject(p);
 			physics.addWrapper(new CircleWrapper(p));

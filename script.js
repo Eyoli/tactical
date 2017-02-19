@@ -50,7 +50,7 @@ window.onload = function() {
 	
 	var expectedFPS = 60;
 	
-	var p1 = new PhysicalObject(500, 300, 40, 3, 0);
+	var p1 = new DestructibleObject(500, 300, 40, 3, 0, 1000);
 	var p2 = new DestructibleObject(500, 500, 30, 2, 0, 100);
 	var p3 = new DestructibleObject(600, 300, 30, 1.5, 0, 100);
 	p3.setSide(1);
@@ -67,8 +67,8 @@ window.onload = function() {
 	physics2d.addWrapper(new CircleWrapper(physics2d.mouseObject));
 	
 	physics2d.addTargetAssociation(new RetardedTargetAssociation(p2, p1, 300));
-	physics2d.addTargetAssociation(new StayAwayTargetAssociation(p3, p2, 200));
-	physics2d.addTargetAssociation(new MissileTargetAssociation(p3, p2, 500, 300, 200));
+	physics2d.addTargetAssociation(new StayAwayTargetAssociation(p3, physics2d.mouseObject, 200));
+	physics2d.addTargetAssociation(new MissileTargetAssociation(p3, physics2d.mouseObject, 500, 300, 200));
 	physics2d.addTargetAssociation(new BasicTargetAssociation(p1, physics2d.mouseObject));
 	
 	function animate() {
@@ -77,6 +77,7 @@ window.onload = function() {
 			physics2d.detectCollisions(1);
 			physics2d.animate();
 			physics2d.triggerActionOnTarget();
+			physics2d.removeDestroyedObjects();
 			
 			context.clearRect(0, 0, canvas.width, canvas.height);
 			physics2d.display(context);
