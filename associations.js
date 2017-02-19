@@ -50,7 +50,6 @@ function BasicTargetAssociation(hunter, target) {
 	this.actionOnTarget = function(physics) {
 		var dx = this.target.x - this.hunter.x;
 		var dy = this.target.y - this.hunter.y;
-		var d = Math.sqrt(dx*dx + dy*dy);
 
 		if(dx > 0) {
 			this.hunter.alpha = Math.atan(dy / dx);
@@ -102,7 +101,9 @@ function MissileTargetAssociation(hunter, target, timeBetweenShot, maxRange, min
 		var d = Math.sqrt(dx*dx + dy*dy);
 	
 		if(currentTime - this.lastShot > this.timeBetweenShot && d <= this.maxRange && d >= this.minRange) {
-			var p = new PhysicalObject(this.hunter.x, this.hunter.y, 10, 4, 0);
+			var p = new DestructibleObject(this.hunter.x, this.hunter.y, 10, 4, 0, 1);
+			p.setSide(this.hunter.side);
+			
 			physics.addObject(p);
 			physics.addWrapper(new CircleWrapper(p));
 			physics.addTargetAssociation(new InitialTargetAssociation(p, this.target, 300));

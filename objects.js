@@ -2,12 +2,12 @@
 
 var _objectKey = 1;
 
-function PhysicalObject(x, y, r, v, alpha) {
-	this.x = x;
-	this.y = y;
-	this.r = r;
-	this.v = v;
-	this.alpha = alpha;
+function PhysicalObject(x_0, y_0, r_0, v_0, alpha_0) {
+	this.x = x_0;
+	this.y = y_0;
+	this.r = r_0;
+	this.v = v_0;
+	this.alpha = alpha_0;
 	
 	this.key = _objectKey.toString();
 	_objectKey++;
@@ -43,6 +43,32 @@ function PhysicalObject(x, y, r, v, alpha) {
 		this.x = this.x + this.v * Math.cos(this.alpha);
 		this.y = this.y + this.v * Math.sin(this.alpha);
 	};
+}
+
+function DestructibleObject(x_0, y_0, r_0, v_0, alpha_0, pvMax) {
+	PhysicalObject.call(this, x_0, y_0, r_0, v_0, alpha_0);
+	
+	this.pv = pvMax;
+	this.pvMax = pvMax;
+	this.side = 0;
+	
+	this.getHP = function() {
+		return this.pv;
+	}
+	
+	this.damage = function(damage) {
+		this.pv = Math.max(0, this.pv - damage);
+	}
+	
+	this.setSide = function(side) {
+		this.side = side;
+	}
+	
+	this.onCollisionWith = function(physicalObject) {
+		if(this.pv > 0 && physicalObject.pv && physicalObject.side !== this.side) {
+			physicalObject.damage(10);
+		}
+	}
 }
 
 function MouseLinkedPhysicalObject() {

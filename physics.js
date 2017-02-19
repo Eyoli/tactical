@@ -27,7 +27,7 @@ function Physics2d(wholeArea) {
 	};
 	
 	this.remove = function(object) {
-		// Suppression du wrapper
+		// Suppression des wrappers
 		var i = 0, found = false;
 		while(i < this.wrappers.length && !found) {
 			found = this.wrappers[i].physicalObject.key === object.key;
