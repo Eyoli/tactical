@@ -1,0 +1,42 @@
+{
+  "name": "tactical",
+  "version": "1.0.0",
+  "description": "Tactical RPG managed by REST API",
+  "main": "index.js",
+  "dependencies": {
+    "@types/express": "^4.17.7",
+    "@types/mocha": "^7.0.2",
+    "@types/socket.io": "^2.1.8",
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
+    "express": "^4.17.1",
+    "inversify": "^5.0.1",
+    "mocha": "^8.0.1",
+    "reflect-metadata": "^0.1.13",
+    "require": "^2.4.20",
+    "socket.io": "^2.3.0",
+    "ts-mocha": "^7.0.0",
+    "ts-node": "^8.10.2",
+    "tslib": "^2.0.0",
+    "typescript": "^3.9.6"
+  },
+  "devDependencies": {
+    "ts-node-dev": "^1.0.0-pre.56"
+  },
+  "scripts": {
+    "test": "ts-mocha -p ./tsconfig.json src/**/*.spec.ts",
+    "build": "tsc",
+    "dev": "ts-node-dev --respawn --transpileOnly ./src/app.ts",
+    "prod": "tsc && node ./build/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eyoli/tactical.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Eyoli/tactical/issues"
+  },
+  "homepage": "https://github.com/Eyoli/tactical#readme"
+}
