@@ -1,5 +1,7 @@
 import Field from "../models/field";
 
 export interface IFieldService {
-    getMap(key: string): Field;
+    saveField(field: Field, key: string): void;
+    getField(key: string): Field | undefined;
+    getFields(): Field[];
 }
