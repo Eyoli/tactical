@@ -1,10 +1,8 @@
 import express from 'express';
 import http from 'http';
-import socketIo from 'socket.io';
 import { iocContainer } from './inversify.config';
-import { IFieldService } from './services/interfaces';
+import { IFieldService } from './domain/primaries/interfaces';
 import { TYPES } from './types';
-import FieldRepository from './secondaries/field-repository';
 
 const app = express();
 const server = new http.Server(app);
@@ -19,12 +17,12 @@ server.listen(EXPRESS_PORT_NUMBER, function () {
 });
 
 // Fields routes
-app.get('/maps', function (req, res) {
+app.get('/fields', function (req, res) {
 	const map = fieldService.getFields();
 	res.json(map);
 });
 
-app.get('/map/:key', function (req, res) {
+app.get('/field/:key', function (req, res) {
 	const key = req.params.key;
 	const map = fieldService.getField(key);
 	res.json(map);

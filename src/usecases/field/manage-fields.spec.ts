@@ -1,14 +1,13 @@
 import * as Assert from "assert";
-import FieldService from "../../services/field-service";
-import FieldRepository from "../../secondaries/field-repository";
-import Field from "../../models/field";
-import InMemoryFieldRepository from "./in-memory-field-repository";
+import FieldService from "../../domain/services/field-service";
+import Field from "../../domain/models/field";
+import InMemoryRepository from "../in-memory-repository";
 
 describe('About fields we should be able to...', () => {
 
     it('save then get a field', () => {
         // arrange
-        const fieldService = new FieldService(new InMemoryFieldRepository());
+        const fieldService = new FieldService(new InMemoryRepository<Field>());
 
         // act
         fieldService.saveField(new Field(), "key");
@@ -20,7 +19,7 @@ describe('About fields we should be able to...', () => {
 
     it('get the list of all existing fields', () => {
         // arrange
-        const fieldService = new FieldService(new InMemoryFieldRepository());
+        const fieldService = new FieldService(new InMemoryRepository<Field>());
         fieldService.saveField(new Field(), "key1");
         fieldService.saveField(new Field(), "key2");
 
