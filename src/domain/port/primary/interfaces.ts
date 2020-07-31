@@ -11,7 +11,7 @@ export interface IFieldService {
 export interface IGameService {
     createGame(game: Game): string;
     getGame(id: string): Game;
-    setUnits(gameId: string, playerId: string, unitIds: string[]): void;
+    setUnits(gameId: string, playerId: string, unitIds: string[]): Game;
 }
 
 export interface IPlayerService {

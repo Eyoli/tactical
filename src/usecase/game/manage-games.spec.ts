@@ -1,4 +1,5 @@
-import InMemoryRepository from "../in-memory-repository";
+import "reflect-metadata";
+import InMemoryRepository from "../../infrastructure/adapter/secondary/in-memory-repository";
 import GameService from "../../domain/service/game-service";
 import Game from "../../domain/model/game";
 import Field from "../../domain/model/field";
@@ -7,10 +8,11 @@ import Unit from "../../domain/model/unit";
 import * as Assert from "assert";
 import * as mocha from "mocha";
 import Repository from "../../domain/port/secondary/repository";
+import { IGameService } from "../../domain/port/primary/interfaces";
 
 describe('About games we should be able to...', () => {
 
-    let gameService: GameService;
+    let gameService: IGameService;
     let playerRepository: Repository<Player>;
     let gameRepository: Repository<Game>;
     let unitRepository: Repository<Unit>;

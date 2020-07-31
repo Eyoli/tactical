@@ -1,8 +1,12 @@
 import Field from "../../domain/model/field";
-import { JsonMapper } from "./in-file-repository";
 import Game from "../../domain/model/game";
 import Player from "../../domain/model/player";
 import Unit from "../../domain/model/unit";
+
+export interface JsonMapper<T> {
+    fromJson(json: any): T;
+    toJson(object: T): any;
+}
 
 export class FieldJsonMapper implements JsonMapper<Field> {
 

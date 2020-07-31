@@ -1,14 +1,10 @@
 import fs from "fs";
-import Repository from "../../domain/port/secondary/repository";
+import Repository from "../../../domain/port/secondary/repository";
 import { injectable } from "inversify";
-
-export interface JsonMapper<T> {
-    fromJson(json: any): T;
-    toJson(object: T): any;
-}
+import { JsonMapper } from "../../json/json-mappers";
 
 @injectable()
-export class InFileRepository<T> implements Repository<T> {
+export class InJsonFileRepository<T> implements Repository<T> {
     private baseUrl: string;
     private jsonMapper: JsonMapper<T>;
 
