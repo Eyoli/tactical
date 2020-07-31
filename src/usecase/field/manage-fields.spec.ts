@@ -1,6 +1,6 @@
 import * as Assert from "assert";
-import FieldService from "../../domain/services/field-service";
-import Field from "../../domain/models/field";
+import FieldService from "../../domain/service/field-service";
+import Field from "../../domain/model/field";
 import InMemoryRepository from "../in-memory-repository";
 
 describe('About fields we should be able to...', () => {
@@ -10,18 +10,18 @@ describe('About fields we should be able to...', () => {
         const fieldService = new FieldService(new InMemoryRepository<Field>());
 
         // act
-        fieldService.saveField(new Field(), "key");
-        const field = fieldService.getField("key");
+        const id = fieldService.createField(new Field("Name"));
+        const field = fieldService.getField(id);
 
         // assert
-        Assert.notEqual(field, undefined);
+        Assert.deepEqual(field.id, id);
     });
 
     it('get the list of all existing fields', () => {
         // arrange
         const fieldService = new FieldService(new InMemoryRepository<Field>());
-        fieldService.saveField(new Field(), "key1");
-        fieldService.saveField(new Field(), "key2");
+        fieldService.createField(new Field("Name"));
+        fieldService.createField(new Field("Name"));
 
         // act
         const fields = fieldService.getFields();
