@@ -2,12 +2,16 @@ import Field from "../../domain/model/field";
 import Game from "../../domain/model/game";
 import Player from "../../domain/model/player";
 import Unit from "../../domain/model/unit";
+import { injectable, inject } from "inversify";
+import { TYPES } from "../../types";
+import Repository from "../../domain/port/secondary/repository";
 
 export interface JsonMapper<T> {
     fromJson(json: any): T;
     toJson(object: T): any;
 }
 
+@injectable()
 export class FieldJsonMapper implements JsonMapper<Field> {
 
     fromJson(json: any): Field {
@@ -17,10 +21,14 @@ export class FieldJsonMapper implements JsonMapper<Field> {
     }
 
     toJson(object: Field): any {
-        return {};
+        return {
+            id: object.id,
+            name: object.name
+        };
     }
 }
 
+@injectable()
 export class UnitJsonMapper implements JsonMapper<Unit> {
 
     fromJson(json: any): Unit {
@@ -34,7 +42,13 @@ export class UnitJsonMapper implements JsonMapper<Unit> {
     }
 }
 
+@injectable()
 export class GameJsonMapper implements JsonMapper<Game> {
+    private playerRepository: Repository<Player>;
+
+    constructor(@inject(TYPES.PLAYER_REPOSITORY) playerRepository: Repository<Player>) {
+        this.playerRepository = playerRepository;
+    }
 
     fromJson(json: any): Game {
         const game = new Game();
@@ -47,6 +61,7 @@ export class GameJsonMapper implements JsonMapper<Game> {
     }
 }
 
+@injectable()
 export class PlayerJsonMapper implements JsonMapper<Player> {
 
     fromJson(json: any): Player {

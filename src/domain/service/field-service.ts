@@ -1,5 +1,5 @@
 import { injectable, inject } from "inversify";
-import { IFieldService } from "../port/primary/interfaces";
+import { IFieldService } from "../port/primary/services";
 import Field from "../model/field";
 import Repository from "../port/secondary/repository";
 import * as UUID from "uuid";

@@ -3,7 +3,7 @@ import * as Assert from "assert";
 import FieldService from "../../domain/service/field-service";
 import Field from "../../domain/model/field";
 import InMemoryRepository from "../../infrastructure/adapter/secondary/in-memory-repository";
-import { IFieldService } from "../../domain/port/primary/interfaces";
+import { IFieldService } from "../../domain/port/primary/services";
 import Repository from "../../domain/port/secondary/repository";
 
 describe('About fields we should be able to...', () => {

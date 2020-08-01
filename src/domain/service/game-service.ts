@@ -1,4 +1,4 @@
-import { IGameService } from "../port/primary/interfaces";
+import { IGameService } from "../port/primary/services";
 import Player from "../model/player";
 import Game from "../model/game";
 import { inject, injectable } from "inversify";

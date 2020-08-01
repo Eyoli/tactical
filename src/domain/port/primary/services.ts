@@ -1,6 +1,7 @@
 import Field from "../../model/field";
 import Player from "../../model/player";
 import Game from "../../model/game";
+import Unit from "../../model/unit";
 
 export interface IFieldService {
     createField(field: Field): string;
@@ -17,4 +18,11 @@ export interface IGameService {
 export interface IPlayerService {
     createPlayer(player: Player): string;
     getPlayer(id: string): Player;
+    getPlayers(): Player[];
+}
+
+export interface IUnitService {
+    createUnit(unit: Unit): string;
+    getUnit(id: string): Unit;
+    getUnits(): Unit[];
 }

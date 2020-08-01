@@ -8,7 +8,7 @@ import Unit from "../../domain/model/unit";
 import * as Assert from "assert";
 import * as mocha from "mocha";
 import Repository from "../../domain/port/secondary/repository";
-import { IGameService } from "../../domain/port/primary/interfaces";
+import { IGameService } from "../../domain/port/primary/services";
 
 describe('About games we should be able to...', () => {
 

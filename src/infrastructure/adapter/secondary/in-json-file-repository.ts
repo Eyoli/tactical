@@ -3,39 +3,52 @@ import Repository from "../../../domain/port/secondary/repository";
 import { injectable } from "inversify";
 import { JsonMapper } from "../../json/json-mappers";
 
+const FILE_ENCODING = "utf8";
+const FILE_SUFFIX = ".json";
+
 @injectable()
 export class InJsonFileRepository<T> implements Repository<T> {
-    private baseUrl: string;
+    private baseUrl!: string;
     private jsonMapper: JsonMapper<T>;
 
-    constructor(jsonMapper: JsonMapper<T>, baseUrl: string) {
+    constructor(jsonMapper: JsonMapper<T>) {
         this.jsonMapper = jsonMapper;
+    }
+
+    withBaseUrl(baseUrl: string) {
         this.baseUrl = baseUrl;
+        return this;
     }
 
     update(object: T, id: string): void {
-        throw new Error("Method not implemented.");
+        this.writeFile(id + FILE_SUFFIX, object);
     }
     
-    save(object: T, key: string) {
-        throw new Error("Method not implemented");
+    save(object: T, id: string) {
+        this.writeFile(id + FILE_SUFFIX, object);
     }
 
-    load(key: string): T | undefined {
-        return this.parseObject(key + ".json");
+    load(id: string): T | undefined {
+        return this.parseFile(id + FILE_SUFFIX);
     }
 
     loadSome(ids: string[]): T[] {
-        throw new Error("Method not implemented.");
+        return fs.readdirSync(this.baseUrl)
+            .filter(fileName => ids.includes(fileName.split(FILE_SUFFIX)[0]))
+            .map(fileName => this.parseFile(fileName));
     }
 
     loadAll(): T[] {
         return fs.readdirSync(this.baseUrl)
-            .map(fileName => this.parseObject(fileName));
+            .map(fileName => this.parseFile(fileName));
     }
 
-    parseObject(fileName: string): T {
-        const json = JSON.parse(fs.readFileSync(this.baseUrl + "/" + fileName, 'utf8'));
+    private parseFile(fileName: string): T {
+        const json = JSON.parse(fs.readFileSync(this.baseUrl + "/" + fileName, FILE_ENCODING));
         return this.jsonMapper.fromJson(json);
+    }
+
+    private writeFile(fileName: string, object: T) {
+        fs.writeFileSync(this.baseUrl + "/" + fileName, JSON.stringify(this.jsonMapper.toJson(object)), FILE_ENCODING);
     }
 }
