@@ -9,6 +9,7 @@ import * as Assert from "assert";
 import * as mocha from "mocha";
 import Repository from "../../domain/port/secondary/repository";
 import { IGameService } from "../../domain/port/primary/services";
+import ResourceNotFound from "../../domain/error/ResourceNotFound";
 
 describe('About games we should be able to...', () => {
 
@@ -27,51 +28,89 @@ describe('About games we should be able to...', () => {
         gameService = new GameService(gameRepository, playerRepository, unitRepository, fieldRepository);
     });
 
-    it('start a new game', () => {
-        // arrange
-        const gameIn = new Game();
-        fieldRepository.save(new Field("Name"), "fieldId");
+    describe('create a new game', () => {
+        it('valid case', () => {
+            // arrange
+            const gameIn = new Game();
+            fieldRepository.save(new Field("Name"), "fieldId");
 
-        // act
-        const id = gameService.createGame(gameIn, "fieldId");
+            // act
+            const id = gameService.createGame(gameIn, "fieldId");
 
-        // assert
-        const gameOut = gameRepository.load(id);
-        Assert.deepEqual(gameOut?.id, id);
-        Assert.deepEqual(gameOut?.field?.name, "Name");
+            // assert
+            const gameOut = gameRepository.load(id);
+            Assert.deepEqual(gameOut?.id, id);
+            Assert.deepEqual(gameOut?.field?.name, "Name");
+        });
+
+        it('no matching field', () => {
+            // arrange
+            const gameIn = new Game();
+
+            // act
+            const executor = () => gameService.createGame(gameIn, "fieldId");
+
+            // assert
+            Assert.throws(executor, new ResourceNotFound(Field));
+        });
     });
 
-    it('get an existing game', () => {
+    it('get the list of all existing games', () => {
         // arrange
-        const gameIn = new Game();
-        gameIn.id = "gameId";
-        gameRepository.save(gameIn, gameIn.id);
+        gameRepository.save(new Game(), "key1");
+        gameRepository.save(new Game(), "key2");
 
         // act
-        const gameOut = gameService.getGame(gameIn.id);
+        const games = gameService.getGames();
 
         // assert
-        Assert.deepEqual(gameOut?.id, gameIn.id);
+        Assert.deepEqual(games.length, 2);
     });
 
-    it('add a set of units for a given player', () => {
-        // arrange
-        const player = new Player("Player 1");
-        player.id = "playerId";
-        playerRepository.save(player, player.id);
+    describe('manage an existing game', () => {
+        it('get its state', () => {
+            // arrange
+            const gameIn = new Game();
+            gameIn.id = "gameId";
+            gameRepository.save(gameIn, gameIn.id);
 
-        const game = new Game();
-        game.field = new Field("Name");
-        game.addPlayer(player);
-        gameRepository.save(game, "gameId");
+            // act
+            const gameOut = gameService.getGame(gameIn.id);
 
-        const unit = new Unit("Unit name");
-        unitRepository.save(unit, "unitId");
+            // assert
+            Assert.deepEqual(gameOut?.id, gameIn.id);
+        });
 
-        // act
-        const gameOut = gameService.setUnits("gameId", "playerId", ["unitId"]);
+        it('add a player', () => {
+            // arrange
+            gameRepository.save(new Game(), "gameId");
+            playerRepository.save(new Player("Player 1"), "player1");
 
-        // assert
-        Assert.deepEqual(gameOut.getUnits("playerId").length, 1)
+            // act
+            const gameOut = gameService.addPlayer("gameId", "player1");
+
+            // assert
+            Assert.deepEqual(gameOut.players[0].name, "Player 1");
+        });
+
+        it('add a set of units for a given player', () => {
+            // arrange
+            const player = new Player("Player 1");
+            player.id = "playerId";
+            playerRepository.save(player, player.id);
+
+            const game = new Game();
+            game.addPlayer(player);
+            gameRepository.save(game, "gameId");
+
+            const unit = new Unit("Unit name");
+            unitRepository.save(unit, "unitId");
+
+            // act
+            const gameOut = gameService.setUnits("gameId", "playerId", ["unitId"]);
+
+            // assert
+            Assert.deepEqual(gameOut.getUnits("playerId").length, 1)
+        });
     });
 });

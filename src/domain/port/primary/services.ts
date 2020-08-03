@@ -13,6 +13,7 @@ export interface IGameService {
     createGame(game: Game, fieldId: string): string;
     getGame(id: string): Game;
     getGames(): Game[];
+    addPlayer(gameId: string, playerId: string): Game;
     setUnits(gameId: string, playerId: string, unitIds: string[]): Game;
 }
 

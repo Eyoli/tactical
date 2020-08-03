@@ -7,6 +7,7 @@ import * as UUID from "uuid";
 import Unit from "../model/unit";
 import { TYPES } from "../../types";
 import Field from "../model/field";
+import ResourceNotFound from "../error/ResourceNotFound";
 
 @injectable()
 export default class GameService implements IGameService {
@@ -30,6 +31,9 @@ export default class GameService implements IGameService {
         game.id = UUID.v4();
 
         const field = this.fieldRepository.load(fieldId);
+        if(!field) {
+            throw new ResourceNotFound(Field);
+        }
         game.field = field;
 
         this.gameRepository.save(game, game.id);
@@ -39,7 +43,7 @@ export default class GameService implements IGameService {
     getGame(key: string): Game {
         const game = this.gameRepository.load(key);
         if(!game) {
-            throw new Error("Game not found");
+            throw new ResourceNotFound(Game);
         }
         return game;
     }
@@ -48,19 +52,21 @@ export default class GameService implements IGameService {
         return this.gameRepository.loadAll();
     }
 
+    addPlayer(gameId: string, playerId: string): Game {
+        const game = this.getGame(gameId);
+        const player = this.getPlayer(playerId);
+
+        game.addPlayer(player);
+        this.gameRepository.update(game, gameId);
+
+        return game;
+    }
+
     setUnits(gameId: string, playerId: string, unitIds: string[]): Game {
-        const game = this.gameRepository.load(gameId);
-        const player = this.playerRepository.load(playerId);
+        const game = this.getGame(gameId);
+        const player = this.getPlayer(playerId);
+
         const units = this.unitRepository.loadSome(unitIds);
-
-        if(!game) {
-            throw new Error("Invalid game");
-        }
-
-        if(!player) {
-            throw new Error("Invalid player");
-        }
-
         if(units.length !== unitIds.length) {
             throw new Error("At least one invalid unit");
         }
@@ -69,5 +75,13 @@ export default class GameService implements IGameService {
         this.gameRepository.update(game, gameId);
 
         return game;
+    }
+    
+    private getPlayer(playerId: string): Player {
+        const player = this.playerRepository.load(playerId);
+        if(!player) {
+            throw new ResourceNotFound(Player);
+        }
+        return player;
     }
 }

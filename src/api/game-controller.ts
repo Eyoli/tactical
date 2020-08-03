@@ -16,15 +16,17 @@ gameRouter.get('/', function (req, res) {
 });
 
 gameRouter.post('/', function (req, res) {
+	const data = new CreateGameRequest(req.body);
+
 	try {
-		const data = new CreateGameRequest(req.body);
 		data.validate();
-		const game = Game.fromCreateRequest(data);
-		const id = gameService.createGame(game, data.fieldId);
-		res.json(req.baseUrl + req.path + id);
 	} catch(error) {
         throw new BadRequestError(error.message);
 	}
+
+	const game = Game.fromCreateRequest(data);
+	const id = gameService.createGame(game, data.fieldId);
+	res.json(req.baseUrl + req.path + id);
 });
 
 gameRouter.get('/:id', function (req, res) {

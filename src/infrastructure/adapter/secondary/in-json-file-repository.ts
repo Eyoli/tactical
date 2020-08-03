@@ -29,13 +29,19 @@ export class InJsonFileRepository<T> implements Repository<T> {
     }
 
     load(id: string): T | undefined {
-        return this.readFile(id + FILE_SUFFIX);
+        if (fs.existsSync(this.baseUrl + id + FILE_SUFFIX)) {
+            return this.readFile(id + FILE_SUFFIX);
+        }
+        return undefined;
     }
 
     loadSome(ids: string[]): T[] {
-        return fs.readdirSync(this.baseUrl)
+        if(ids.length > 0) {
+            return fs.readdirSync(this.baseUrl)
             .filter(fileName => ids.includes(fileName.split(FILE_SUFFIX)[0]))
             .map(fileName => this.readFile(fileName));
+        }
+        return [];
     }
 
     loadAll(): T[] {

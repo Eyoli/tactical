@@ -16,15 +16,17 @@ fieldRouter.get('/', function (req, res) {
 });
 
 fieldRouter.post('/', function (req, res) {
+	const data = new CreateFieldRequest(req.body);
+
 	try {
-		const data = new CreateFieldRequest(req.body);
-		data.validate();
-		const field = Field.fromCreateRequest(data);
-		const id = fieldService.createField(field);
-		res.json(req.baseUrl + req.path + id);
+		data.validate();	
 	} catch(error) {
         throw new BadRequestError(error.message);
 	}
+
+	const field = Field.fromCreateRequest(data);
+	const id = fieldService.createField(field);
+	res.json(req.baseUrl + req.path + id);
 });
 
 fieldRouter.get('/:id', function (req, res) {

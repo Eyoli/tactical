@@ -4,6 +4,7 @@ import Field from "../model/field";
 import Repository from "../port/secondary/repository";
 import * as UUID from "uuid";
 import { TYPES } from "../../types";
+import ResourceNotFound from "../error/ResourceNotFound";
 
 @injectable()
 export default class FieldService implements IFieldService {
@@ -26,7 +27,7 @@ export default class FieldService implements IFieldService {
     getField(key: string): Field {
         const field = this.fieldRepository.load(key);
         if(!field) {
-            throw new Error("Field not found");
+            throw new ResourceNotFound(Field);
         }
         return field;
     }
