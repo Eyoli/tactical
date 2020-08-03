@@ -10,8 +10,9 @@ export interface IFieldService {
 }
 
 export interface IGameService {
-    createGame(game: Game): string;
+    createGame(game: Game, fieldId: string): string;
     getGame(id: string): Game;
+    getGames(): Game[];
     setUnits(gameId: string, playerId: string, unitIds: string[]): Game;
 }
 

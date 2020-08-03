@@ -13,7 +13,17 @@ export class CreateFieldRequest {
 }
 
 export class CreateGameRequest {
-    name!: string;
+    fieldId: string;
+
+    constructor(input: any) {
+        this.fieldId = input.fieldId;
+    }
+
+    validate() {
+        if(!this.fieldId) {
+            throw new Error("Field id is required");
+        }
+    }
 }
 
 export class CreatePlayerRequest {

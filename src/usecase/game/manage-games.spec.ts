@@ -16,22 +16,24 @@ describe('About games we should be able to...', () => {
     let playerRepository: Repository<Player>;
     let gameRepository: Repository<Game>;
     let unitRepository: Repository<Unit>;
+    let fieldRepository: Repository<Field>;
 
     beforeEach(() => {
         playerRepository = new InMemoryRepository<Player>();
         gameRepository = new InMemoryRepository<Game>();
         unitRepository = new InMemoryRepository<Unit>();
+        fieldRepository = new InMemoryRepository<Field>();
         
-        gameService = new GameService(gameRepository, playerRepository, unitRepository);
+        gameService = new GameService(gameRepository, playerRepository, unitRepository, fieldRepository);
     });
 
     it('start a new game', () => {
         // arrange
         const gameIn = new Game();
-        gameIn.field = new Field("Name");
+        fieldRepository.save(new Field("Name"), "fieldId");
 
         // act
-        const id = gameService.createGame(gameIn);
+        const id = gameService.createGame(gameIn, "fieldId");
 
         // assert
         const gameOut = gameRepository.load(id);

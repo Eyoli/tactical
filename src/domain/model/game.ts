@@ -1,6 +1,7 @@
 import Field from "./field";
 import Player from "./player";
 import Unit from "./unit";
+import { CreateFieldRequest, CreateGameRequest } from "../port/primary/requests";
 
 export default class Game {
     id?: string;
@@ -27,4 +28,9 @@ export default class Game {
         const units = this.unitsPerPlayer.get(playerId);
         return units ? units : [];
     }
+
+    static fromCreateRequest(data: CreateGameRequest): Game {
+        const game = new Game();
+        return game;
+	}
 }

@@ -6,24 +6,32 @@ import Repository from "../port/secondary/repository";
 import * as UUID from "uuid";
 import Unit from "../model/unit";
 import { TYPES } from "../../types";
+import Field from "../model/field";
 
 @injectable()
 export default class GameService implements IGameService {
     private gameRepository: Repository<Game>;
     private playerRepository: Repository<Player>;
     private unitRepository: Repository<Unit>;
+    private fieldRepository: Repository<Unit>;
 
     constructor(
         @inject(TYPES.GAME_REPOSITORY) gameRepository: Repository<Game>,
         @inject(TYPES.PLAYER_REPOSITORY) playerRepository: Repository<Player>,
-        @inject(TYPES.UNIT_REPOSITORY) unitRepository: Repository<Unit>) {
+        @inject(TYPES.UNIT_REPOSITORY) unitRepository: Repository<Unit>,
+        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: Repository<Field>) {
         this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
         this.unitRepository = unitRepository;
+        this.fieldRepository = fieldRepository;
     }
 
-    createGame(game: Game): string {
+    createGame(game: Game, fieldId: string): string {
         game.id = UUID.v4();
+
+        const field = this.fieldRepository.load(fieldId);
+        game.field = field;
+
         this.gameRepository.save(game, game.id);
         return game.id;
     }
@@ -34,6 +42,10 @@ export default class GameService implements IGameService {
             throw new Error("Game not found");
         }
         return game;
+    }
+
+    getGames(): Game[] {
+        return this.gameRepository.loadAll();
     }
 
     setUnits(gameId: string, playerId: string, unitIds: string[]): Game {

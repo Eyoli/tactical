@@ -57,7 +57,10 @@ export class GameJsonMapper implements JsonMapper<Game> {
     }
 
     toJson(object: Game): any {
-        return {};
+        return {
+            id: object.id,
+            fieldId: object.field?.id
+        };
     }
 }
 
