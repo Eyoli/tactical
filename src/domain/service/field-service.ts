@@ -4,7 +4,10 @@ import Field from "../model/field";
 import Repository from "../port/secondary/repository";
 import * as UUID from "uuid";
 import { TYPES } from "../../types";
-import ResourceNotFound from "../error/ResourceNotFound";
+import ResourceNotFoundError from "../error/resource-not-found-error";
+import UnitState from "../model/unit-state";
+import Tile from "../model/tile";
+import Position from "../model/position";
 
 @injectable()
 export default class FieldService implements IFieldService {
@@ -24,11 +27,24 @@ export default class FieldService implements IFieldService {
         return field.id;
     }
 
-    getField(key: string): Field {
-        const field = this.fieldRepository.load(key);
+    getField(fieldId: string): Field {
+        const field = this.fieldRepository.load(fieldId);
         if(!field) {
-            throw new ResourceNotFound(Field);
+            throw new ResourceNotFoundError(Field);
         }
         return field;
     }
+
+    getAccessibleTiles(fieldId: string, unitState: UnitState): Tile[] {
+        const field = this.getField(fieldId);
+
+        const accessibleTiles: Tile[] = [];
+        const currentSearch: [Tile, Position, number] = [
+            field.getTopTile(unitState.position), unitState.position, unitState.moves];
+        const searches = [];
+        searches.push(field.getAccessibleTiles(currentSearch[1], currentSearch[2], unitState.jumps)
+            .filter(tile => !accessibleTiles.includes(currentSearch[0])))
+    }
+
+    
 }

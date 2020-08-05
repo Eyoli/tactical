@@ -4,7 +4,7 @@ import Field from '../domain/model/field';
 import iocContainer from '../inversify.config';
 import { IFieldService } from '../domain/port/primary/services';
 import { TYPES } from '../types';
-import BadRequestError from './error/BadRequestError';
+import BadRequestError from './error/bad-request-error';
 
 const fieldRouter = express.Router();
 

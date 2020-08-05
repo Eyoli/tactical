@@ -23,7 +23,7 @@ describe('About players we should be able to...', () => {
 
         // assert
         const player = playerRepository.load(id);
-        Assert.deepEqual(player?.name, "Name");
+        Assert.deepStrictEqual(player?.name, "Name");
     });
 
     it('get an existing player', () => {
@@ -34,7 +34,7 @@ describe('About players we should be able to...', () => {
         const player = playerService.getPlayer("key");
 
         // assert
-        Assert.deepEqual(player.name, "Name");
+        Assert.deepStrictEqual(player.name, "Name");
     });
 
     it('get the list of all existing players', () => {
@@ -46,7 +46,7 @@ describe('About players we should be able to...', () => {
         const players = playerService.getPlayers();
 
         // assert
-        Assert.deepEqual(players.length, 2);
+        Assert.deepStrictEqual(players.length, 2);
     });
 
 });

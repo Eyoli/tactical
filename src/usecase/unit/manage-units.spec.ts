@@ -23,7 +23,7 @@ describe('About units we should be able to...', () => {
 
         // assert
         const unit = unitRepository.load(id);
-        Assert.deepEqual(unit?.name, "Name");
+        Assert.deepStrictEqual(unit?.name, "Name");
     });
 
     it('get an existing unit', () => {
@@ -34,7 +34,7 @@ describe('About units we should be able to...', () => {
         const unit = unitService.getUnit("key");
 
         // assert
-        Assert.deepEqual(unit.name, "Name");
+        Assert.deepStrictEqual(unit.name, "Name");
     });
 
     it('get the list of all existing units', () => {
@@ -46,7 +46,7 @@ describe('About units we should be able to...', () => {
         const units = unitService.getUnits();
 
         // assert
-        Assert.deepEqual(units.length, 2);
+        Assert.deepStrictEqual(units.length, 2);
     });
 
 });

@@ -1,9 +1,9 @@
 import express from 'express';
 import http from 'http';
 import bodyParser from 'body-parser';
-import BadRequestError from './api/error/BadRequestError';
-import fieldRouter from './api/FieldController';
-import gameRouter from './api/GameController';
+import BadRequestError from './api/error/bad-request-error';
+import fieldRouter from './api/field-controller';
+import gameRouter from './api/game-controller';
 
 const app = express();
 const server = new http.Server(app);

@@ -7,7 +7,8 @@ import * as UUID from "uuid";
 import Unit from "../model/unit";
 import { TYPES } from "../../types";
 import Field from "../model/field";
-import ResourceNotFound from "../error/ResourceNotFound";
+import ResourceNotFoundError from "../error/resource-not-found-error";
+import GameError from "../error/game-error";
 
 @injectable()
 export default class GameService implements IGameService {
@@ -27,12 +28,30 @@ export default class GameService implements IGameService {
         this.fieldRepository = fieldRepository;
     }
 
+    finishTurn(gameId: string): Game {
+        const game = this.getGame(gameId);
+        game.finishTurn();
+        this.gameRepository.update(game, gameId);
+        return game;
+    }
+
+    startGame(gameId: string): Game {
+        const game = this.getGame(gameId);
+        if(game.hasStarted()) {
+            throw new GameError("GAME_ALREADY_STARTED", "Game has already started");
+        }
+        
+        game.start();
+        this.gameRepository.update(game, gameId);
+        return game;
+    }
+
     createGame(game: Game, fieldId: string): string {
         game.id = UUID.v4();
 
         const field = this.fieldRepository.load(fieldId);
         if(!field) {
-            throw new ResourceNotFound(Field);
+            throw new ResourceNotFoundError(Field);
         }
         game.field = field;
 
@@ -43,7 +62,7 @@ export default class GameService implements IGameService {
     getGame(key: string): Game {
         const game = this.gameRepository.load(key);
         if(!game) {
-            throw new ResourceNotFound(Game);
+            throw new ResourceNotFoundError(Game);
         }
         return game;
     }
@@ -56,7 +75,7 @@ export default class GameService implements IGameService {
         const game = this.getGame(gameId);
         const player = this.getPlayer(playerId);
 
-        game.addPlayer(player);
+        game.addPlayers(player);
         this.gameRepository.update(game, gameId);
 
         return game;
@@ -80,7 +99,7 @@ export default class GameService implements IGameService {
     private getPlayer(playerId: string): Player {
         const player = this.playerRepository.load(playerId);
         if(!player) {
-            throw new ResourceNotFound(Player);
+            throw new ResourceNotFoundError(Player);
         }
         return player;
     }

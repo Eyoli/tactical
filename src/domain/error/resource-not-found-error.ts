@@ -1,4 +1,4 @@
-export default class ResourceNotFound<T> extends Error {
+export default class ResourceNotFoundError<T> extends Error {
 
     constructor(constructor: {
         new (...args: any[]): T;
