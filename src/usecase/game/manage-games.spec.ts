@@ -8,8 +8,10 @@ import Unit from "../../domain/model/unit";
 import * as Assert from "assert";
 import * as mocha from "mocha";
 import Repository from "../../domain/port/secondary/repository";
-import { IGameService } from "../../domain/port/primary/services";
+import { IGameService, IMovementService } from "../../domain/port/primary/services";
 import ResourceNotFoundError from "../../domain/error/resource-not-found-error";
+import PlayerService from "../../domain/service/player-service";
+import UnitService from "../../domain/service/unit-service";
 
 describe('About games we should be able to...', () => {
 
@@ -18,6 +20,7 @@ describe('About games we should be able to...', () => {
     let gameRepository: Repository<Game>;
     let unitRepository: Repository<Unit>;
     let fieldRepository: Repository<Field>;
+    let movementService: IMovementService;
 
     beforeEach(() => {
         playerRepository = new InMemoryRepository<Player>();
@@ -25,7 +28,8 @@ describe('About games we should be able to...', () => {
         unitRepository = new InMemoryRepository<Unit>();
         fieldRepository = new InMemoryRepository<Field>();
         
-        gameService = new GameService(gameRepository, playerRepository, unitRepository, fieldRepository);
+        gameService = new GameService(gameRepository, new PlayerService(playerRepository), 
+            new UnitService(unitRepository), fieldRepository, movementService);
     });
 
     describe('create a new game', () => {
@@ -111,6 +115,32 @@ describe('About games we should be able to...', () => {
 
             // assert
             Assert.deepStrictEqual(gameOut.getUnits("playerId").length, 1)
+        });
+
+        it('alternate turn between players', () => {
+            // arrange
+            const player1 = new Player("Player 1");
+            const player2 = new Player("Player 2");
+            playerRepository.save(player1, "player1");
+            playerRepository.save(player2, "player2");
+
+            let game = new Game();
+            game.addPlayers(player1, player2);
+            gameRepository.save(game, "gameId");
+
+            // act
+            game = gameService.startGame("gameId");
+            const playerPerTurn = [];
+            playerPerTurn.push(game.getCurrentPlayer());
+            game = gameService.finishTurn("gameId");
+            playerPerTurn.push(game.getCurrentPlayer());
+            game = gameService.finishTurn("gameId");
+            playerPerTurn.push(game.getCurrentPlayer());
+
+            // assert
+            Assert.deepStrictEqual(playerPerTurn[0]?.name, "Player 1");
+            Assert.deepStrictEqual(playerPerTurn[1]?.name, "Player 2");
+            Assert.deepStrictEqual(playerPerTurn[2]?.name, "Player 1");
         });
     });
 });

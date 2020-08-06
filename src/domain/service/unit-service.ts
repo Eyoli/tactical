@@ -4,6 +4,7 @@ import Repository from "../port/secondary/repository";
 import * as UUID from "uuid";
 import { TYPES } from "../../types";
 import Unit from "../model/unit";
+import ResourceNotFoundError from "../error/resource-not-found-error";
 
 @injectable()
 export default class UnitService implements IUnitService {
@@ -13,7 +14,14 @@ export default class UnitService implements IUnitService {
         this.unitRepository = unitRepository;
     }
 
-    getUnits(): Unit[] {
+    getUnits(ids: string[] | undefined): Unit[] {
+        if(ids) {
+            const units = this.unitRepository.loadSome(ids);
+            if(units.length !== ids.length) {
+                throw new ResourceNotFoundError(Unit);
+            }
+        }
+        
         return this.unitRepository.loadAll();
     }
 
@@ -26,7 +34,7 @@ export default class UnitService implements IUnitService {
     getUnit(key: string): Unit {
         const unit = this.unitRepository.load(key);
         if(!unit) {
-            throw new Error("Unit not found");
+            throw new ResourceNotFoundError(Unit);
         }
         return unit;
     }

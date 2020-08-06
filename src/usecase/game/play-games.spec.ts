@@ -8,53 +8,72 @@ import Unit from "../../domain/model/unit";
 import * as Assert from "assert";
 import * as mocha from "mocha";
 import Repository from "../../domain/port/secondary/repository";
-import { IGameService } from "../../domain/port/primary/services";
-import ResourceNotFoundError from "../../domain/error/resource-not-found-error";
+import { IGameService, IMovementService } from "../../domain/port/primary/services";
+import PlayerService from "../../domain/service/player-service";
+import UnitService from "../../domain/service/unit-service";
+import Tile from "../../domain/model/tile";
+import UnitState from "../../domain/model/unit-state";
+import Position from "../../domain/model/position";
+import MovementService from "../../domain/service/movement-service";
 
-describe('When playing we should be able to...', () => {
+describe('Get positions accessible to a unit', () => {
 
-    let gameService: IGameService;
-    let playerRepository: Repository<Player>;
-    let gameRepository: Repository<Game>;
-    let unitRepository: Repository<Unit>;
-    let fieldRepository: Repository<Field>;
+    const movementService: IMovementService = new MovementService();
 
     beforeEach(() => {
-        playerRepository = new InMemoryRepository<Player>();
-        gameRepository = new InMemoryRepository<Game>();
-        unitRepository = new InMemoryRepository<Unit>();
-        fieldRepository = new InMemoryRepository<Field>();
-        
-        gameService = new GameService(gameRepository, playerRepository, unitRepository, fieldRepository);
     });
 
-    describe('manage an existing game', () => {
+    it('flat and homogeneous field', () => {
+        // arrange
+        const field = new Field("Field")
+            .withId("fieldId")
+            .withTiles(
+                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
+                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
+                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
+        const unit = new Unit("Unit").withMoves(2).withJumps(1);
+        const unitState = new UnitState(unit).withPosition(new Position(0, 0));
 
-        it('alternate turn between players', () => {
-            // arrange
-            const player1 = new Player("Player 1");
-            const player2 = new Player("Player 2");
-            playerRepository.save(player1, "player1");
-            playerRepository.save(player2, "player2");
+        // act
+        const accessiblePositions = movementService.getAccessiblePositions(field, unitState);
 
-            let game = new Game();
-            game.addPlayers(player1, player2);
-            gameRepository.save(game, "gameId");
+        // assert
+        Assert.deepStrictEqual(accessiblePositions.length, 6);
+    });
 
-            // act
-            game = gameService.startGame("gameId");
-            const playerPerTurn = [];
-            playerPerTurn.push(game.getCurrentPlayer());
-            game = gameService.finishTurn("gameId");
-            playerPerTurn.push(game.getCurrentPlayer());
-            game = gameService.finishTurn("gameId");
-            playerPerTurn.push(game.getCurrentPlayer());
+    it('heterogeneous field', () => {
+        // arrange
+        const field = new Field("Field")
+            .withId("fieldId")
+            .withTiles(
+                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
+                [[new Tile(1, 1)], [new Tile(1, 2)], [new Tile(1, 1)]],
+                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
+        const unit = new Unit("Unit").withMoves(2).withJumps(1);
+        const unitState = new UnitState(unit).withPosition(new Position(0, 0));
 
-            // assert
-            Assert.deepStrictEqual(playerPerTurn[0]?.name, "Player 1");
-            Assert.deepStrictEqual(playerPerTurn[1]?.name, "Player 2");
-            Assert.deepStrictEqual(playerPerTurn[2]?.name, "Player 1");
-        });
-        
+        // act
+        const accessiblePositions = movementService.getAccessiblePositions(field, unitState);
+
+        // assert
+        Assert.deepStrictEqual(accessiblePositions.length, 5);
+    });
+
+    it('unlevel field', () => {
+        // arrange
+        const field = new Field("Field")
+            .withId("fieldId")
+            .withTiles(
+                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
+                [[new Tile(1, 1)], [new Tile(1, 1), new Tile(1, 1)], [new Tile(1, 1)]],
+                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
+        const unit = new Unit("Unit").withMoves(2).withJumps(0);
+        const unitState = new UnitState(unit).withPosition(new Position(0, 0));
+
+        // act
+        const accessiblePositions = movementService.getAccessiblePositions(field, unitState);
+
+        // assert
+        Assert.deepStrictEqual(accessiblePositions.length, 5);
     });
 });

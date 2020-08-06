@@ -3,13 +3,12 @@ import Player from "../../model/player";
 import Game from "../../model/game";
 import Unit from "../../model/unit";
 import UnitState from "../../model/unit-state";
-import Tile from "../../model/tile";
+import Position from "../../model/position";
 
 export interface IFieldService {
     createField(field: Field): string;
     getField(id: string): Field;
     getFields(): Field[];
-    getAccessibleTiles(fieldId: string, unitState: UnitState): Tile[];
 }
 
 export interface IGameService {
@@ -20,6 +19,7 @@ export interface IGameService {
     getGames(): Game[];
     addPlayer(gameId: string, playerId: string): Game;
     setUnits(gameId: string, playerId: string, unitIds: string[]): Game;
+    getAccessiblePositions(gameId: string, unitId: string): Position[];
 }
 
 export interface IPlayerService {
@@ -31,5 +31,9 @@ export interface IPlayerService {
 export interface IUnitService {
     createUnit(unit: Unit): string;
     getUnit(id: string): Unit;
-    getUnits(): Unit[];
+    getUnits(ids: string[] | undefined): Unit[];
+}
+
+export interface IMovementService {
+    getAccessiblePositions(field: Field, unitState: UnitState): Position[];
 }

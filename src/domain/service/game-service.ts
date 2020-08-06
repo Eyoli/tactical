@@ -1,31 +1,35 @@
-import { IGameService } from "../port/primary/services";
-import Player from "../model/player";
+import { IGameService, IMovementService, IPlayerService, IUnitService } from "../port/primary/services";
 import Game from "../model/game";
 import { inject, injectable } from "inversify";
 import Repository from "../port/secondary/repository";
 import * as UUID from "uuid";
-import Unit from "../model/unit";
 import { TYPES } from "../../types";
 import Field from "../model/field";
 import ResourceNotFoundError from "../error/resource-not-found-error";
 import GameError from "../error/game-error";
+import Tile from "../model/tile";
+import { Set } from "immutable";
+import Position from "../model/position";
 
 @injectable()
 export default class GameService implements IGameService {
     private gameRepository: Repository<Game>;
-    private playerRepository: Repository<Player>;
-    private unitRepository: Repository<Unit>;
-    private fieldRepository: Repository<Unit>;
+    private playerService: IPlayerService;
+    private unitService: IUnitService;
+    private fieldRepository: Repository<Field>;
+    private movementService: IMovementService;
 
     constructor(
         @inject(TYPES.GAME_REPOSITORY) gameRepository: Repository<Game>,
-        @inject(TYPES.PLAYER_REPOSITORY) playerRepository: Repository<Player>,
-        @inject(TYPES.UNIT_REPOSITORY) unitRepository: Repository<Unit>,
-        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: Repository<Field>) {
+        @inject(TYPES.PLAYER_SERVICE) playerService: IPlayerService,
+        @inject(TYPES.UNIT_SERVICE) unitService: IUnitService,
+        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: Repository<Field>,
+        @inject(TYPES.MOVEMENT_SERVICE) movementService: IMovementService) {
         this.gameRepository = gameRepository;
-        this.playerRepository = playerRepository;
-        this.unitRepository = unitRepository;
+        this.playerService = playerService;
+        this.unitService = unitService;
         this.fieldRepository = fieldRepository;
+        this.movementService = movementService;
     }
 
     finishTurn(gameId: string): Game {
@@ -73,7 +77,7 @@ export default class GameService implements IGameService {
 
     addPlayer(gameId: string, playerId: string): Game {
         const game = this.getGame(gameId);
-        const player = this.getPlayer(playerId);
+        const player = this.playerService.getPlayer(playerId);
 
         game.addPlayers(player);
         this.gameRepository.update(game, gameId);
@@ -83,24 +87,18 @@ export default class GameService implements IGameService {
 
     setUnits(gameId: string, playerId: string, unitIds: string[]): Game {
         const game = this.getGame(gameId);
-        const player = this.getPlayer(playerId);
-
-        const units = this.unitRepository.loadSome(unitIds);
-        if(units.length !== unitIds.length) {
-            throw new Error("At least one invalid unit");
-        }
+        const player = this.playerService.getPlayer(playerId);
+        const units = this.unitService.getUnits(unitIds);
 
         game.setUnits(player, units);
         this.gameRepository.update(game, gameId);
 
         return game;
     }
-    
-    private getPlayer(playerId: string): Player {
-        const player = this.playerRepository.load(playerId);
-        if(!player) {
-            throw new ResourceNotFoundError(Player);
-        }
-        return player;
+
+    getAccessiblePositions(gameId: string, unitId: string): Position[] {
+        const game = this.getGame(gameId);
+        const unit = this.unitService.getUnit(unitId);
+        return this.movementService.getAccessiblePositions(game?.field, game.getUnitState(unit));
     }
 }

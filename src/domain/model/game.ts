@@ -1,11 +1,12 @@
 import Field from "./field";
 import Player from "./player";
 import Unit from "./unit";
-import { CreateFieldRequest, CreateGameRequest } from "../port/primary/requests";
+import { CreateGameRequest } from "../port/primary/requests";
+import UnitState from "./unit-state";
 
 export default class Game {
     id?: string;
-    field?: Field;
+    field!: Field;
     players: Player[];
     private unitsPerPlayer: Map<string,Unit[]>;
     private currentPlayerIndex: number;
@@ -50,6 +51,10 @@ export default class Game {
         if(this.started) {
             this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
         }
+    }
+
+    getUnitState(unit: Unit): UnitState {
+        throw new Error("Method not implemented.");
     }
 
     static fromCreateRequest(data: CreateGameRequest): Game {

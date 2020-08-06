@@ -4,6 +4,7 @@ import Repository from "../port/secondary/repository";
 import * as UUID from "uuid";
 import { TYPES } from "../../types";
 import Player from "../model/player";
+import ResourceNotFoundError from "../error/resource-not-found-error";
 
 @injectable()
 export default class PlayerService implements IPlayerService {
@@ -26,7 +27,7 @@ export default class PlayerService implements IPlayerService {
     getPlayer(key: string): Player {
         const player = this.playerService.load(key);
         if(!player) {
-            throw new Error("Player not found");
+            throw new ResourceNotFoundError(Player);
         }
         return player;
     }
