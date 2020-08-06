@@ -99,6 +99,9 @@ export default class GameService implements IGameService {
     getAccessiblePositions(gameId: string, unitId: string): Position[] {
         const game = this.getGame(gameId);
         const unit = this.unitService.getUnit(unitId);
-        return this.movementService.getAccessiblePositions(game?.field, game.getUnitState(unit));
+        if(game?.field) {
+            return this.movementService.getAccessiblePositions(game?.field, game.getUnitState(unit));
+        }
+        return [];
     }
 }

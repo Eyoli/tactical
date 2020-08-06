@@ -31,7 +31,7 @@ export interface IPlayerService {
 export interface IUnitService {
     createUnit(unit: Unit): string;
     getUnit(id: string): Unit;
-    getUnits(ids: string[] | undefined): Unit[];
+    getUnits(ids?: string[]): Unit[];
 }
 
 export interface IMovementService {

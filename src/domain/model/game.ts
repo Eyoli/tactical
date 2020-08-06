@@ -6,7 +6,7 @@ import UnitState from "./unit-state";
 
 export default class Game {
     id?: string;
-    field!: Field;
+    field?: Field;
     players: Player[];
     private unitsPerPlayer: Map<string,Unit[]>;
     private currentPlayerIndex: number;

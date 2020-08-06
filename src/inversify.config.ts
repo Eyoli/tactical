@@ -2,7 +2,7 @@ import { Container } from "inversify";
 import "reflect-metadata";
 import { TYPES } from "./types";
 
-import { IFieldService, IGameService, IPlayerService, IUnitService } from "./domain/port/primary/services";
+import { IFieldService, IGameService, IPlayerService, IUnitService, IMovementService } from "./domain/port/primary/services";
 import FieldService from "./domain/service/field-service";
 import Repository from "./domain/port/secondary/repository";
 import Field from "./domain/model/field";
@@ -14,6 +14,7 @@ import Player from "./domain/model/player";
 import Game from "./domain/model/game";
 import PlayerService from "./domain/service/player-service";
 import UnitService from "./domain/service/unit-service";
+import MovementService from "./domain/service/movement-service";
 
 const iocContainer = new Container();
 
@@ -42,5 +43,6 @@ iocContainer.bind<IFieldService>(TYPES.FIELD_SERVICE).to(FieldService);
 iocContainer.bind<IGameService>(TYPES.GAME_SERVICE).to(GameService);
 iocContainer.bind<IPlayerService>(TYPES.PLAYER_SERVICE).to(PlayerService);
 iocContainer.bind<IUnitService>(TYPES.UNIT_SERVICE).to(UnitService);
+iocContainer.bind<IMovementService>(TYPES.MOVEMENT_SERVICE).to(MovementService);
 
 export default iocContainer;

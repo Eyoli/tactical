@@ -3,9 +3,11 @@ import Field from "../model/field";
 import Position from "../model/position";
 import UnitState from "../model/unit-state";
 import { Set } from "immutable";
+import { injectable } from "inversify";
 
 type PositionSearch = [Position, number];
 
+@injectable()
 export default class MovementService implements IMovementService {
 
     getAccessiblePositions(field: Field, unitState: UnitState): Position[] {
