@@ -2,6 +2,7 @@ import fs from "fs";
 import Repository from "../../../domain/port/secondary/repository";
 import { injectable } from "inversify";
 import { JsonMapper } from "../../json/json-mappers";
+import * as UUID from "uuid";
 
 const FILE_ENCODING = "utf8";
 const FILE_SUFFIX = ".json";
@@ -24,8 +25,10 @@ export class InJsonFileRepository<T> implements Repository<T> {
         this.writeFile(id + FILE_SUFFIX, object, true);
     }
     
-    save(object: T, id: string) {
+    save(object: T) {
+        const id = UUID.v4();
         this.writeFile(id + FILE_SUFFIX, object, false);
+        return id;
     }
 
     load(id: string): T | undefined {

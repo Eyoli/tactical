@@ -11,7 +11,7 @@ enum GameState {
 }
 
 export default class Game {
-    id?: string;
+    id!: string;
     field?: Field;
     players: Player[];
     private unitsPerPlayer: Map<string, Unit[]>;

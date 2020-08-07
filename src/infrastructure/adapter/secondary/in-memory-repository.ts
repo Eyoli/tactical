@@ -2,6 +2,7 @@ import Repository from "../../../domain/port/secondary/repository";
 
 export default class InMemoryRepository<T> implements Repository<T> {
     private content: Map<string, T>;
+    private counter = 1;
 
     constructor() {
         this.content = new Map();
@@ -11,8 +12,11 @@ export default class InMemoryRepository<T> implements Repository<T> {
         this.content.set(id, object);
     }
 
-    save(object: T, id: string): void {
+    save(object: T): string {
+        const id = "object" + this.counter;
+        this.counter++;
         this.content.set(id, object);
+        return id;
     }
 
     load(id: string): T | undefined {

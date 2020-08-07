@@ -28,10 +28,10 @@ describe('About players we should be able to...', () => {
 
     it('get an existing player', () => {
         // arrange
-        playerRepository.save(new Player("Name"), "key");
+        const playerId = playerRepository.save(new Player("Name"));
 
         // act
-        const player = playerService.getPlayer("key");
+        const player = playerService.getPlayer(playerId);
 
         // assert
         Assert.deepStrictEqual(player.name, "Name");
@@ -39,8 +39,8 @@ describe('About players we should be able to...', () => {
 
     it('get the list of all existing players', () => {
         // arrange
-        playerRepository.save(new Player("Name"), "key1");
-        playerRepository.save(new Player("Name"), "key2");
+        playerRepository.save(new Player("Name"));
+        playerRepository.save(new Player("Name"));
 
         // act
         const players = playerService.getPlayers();

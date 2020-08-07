@@ -39,10 +39,10 @@ describe('About games we should be able to...', () => {
         it('valid case', () => {
             // arrange
             const gameIn = new Game();
-            fieldRepository.save(new Field("Name"), "fieldId");
+            const fieldId = fieldRepository.save(new Field("Name"));
 
             // act
-            const id = gameService.createGame(gameIn, "fieldId");
+            const id = gameService.createGame(gameIn, fieldId);
 
             // assert
             const gameOut = gameRepository.load(id);
@@ -64,8 +64,8 @@ describe('About games we should be able to...', () => {
 
     it('get the list of all existing games', () => {
         // arrange
-        gameRepository.save(new Game(), "key1");
-        gameRepository.save(new Game(), "key2");
+        gameRepository.save(new Game());
+        gameRepository.save(new Game());
 
         // act
         const games = gameService.getGames();
@@ -78,8 +78,7 @@ describe('About games we should be able to...', () => {
         it('get its state', () => {
             // arrange
             const gameIn = new Game();
-            gameIn.id = "gameId";
-            gameRepository.save(gameIn, gameIn.id);
+             gameIn.id = gameRepository.save(gameIn);
 
             // act
             const gameOut = gameService.getGame(gameIn.id);
@@ -90,11 +89,11 @@ describe('About games we should be able to...', () => {
 
         it('add a player', () => {
             // arrange
-            gameRepository.save(new Game(), "gameId");
-            playerRepository.save(new Player("Player 1"), "player1");
+            const gameId = gameRepository.save(new Game());
+            const playerId = playerRepository.save(new Player("Player 1"));
 
             // act
-            const gameOut = gameService.addPlayers("gameId", ["player1"]);
+            const gameOut = gameService.addPlayers(gameId, [playerId]);
 
             // assert
             Assert.deepStrictEqual(gameOut.players[0].name, "Player 1");
@@ -107,9 +106,9 @@ describe('About games we should be able to...', () => {
             // act
             const playerPerTurn = [];
             playerPerTurn.push(game.getCurrentPlayer());
-            game = gameService.finishTurn("gameId");
+            game = gameService.finishTurn(game.id);
             playerPerTurn.push(game.getCurrentPlayer());
-            game = gameService.finishTurn("gameId");
+            game = gameService.finishTurn(game.id);
             playerPerTurn.push(game.getCurrentPlayer());
 
             // assert
@@ -128,7 +127,7 @@ describe('About games we should be able to...', () => {
                 .build());
 
             // act
-            const newUnitState = gameService.moveUnit("gameId", "player1", "unit1", new Position(1,1));
+            const newUnitState = gameService.moveUnit(game.id, player1.id, unit1.id, new Position(1,1));
 
             // assert
             Assert.deepStrictEqual(newUnitState.position.equals(new Position(1,1)), true);
@@ -136,15 +135,15 @@ describe('About games we should be able to...', () => {
     });
 
     function aStartedGame() {
-        const player1 = new Player("Player 1").withId("player1");
-        const player2 = new Player("Player 2").withId("player2");
-        playerRepository.save(player1, player1.id);
-        playerRepository.save(player2, player2.id);
+        const player1 = new Player("Player 1");
+        const player2 = new Player("Player 2");
+        player1.id = playerRepository.save(player1);
+        player2.id = playerRepository.save(player2);
 
-        const unit1 = new Unit("Unit 1").withId("unit1");
-        const unit2 = new Unit("Unit 2").withId("unit2");
-        unitRepository.save(unit1, unit1.id);
-        unitRepository.save(unit2, unit2.id);
+        const unit1 = new Unit("Unit 1");
+        const unit2 = new Unit("Unit 2");
+        unit1.id = unitRepository.save(unit1);
+        unit2.id = unitRepository.save(unit2);
         const unitsComposition: UnitsComposition = new Map();
         const player1UnitsPlacement: UnitsPlacement = new Map();
         player1UnitsPlacement.set(unit1.id, new Position(0,0));
@@ -155,10 +154,10 @@ describe('About games we should be able to...', () => {
     
         let game = new Game();
         game.addPlayers(player1, player2);
-        gameRepository.save(game, "gameId");
+        game.id = gameRepository.save(game);
     
         // act
-        game = gameService.startGame("gameId", unitsComposition);
+        game = gameService.startGame(game.id, unitsComposition);
         return game;
     }
 });

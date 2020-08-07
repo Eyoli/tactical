@@ -1,7 +1,6 @@
 import { injectable, inject } from "inversify";
 import { IPlayerService } from "../port/primary/services";
 import Repository from "../port/secondary/repository";
-import * as UUID from "uuid";
 import { TYPES } from "../../types";
 import Player from "../model/player";
 import ResourceNotFoundError from "../error/resource-not-found-error";
@@ -19,8 +18,7 @@ export default class PlayerService implements IPlayerService {
     }
 
     createPlayer(player: Player): string {
-        player.id = UUID.v4();
-        this.playerService.save(player, player.id);
+        player.id = this.playerService.save(player);
         return player.id;
     }
 

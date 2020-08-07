@@ -2,7 +2,6 @@ import { injectable, inject } from "inversify";
 import { IFieldService } from "../port/primary/services";
 import Field from "../model/field";
 import Repository from "../port/secondary/repository";
-import * as UUID from "uuid";
 import { TYPES } from "../../types";
 import ResourceNotFoundError from "../error/resource-not-found-error";
 
@@ -20,8 +19,7 @@ export default class FieldService implements IFieldService {
     }
 
     createField(field: Field): string {
-        field.id = UUID.v4();
-        this.fieldRepository.save(field, field.id);
+        field.withId(this.fieldRepository.save(field));
         return field.id;
     }
 

@@ -3,7 +3,7 @@ import Tile from "./tile";
 import Position from "./position";
 
 export default class Field {
-    id?: string;
+    id!: string;
     name: string;
     private tiles: Tile[][][];
 
@@ -22,8 +22,29 @@ export default class Field {
         return this;
     }
 
-    getTiles(): Tile[][][] {
-        return this.tiles;
+    private getWidth(): number {
+        return this.tiles.length;
+    }
+
+    private getLength(x: number): number {
+        return this.tiles[x].length;
+    }
+
+    getNeighbours(p: Position) {
+        const neighbours: Position[] = [];
+        if(p.x > 0) {
+            neighbours.push(new Position(p.x-1, p.y));
+        }
+        if(p.x < this.getWidth()-1) {
+            neighbours.push(new Position(p.x+1, p.y));
+        }
+        if(p.y > 0) {
+            neighbours.push(new Position(p.x, p.y-1));
+        }
+        if(p.y < this.getLength(p.x)-1) {
+            neighbours.push(new Position(p.x, p.y+1));
+        }
+        return neighbours;
     }
 
     getTopTile(p: Position): Tile {

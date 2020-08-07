@@ -2,7 +2,6 @@ import { IGameService, IMovementService, IPlayerService, IUnitService } from "..
 import Game from "../model/game";
 import { inject, injectable } from "inversify";
 import Repository from "../port/secondary/repository";
-import * as UUID from "uuid";
 import { TYPES } from "../../types";
 import Field from "../model/field";
 import ResourceNotFoundError from "../error/resource-not-found-error";
@@ -33,15 +32,13 @@ export default class GameService implements IGameService {
     }
 
     createGame(game: Game, fieldId: string): string {
-        game.id = UUID.v4();
-
         const field = this.fieldRepository.load(fieldId);
         if(!field) {
             throw new ResourceNotFoundError(Field);
         }
         game.field = field;
 
-        this.gameRepository.save(game, game.id);
+        game.id = this.gameRepository.save(game);
         return game.id;
     }
 
@@ -116,7 +113,7 @@ export default class GameService implements IGameService {
         const game = this.getGame(gameId);
         const unit = this.unitService.getUnit(unitId);
         const unitState = game.getUnitState(unit);
-        if(game?.field && unitState) {
+        if(game.field && unitState) {
             return this.movementService.getAccessiblePositions(game?.field, unitState);
         }
         return [];
@@ -128,7 +125,7 @@ export default class GameService implements IGameService {
         const player = this.playerService.getPlayer(playerId);
         const unitState = game.getUnitState(unit);
 
-        if(unitState?.hasMoved === false && this.movementService.isAccessible(game?.field, unitState, p)) {
+        if(unitState?.hasMoved === false && this.movementService.isAccessible(game.field, unitState, p)) {
             const newUnitState = new UnitStateBuilder().fromState(unitState).movingTo(p).build();
             game.setUnitState(unit, newUnitState);
             return newUnitState;

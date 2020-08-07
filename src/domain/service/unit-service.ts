@@ -1,7 +1,6 @@
 import { injectable, inject } from "inversify";
 import { IUnitService } from "../port/primary/services";
 import Repository from "../port/secondary/repository";
-import * as UUID from "uuid";
 import { TYPES } from "../../types";
 import Unit from "../model/unit";
 import ResourceNotFoundError from "../error/resource-not-found-error";
@@ -26,8 +25,7 @@ export default class UnitService implements IUnitService {
     }
 
     createUnit(unit: Unit): string {
-        unit.id = UUID.v4();
-        this.unitRepository.save(unit, unit.id);
+        unit.id = this.unitRepository.save(unit);
         return unit.id;
     }
 

@@ -31,21 +31,7 @@ export default class MovementService implements IMovementService {
     }
 
     private getNeighbours(field: Field, p: Position, moves: number): PositionSearch[] {
-        const positionsToCheck: Position[] = [];
-        if(p.x > 0) {
-            positionsToCheck.push(new Position(p.x-1, p.y));
-        }
-        if(p.x < field.getTiles().length-1) {
-            positionsToCheck.push(new Position(p.x+1, p.y));
-        }
-        if(p.y > 0) {
-            positionsToCheck.push(new Position(p.x, p.y-1));
-        }
-        if(p.y < field.getTiles()[p.x].length-1) {
-            positionsToCheck.push(new Position(p.x, p.y+1));
-        }
-
-        return positionsToCheck
+        return field.getNeighbours(p)
             .map(p2 => {
                 const tile = field.getTopTile(p2);
                 return [p2, moves - tile.cost];

@@ -28,10 +28,10 @@ describe('About units we should be able to...', () => {
 
     it('get an existing unit', () => {
         // arrange
-        unitRepository.save(new Unit("Name"), "key");
+        const unitId = unitRepository.save(new Unit("Name"));
 
         // act
-        const unit = unitService.getUnit("key");
+        const unit = unitService.getUnit(unitId);
 
         // assert
         Assert.deepStrictEqual(unit.name, "Name");
@@ -39,8 +39,8 @@ describe('About units we should be able to...', () => {
 
     it('get the list of all existing units', () => {
         // arrange
-        unitRepository.save(new Unit("Name"), "key1");
-        unitRepository.save(new Unit("Name"), "key2");
+        unitRepository.save(new Unit("Name"));
+        unitRepository.save(new Unit("Name"));
 
         // act
         const units = unitService.getUnits();

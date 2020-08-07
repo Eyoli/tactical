@@ -44,8 +44,8 @@ gameRouter.post('/:id/addPlayers', function (req, res) {
 
 gameRouter.post('/:id/start', function (req, res) {
 	const id = req.params.id;
-	const game = gameService.startGame(id);
-	res.json(game);
+	//const game = gameService.startGame(id);
+	//res.json(game);
 });
 
 export default gameRouter;
