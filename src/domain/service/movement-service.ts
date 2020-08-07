@@ -1,9 +1,9 @@
 import { IMovementService } from "../port/primary/services";
 import Field from "../model/field";
 import Position from "../model/position";
-import UnitState from "../model/unit-state";
 import { Set } from "immutable";
 import { injectable } from "inversify";
+import { UnitState } from "../model/unit-state";
 
 type PositionSearch = [Position, number];
 
@@ -11,6 +11,10 @@ type PositionSearch = [Position, number];
 export default class MovementService implements IMovementService {
 
     getAccessiblePositions(field: Field, unitState: UnitState): Position[] {
+        return this.getAccessiblePositionsAsSet(field, unitState).toArray();
+    }
+
+    private getAccessiblePositionsAsSet(field: Field, unitState: UnitState): Set<Position> {
         const accessiblePositions = Set<Position>().asMutable();
         const searches: PositionSearch[] = [[unitState.position, unitState.moves]];
 
@@ -23,7 +27,7 @@ export default class MovementService implements IMovementService {
                     .filter(search => !accessiblePositions.has(search[0])));
             }
         }
-        return accessiblePositions.toArray();
+        return accessiblePositions;
     }
 
     private getNeighbours(field: Field, p: Position, moves: number): PositionSearch[] {
@@ -46,5 +50,14 @@ export default class MovementService implements IMovementService {
                 const tile = field.getTopTile(p2);
                 return [p2, moves - tile.cost];
             });
+    }
+
+    isAccessible(field: Field, unitState: UnitState, p: Position): boolean {
+        if(unitState.position.equals(p)) {
+            return false;
+        }
+
+        const accessiblePositions = this.getAccessiblePositionsAsSet(field, unitState);
+        return accessiblePositions.has(p);
     }
 }

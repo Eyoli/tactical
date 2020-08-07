@@ -1,5 +1,5 @@
 export default class Unit {
-    id?: string;
+    id!: string;
     name: string;
     moves!: number;
     jumps!: number;
@@ -8,12 +8,17 @@ export default class Unit {
         this.name = name;
     }
 
-    withMoves(moves: number) {
+    withId(id: string): Unit {
+        this.id = id;
+        return this;
+    }
+
+    withMoves(moves: number): Unit {
         this.moves = moves;
         return this;
     }
 
-    withJumps(jumps: number) {
+    withJumps(jumps: number): Unit {
         this.jumps = jumps;
         return this;
     }

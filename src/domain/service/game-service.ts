@@ -7,9 +7,9 @@ import { TYPES } from "../../types";
 import Field from "../model/field";
 import ResourceNotFoundError from "../error/resource-not-found-error";
 import GameError from "../error/game-error";
-import Tile from "../model/tile";
-import { Set } from "immutable";
 import Position from "../model/position";
+import { UnitStateBuilder, UnitState } from "../model/unit-state";
+import { UnitsComposition, UnitsPlacement } from "../model/aliases";
 
 @injectable()
 export default class GameService implements IGameService {
@@ -32,24 +32,6 @@ export default class GameService implements IGameService {
         this.movementService = movementService;
     }
 
-    finishTurn(gameId: string): Game {
-        const game = this.getGame(gameId);
-        game.finishTurn();
-        this.gameRepository.update(game, gameId);
-        return game;
-    }
-
-    startGame(gameId: string): Game {
-        const game = this.getGame(gameId);
-        if(game.hasStarted()) {
-            throw new GameError("GAME_ALREADY_STARTED", "Game has already started");
-        }
-        
-        game.start();
-        this.gameRepository.update(game, gameId);
-        return game;
-    }
-
     createGame(game: Game, fieldId: string): string {
         game.id = UUID.v4();
 
@@ -61,6 +43,36 @@ export default class GameService implements IGameService {
 
         this.gameRepository.save(game, game.id);
         return game.id;
+    }
+
+    finishTurn(gameId: string): Game {
+        const game = this.getGame(gameId);
+        game.finishTurn();
+        this.gameRepository.update(game, gameId);
+        return game;
+    }
+
+    startGame(gameId: string, unitsComposition: UnitsComposition): Game {
+        const game = this.getGame(gameId);
+        if(game.hasStarted()) {
+            throw new GameError("GAME_ALREADY_STARTED", "Game has already started");
+        }
+        if(game.players.length < 2) {
+            throw new GameError("IMPOSSIBLE_TO_START_GAME", "Not enough players");
+        }
+
+        unitsComposition.forEach(
+            (unitsPosition, playerId) => this.setUnits(gameId, playerId, unitsPosition));
+
+        if(game.players
+            .map(player => game.getUnits(player))
+            .some(units => !units || units.length < 1)) {
+            throw new GameError("IMPOSSIBLE_TO_START_GAME", "Not enough units");
+        }
+        
+        game.start();
+        this.gameRepository.update(game, gameId);
+        return game;
     }
 
     getGame(key: string): Game {
@@ -75,33 +87,52 @@ export default class GameService implements IGameService {
         return this.gameRepository.loadAll();
     }
 
-    addPlayer(gameId: string, playerId: string): Game {
+    addPlayers(gameId: string, playerId: string[]): Game {
         const game = this.getGame(gameId);
-        const player = this.playerService.getPlayer(playerId);
+        const players = playerId
+            .map(id => this.playerService.getPlayer(id));
 
-        game.addPlayers(player);
+        game.addPlayers(...players);
         this.gameRepository.update(game, gameId);
 
         return game;
     }
 
-    setUnits(gameId: string, playerId: string, unitIds: string[]): Game {
+    private setUnits(gameId: string, playerId: string, unitsPositions: UnitsPlacement): void {
         const game = this.getGame(gameId);
         const player = this.playerService.getPlayer(playerId);
-        const units = this.unitService.getUnits(unitIds);
+        const units = this.unitService.getUnits(Array.from(unitsPositions.keys()));
 
         game.setUnits(player, units);
-        this.gameRepository.update(game, gameId);
-
-        return game;
+        units.forEach(unit => {
+            const position = unitsPositions.get(unit.id);
+            if(position) {
+                game.setUnitState(unit,new UnitStateBuilder().init(unit, position).build());
+            }
+        });
     }
 
     getAccessiblePositions(gameId: string, unitId: string): Position[] {
         const game = this.getGame(gameId);
         const unit = this.unitService.getUnit(unitId);
-        if(game?.field) {
-            return this.movementService.getAccessiblePositions(game?.field, game.getUnitState(unit));
+        const unitState = game.getUnitState(unit);
+        if(game?.field && unitState) {
+            return this.movementService.getAccessiblePositions(game?.field, unitState);
         }
         return [];
+    }
+
+    moveUnit(gameId: string, playerId: string, unitId: string, p: Position): UnitState {
+        const game = this.getGame(gameId);
+        const unit = this.unitService.getUnit(unitId);
+        const player = this.playerService.getPlayer(playerId);
+        const unitState = game.getUnitState(unit);
+
+        if(unitState?.hasMoved === false && this.movementService.isAccessible(game?.field, unitState, p)) {
+            const newUnitState = new UnitStateBuilder().fromState(unitState).movingTo(p).build();
+            game.setUnitState(unit, newUnitState);
+            return newUnitState;
+        }
+        throw new GameError("IMPOSSIBLE_TO_MOVE_UNIT", "Impossible to move the unit");
     }
 }

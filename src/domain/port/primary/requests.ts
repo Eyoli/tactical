@@ -1,3 +1,5 @@
+import MissingInputError from "../../error/missing-input-error";
+
 export class CreateFieldRequest {
     name: string;
 
@@ -21,7 +23,7 @@ export class CreateGameRequest {
 
     validate() {
         if(!this.fieldId) {
-            throw new Error("Field id is required");
+            throw new MissingInputError("fieldId");
         }
     }
 }

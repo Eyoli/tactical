@@ -2,19 +2,27 @@ import Field from "./field";
 import Player from "./player";
 import Unit from "./unit";
 import { CreateGameRequest } from "../port/primary/requests";
-import UnitState from "./unit-state";
+import { UnitState } from "./unit-state";
+
+enum GameState {
+    INITIATED = "INITIATED", 
+    STARTED = "STARTED", 
+    FINISHED = "FINISHED"
+}
 
 export default class Game {
     id?: string;
     field?: Field;
     players: Player[];
-    private unitsPerPlayer: Map<string,Unit[]>;
+    private unitsPerPlayer: Map<string, Unit[]>;
     private currentPlayerIndex: number;
-    private started = false;
+    private state: GameState = GameState.INITIATED;
+    private unitStates: Map<string, UnitState[]>;
 
     constructor() {
         this.players = [];
         this.unitsPerPlayer = new Map<string,Unit[]>();
+        this.unitStates = new Map<string, UnitState[]>();
         this.currentPlayerIndex = 0;
     }
 
@@ -25,36 +33,48 @@ export default class Game {
     setUnits(player: Player, units: Unit[]) {
         if(player.id) {
             this.unitsPerPlayer.set(player.id, units);
+            units.forEach(unit => this.unitStates.set(unit.id, []));
         }
     }
 
-    getUnits(playerId: string): Unit[] {
-        const units = this.unitsPerPlayer.get(playerId);
+    getUnits(player: Player): Unit[] {
+        const units = this.unitsPerPlayer.get(player.id);
         return units ? units : [];
     }
 
     getCurrentPlayer(): Player | undefined {
-        if(this.started) {
+        if(this.hasStarted()) {
             return this.players[this.currentPlayerIndex];
         }
     }
 
     start(): void {
-        this.started = true;
+        this.state = GameState.STARTED;
     }
 
     hasStarted(): boolean {
-        return this.started;
+        return this.state === GameState.STARTED;
     }
 
     finishTurn(): void {
-        if(this.started) {
+        if(this.hasStarted()) {
             this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
         }
     }
 
-    getUnitState(unit: Unit): UnitState {
-        throw new Error("Method not implemented.");
+    getUnitState(unit: Unit): UnitState | undefined {
+        const states = this.unitStates.get(unit.id);
+        if(states) {
+            return states[0];
+        }
+        return undefined;
+    }
+
+    setUnitState(unit: Unit, newUnitState: UnitState) {
+        const states = this.unitStates.get(unit.id);
+        if(states) {
+            states.unshift(newUnitState);
+        }
     }
 
     static fromCreateRequest(data: CreateGameRequest): Game {

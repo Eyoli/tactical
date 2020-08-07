@@ -35,10 +35,10 @@ gameRouter.get('/:id', function (req, res) {
 	res.json(game);
 });
 
-gameRouter.post('/:id/addPlayer', function (req, res) {
+gameRouter.post('/:id/addPlayers', function (req, res) {
 	const id = req.params.id;
 	const playerId = req.body.playerId;
-	const game = gameService.addPlayer(id, playerId);
+	const game = gameService.addPlayers(id, playerId);
 	res.json(game);
 });
 

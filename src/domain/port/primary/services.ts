@@ -2,8 +2,8 @@ import Field from "../../model/field";
 import Player from "../../model/player";
 import Game from "../../model/game";
 import Unit from "../../model/unit";
-import UnitState from "../../model/unit-state";
 import Position from "../../model/position";
+import { UnitState } from "../../model/unit-state";
 
 export interface IFieldService {
     createField(field: Field): string;
@@ -13,13 +13,13 @@ export interface IFieldService {
 
 export interface IGameService {
     finishTurn(gameId: string): Game;
-    startGame(gameId: string): Game;
+    startGame(gameId: string, unitsComposition: Map<string, Map<string, Position>>): Game;
     createGame(game: Game, fieldId: string): string;
     getGame(id: string): Game;
     getGames(): Game[];
-    addPlayer(gameId: string, playerId: string): Game;
-    setUnits(gameId: string, playerId: string, unitIds: string[]): Game;
+    addPlayers(gameId: string, playerIds: string[]): Game;
     getAccessiblePositions(gameId: string, unitId: string): Position[];
+    moveUnit(gameId: string, playerId: string, unitId: string, p: Position): UnitState;
 }
 
 export interface IPlayerService {
@@ -35,5 +35,6 @@ export interface IUnitService {
 }
 
 export interface IMovementService {
+    isAccessible(field: Field | undefined, unit: UnitState, p: Position): boolean;
     getAccessiblePositions(field: Field, unitState: UnitState): Position[];
 }
