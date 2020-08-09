@@ -1,7 +1,7 @@
 import Field from "./field";
 import Player from "./player";
 import Unit from "./unit";
-import { CreateGameRequest } from "../port/primary/requests";
+import { CreateGameRequest } from "../../api/request/requests";
 import { UnitState } from "./unit-state";
 
 enum GameState {
@@ -76,9 +76,4 @@ export default class Game {
             states.unshift(newUnitState);
         }
     }
-
-    static fromCreateRequest(data: CreateGameRequest): Game {
-        const game = new Game();
-        return game;
-	}
 }

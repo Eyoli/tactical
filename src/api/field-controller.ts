@@ -1,6 +1,5 @@
 import express from 'express';
-import { CreateFieldRequest } from '../domain/port/primary/requests';
-import Field from '../domain/model/field';
+import { CreateFieldRequest } from './request/requests';
 import iocContainer from '../inversify.config';
 import { IFieldService } from '../domain/port/primary/services';
 import { TYPES } from '../types';
@@ -24,7 +23,7 @@ fieldRouter.post('/', function (req, res) {
         throw new BadRequestError(error.message);
 	}
 
-	const field = Field.fromCreateRequest(data);
+	const field = data.toField();
 	const id = fieldService.createField(field);
 	res.json(req.baseUrl + req.path + id);
 });

@@ -22,12 +22,12 @@ export class InJsonFileRepository<T> implements Repository<T> {
     }
 
     update(object: T, id: string): void {
-        this.writeFile(id + FILE_SUFFIX, object, true);
+        this.writeFile(id, object, true);
     }
     
     save(object: T) {
         const id = UUID.v4();
-        this.writeFile(id + FILE_SUFFIX, object, false);
+        this.writeFile(id, object, false);
         return id;
     }
 
@@ -57,11 +57,13 @@ export class InJsonFileRepository<T> implements Repository<T> {
         return this.jsonMapper.fromJson(json);
     }
 
-    private writeFile(fileName: string, object: T, replace: boolean) {
-        if (replace || !fs.existsSync(this.baseUrl + fileName)) {
+    private writeFile(id: string, object: T, replace: boolean) {
+        if (replace || !fs.existsSync(this.baseUrl + id + FILE_SUFFIX)) {
+            const json = this.jsonMapper.toJson(object);
+            json.id = id;
             fs.writeFileSync(
-                this.baseUrl + fileName, 
-                JSON.stringify(this.jsonMapper.toJson(object)), 
+                this.baseUrl + id + FILE_SUFFIX, 
+                JSON.stringify(json), 
                 FILE_ENCODING);
         }
     }

@@ -1,0 +1,237 @@
+{
+	"info": {
+		"_postman_id": "de9e1e63-853c-4963-b6f7-60ca8dd5b8e9",
+		"name": "Tactical API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "createField",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "YYYY",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/fields",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"fields"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createPlayer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Bertolt",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/players",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"players"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getFields",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/fields/:id",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"fields",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getPlayers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/players/:id",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"players",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createGame",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fieldId\": \"cff80cda-2db7-4463-8873-83e274c908db\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/games",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"games"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getGames",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/games/:id",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"games",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "6aa22796-22c9-4e71-b4c1-eeffe254e0e7"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addPlayers",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"playerIds\": \r\n        [\r\n            \"a851285f-af5d-430c-b36c-1cf958eaa5ad\",\r\n            \"c11e2f2a-601a-4880-9a90-e59a5c5e0587\"\r\n        ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/games/:id/players",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"games",
+						":id",
+						"players"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "6aa22796-22c9-4e71-b4c1-eeffe254e0e7"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "98ec7ea0-a3e6-494c-a0c5-6a89b89af76b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "43f048f1-5d39-48da-9b93-2e4f57aeb189",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "54120c13-7371-4cba-a8f4-405a1c9393ed",
+			"key": "BASE_URL",
+			"value": "http://localhost:3000"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

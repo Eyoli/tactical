@@ -1,3 +1,5 @@
+import { CreatePlayerRequest } from "../../api/request/requests";
+
 export default class Player {
     id!: string;
     name: string;

@@ -1,4 +1,4 @@
-import { CreateFieldRequest } from "../port/primary/requests";
+import { CreateFieldRequest } from "../../api/request/requests";
 import Tile from "./tile";
 import Position from "./position";
 
@@ -57,10 +57,5 @@ export default class Field {
 
     getHeightDifference(p1: Position, p2: Position): number {
         return Math.abs(this.tiles[p1.x][p1.y].length - this.tiles[p2.x][p2.y].length);
-    }
-
-    static fromCreateRequest(createFieldRequest: CreateFieldRequest) {
-        const field = new Field(createFieldRequest.name);
-        return field;
     }
 }
