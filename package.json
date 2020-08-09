@@ -36,7 +36,7 @@
     "dev": "ts-node-dev ./src/app.ts",
     "in-memory": "set NODE_ENV=api-test&& npm run dev",
     "prod": "tsc && node ./build/app.js",
-    "api-test": "newman run tactical_api.postman_collection --verbose"
+    "api-test": "newman run tactical_api.postman_collection"
   },
   "repository": {
     "type": "git",

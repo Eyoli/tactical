@@ -65,19 +65,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{BASE_URL}}/fields/:id",
+					"raw": "{{BASE_URL}}/fields",
 					"host": [
 						"{{BASE_URL}}"
 					],
 					"path": [
-						"fields",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "{{FIELD_ID}}"
-						}
+						"fields"
 					]
 				}
 			},
@@ -188,19 +181,12 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{BASE_URL}}/units/:id",
+					"raw": "{{BASE_URL}}/units",
 					"host": [
 						"{{BASE_URL}}"
 					],
 					"path": [
-						"units",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": ""
-						}
+						"units"
 					]
 				}
 			},
@@ -426,19 +412,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{BASE_URL}}/players/:id",
+					"raw": "{{BASE_URL}}/players",
 					"host": [
 						"{{BASE_URL}}"
 					],
 					"path": [
-						"players",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": ""
-						}
+						"players"
 					]
 				}
 			},
@@ -515,19 +494,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{BASE_URL}}/games/:id",
+					"raw": "{{BASE_URL}}/games",
 					"host": [
 						"{{BASE_URL}}"
 					],
 					"path": [
-						"games",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "{{FIELD_ID}}"
-						}
+						"games"
 					]
 				}
 			},
@@ -654,37 +626,37 @@
 	],
 	"variable": [
 		{
-			"id": "fabe16f2-92b8-4432-933b-7d4aa822f0e8",
+			"id": "d459f319-7708-478e-9cf8-a3a8190ba1b8",
 			"key": "BASE_URL",
 			"value": "http://localhost:3000"
 		},
 		{
-			"id": "b9537dfe-046f-45dd-80ef-040203ad1d3e",
+			"id": "40081f02-1b34-411a-8d80-1447ba949805",
 			"key": "FIELD_ID",
 			"value": ""
 		},
 		{
-			"id": "0acba0b6-30ef-4e83-a8af-395f5f693438",
+			"id": "4c5b0bc8-7a3b-4ffb-951c-53677abe63c8",
 			"key": "UNIT_1_ID",
 			"value": ""
 		},
 		{
-			"id": "cf7bab33-fa27-4df6-a32b-bb274fd7f193",
+			"id": "4bfcb3b9-a1e2-44fb-af41-3122bd19c887",
 			"key": "UNIT_2_ID",
 			"value": ""
 		},
 		{
-			"id": "5a5d6233-50f5-4e69-91c0-1ffaf6a49984",
+			"id": "32af688b-9e5e-4929-a52d-a00b3bb851ae",
 			"key": "PLAYER_1_ID",
 			"value": ""
 		},
 		{
-			"id": "efd46bf3-f5eb-4865-bdd0-d41d8d614cda",
+			"id": "2d8017b2-0ea9-49fd-8e78-2f0b57ce767a",
 			"key": "PLAYER_2_ID",
 			"value": ""
 		},
 		{
-			"id": "258ee344-4cb8-44cf-9faa-3b35d1599aa7",
+			"id": "15632000-75a2-4605-9972-1d8d8220e02c",
 			"key": "GAME_ID",
 			"value": ""
 		}
