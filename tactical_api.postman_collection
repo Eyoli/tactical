@@ -7,6 +7,19 @@
 	"item": [
 		{
 			"name": "createField",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d7abb73f-9381-4638-8f65-58d02729ac4d",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"FIELD_ID\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -33,34 +46,21 @@
 			"response": []
 		},
 		{
-			"name": "createPlayer",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "name",
-							"value": "Bertolt",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{BASE_URL}}/players",
-					"host": [
-						"{{BASE_URL}}"
-					],
-					"path": [
-						"players"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "getFields",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c8d12b1b-a23f-4993-a4f3-ac1e8c7e4855",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -76,6 +76,129 @@
 					"variable": [
 						{
 							"key": "id",
+							"value": "{{FIELD_ID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createUnit1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a726e8b0-8cc3-4e53-ad5a-d6e8cd10b436",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"UNIT_1_ID\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Reiner\",\r\n    \"moves\": 4,\r\n    \"jumps\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/units",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"units"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createUnit2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5c098564-eb51-4c4f-8839-1282d38b8958",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"UNIT_2_ID\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Bertolt\",\r\n    \"moves\": 3,\r\n    \"jumps\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/units",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"units"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getUnits",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "65964d9f-5849-4b17-b119-68c6db227bfc",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/units/:id",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"units",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
 							"value": ""
 						}
 					]
@@ -84,7 +207,221 @@
 			"response": []
 		},
 		{
+			"name": "createPlayer1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f8a4153a-1eb9-4992-8b82-d5b7340bbc21",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"PLAYER_1_ID\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Player 1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/players",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"players"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "createPlayer2",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Second player",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/players",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"players"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "createPlayer1",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "First player",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/players",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"players"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "createPlayer2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3058ae1f-b63c-4598-8282-92e4d5717234",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"PLAYER_2_ID\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Player 2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/players",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"players"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "createPlayer2",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Second player",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/players",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"players"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "createPlayer1",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "First player",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/players",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"players"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
 			"name": "getPlayers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b01e4de3-20de-4f4e-8f55-24f016ce5634",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -109,12 +446,25 @@
 		},
 		{
 			"name": "createGame",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "86b71d7f-0760-4637-b33e-d43c98a6810a",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"GAME_ID\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"fieldId\": \"cff80cda-2db7-4463-8873-83e274c908db\"\r\n}",
+					"raw": "{\r\n    \"fieldId\": \"{{FIELD_ID}}\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -135,6 +485,20 @@
 		},
 		{
 			"name": "getGames",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ea4c2008-82ae-434b-8552-928a9c239c42",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -162,7 +526,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "6aa22796-22c9-4e71-b4c1-eeffe254e0e7"
+							"value": "{{FIELD_ID}}"
 						}
 					]
 				}
@@ -171,12 +535,26 @@
 		},
 		{
 			"name": "addPlayers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5632afc8-b051-4397-bea6-c8d158dcc42d",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"playerIds\": \r\n        [\r\n            \"a851285f-af5d-430c-b36c-1cf958eaa5ad\",\r\n            \"c11e2f2a-601a-4880-9a90-e59a5c5e0587\"\r\n        ]\r\n}",
+					"raw": "{\r\n    \"playerIds\": \r\n        [\r\n            \"{{PLAYER_1_ID}}\",\r\n            \"{{PLAYER_2_ID}}\"\r\n        ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -196,7 +574,55 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "6aa22796-22c9-4e71-b4c1-eeffe254e0e7"
+							"value": "{{GAME_ID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "startGame",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "182c078c-40d9-4fee-a4a2-a1c748fe1128",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"composition\": [\r\n        {\r\n            \"playerId\": \"{{PLAYER_1_ID}}\",\r\n            \"units\": [\r\n                {\r\n                    \"unitId\": \"{{UNIT_1_ID}}\",\r\n                    \"position\": {\"x\": 0, \"y\": 0}\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"playerId\": \"{{PLAYER_2_ID}}\",\r\n            \"units\": [\r\n                {\r\n                    \"unitId\": \"{{UNIT_2_ID}}\",\r\n                    \"position\": {\"x\": 0, \"y\": 0}\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/games/:id/start",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"games",
+						":id",
+						"start"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{GAME_ID}}"
 						}
 					]
 				}
@@ -228,9 +654,39 @@
 	],
 	"variable": [
 		{
-			"id": "54120c13-7371-4cba-a8f4-405a1c9393ed",
+			"id": "fabe16f2-92b8-4432-933b-7d4aa822f0e8",
 			"key": "BASE_URL",
 			"value": "http://localhost:3000"
+		},
+		{
+			"id": "b9537dfe-046f-45dd-80ef-040203ad1d3e",
+			"key": "FIELD_ID",
+			"value": ""
+		},
+		{
+			"id": "0acba0b6-30ef-4e83-a8af-395f5f693438",
+			"key": "UNIT_1_ID",
+			"value": ""
+		},
+		{
+			"id": "cf7bab33-fa27-4df6-a32b-bb274fd7f193",
+			"key": "UNIT_2_ID",
+			"value": ""
+		},
+		{
+			"id": "5a5d6233-50f5-4e69-91c0-1ffaf6a49984",
+			"key": "PLAYER_1_ID",
+			"value": ""
+		},
+		{
+			"id": "efd46bf3-f5eb-4865-bdd0-d41d8d614cda",
+			"key": "PLAYER_2_ID",
+			"value": ""
+		},
+		{
+			"id": "258ee344-4cb8-44cf-9faa-3b35d1599aa7",
+			"key": "GAME_ID",
+			"value": ""
 		}
 	],
 	"protocolProfileBehavior": {}

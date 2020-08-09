@@ -99,6 +99,15 @@ describe('About games we should be able to...', () => {
             Assert.deepStrictEqual(gameOut.players[0].name, "Player 1");
         });
 
+        it('start a game', () => {
+            // arrange / act
+            const game = aStartedGame();
+
+            // assert
+            Assert.deepStrictEqual(game.getUnits(game.players[0]).length, 1);
+            Assert.deepStrictEqual(game.getUnits(game.players[1]).length, 1);
+        });
+
         it('alternate turn between players', () => {
             // arrange
             let game = aStartedGame();
@@ -158,6 +167,7 @@ describe('About games we should be able to...', () => {
     
         // act
         game = gameService.startGame(game.id, unitsComposition);
+
         return game;
     }
 });

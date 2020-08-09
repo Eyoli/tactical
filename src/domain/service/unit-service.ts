@@ -13,12 +13,13 @@ export default class UnitService implements IUnitService {
         this.unitRepository = unitRepository;
     }
 
-    getUnits(ids: string[] | undefined): Unit[] {
+    getUnits(ids?: string[]): Unit[] {
         if(ids) {
             const units = this.unitRepository.loadSome(ids);
             if(units.length !== ids.length) {
                 throw new ResourceNotFoundError(Unit);
             }
+            return units;
         }
         
         return this.unitRepository.loadAll();

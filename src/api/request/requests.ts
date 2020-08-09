@@ -1,4 +1,4 @@
-import MissingInputError from "../../domain/error/missing-input-error";
+import MissingInputError from "../error/missing-input-error";
 import { UnitsComposition, UnitsPlacement } from "../../domain/model/aliases";
 import Player from "../../domain/model/player";
 import Game from "../../domain/model/game";

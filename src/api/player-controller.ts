@@ -25,7 +25,10 @@ playerRouter.post('/', function (req, res) {
 
 	const player = data.toField();
 	const id = playerService.createPlayer(player);
-	res.json(req.baseUrl + req.path + id);
+	res.json({
+		id: id,
+		path: req.baseUrl + req.path + id
+	});
 });
 
 playerRouter.get('/:id', function (req, res) {

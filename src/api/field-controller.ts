@@ -25,7 +25,10 @@ fieldRouter.post('/', function (req, res) {
 
 	const field = data.toField();
 	const id = fieldService.createField(field);
-	res.json(req.baseUrl + req.path + id);
+	res.json({
+		id: id,
+		path: req.baseUrl + req.path + id
+	});
 });
 
 fieldRouter.get('/:id', function (req, res) {

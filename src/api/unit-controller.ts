@@ -25,7 +25,10 @@ unitRouter.post('/', function (req, res) {
 
 	const unit = data.toUnit();
 	const id = unitService.createUnit(unit);
-	res.json(req.baseUrl + req.path + id);
+	res.json({
+		id: id,
+		path: req.baseUrl + req.path + id
+	});
 });
 
 unitRouter.get('/:id', function (req, res) {

@@ -48,6 +48,10 @@ export default class Game {
         }
     }
 
+    getState(): string {
+        return this.state;
+    }
+
     start(): void {
         this.state = GameState.STARTED;
     }

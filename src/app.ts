@@ -8,7 +8,7 @@ import playerRouter from './api/player-controller';
 import unitRouter from './api/unit-controller';
 import config from 'config';
 
-process.title = "tactical";
+process.title = config.get("process.title");
 
 const app = express();
 const server = new http.Server(app);

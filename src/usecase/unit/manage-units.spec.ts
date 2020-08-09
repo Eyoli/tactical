@@ -37,6 +37,19 @@ describe('About units we should be able to...', () => {
         Assert.deepStrictEqual(unit.name, "Name");
     });
 
+    it('get a list of existing units', () => {
+        // arrange
+        const id1 = unitRepository.save(new Unit("Name1"));
+        const id2 = unitRepository.save(new Unit("Name2"));
+        unitRepository.save(new Unit("Name3"));
+
+        // act
+        const units = unitService.getUnits([id1, id2]);
+
+        // assert
+        Assert.deepStrictEqual(units.length, 2);
+    });
+
     it('get the list of all existing units', () => {
         // arrange
         unitRepository.save(new Unit("Name"));

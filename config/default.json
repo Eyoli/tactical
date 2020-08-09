@@ -2,5 +2,13 @@
     "env": "dev",
     "app": {
         "port": 3000
+    },
+    "process": {
+        "title": "tactical"
+    },
+    "persistence": {
+        "json": {
+            "base-path": "data"
+        }
     }
 }

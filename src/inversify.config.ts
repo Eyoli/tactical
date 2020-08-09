@@ -33,18 +33,20 @@ if (config.get("env") === "api-test") {
     iocContainer.bind(TYPES.PLAYER_REPOSITORY).toConstantValue(new InMemoryRepository<Player>());
     iocContainer.bind(TYPES.UNIT_REPOSITORY).toConstantValue(new InMemoryRepository<Unit>());
 } else {
+    const basePath = config.get("persistence.json.base-path");
+
     iocContainer.bind(TYPES.FIELD_REPOSITORY)
     .toDynamicValue(({container}) => new InJsonFileRepository<Field>(container.get(TYPES.FIELD_JSON_MAPPER))
-        .withBaseUrl("data/fields"))
+        .withBaseUrl(basePath + "/fields"))
     iocContainer.bind(TYPES.GAME_REPOSITORY)
         .toDynamicValue(({container}) => new InJsonFileRepository<Game>(container.get(TYPES.GAME_JSON_MAPPER))
-            .withBaseUrl("data/games"));
+            .withBaseUrl(basePath + "/games"));
     iocContainer.bind<Repository<Player>>(TYPES.PLAYER_REPOSITORY)
         .toDynamicValue(({container}) => new InJsonFileRepository<Player>(container.get(TYPES.PLAYER_JSON_MAPPER))
-                .withBaseUrl("data/players"));
+                .withBaseUrl(basePath + "/players"));
     iocContainer.bind(TYPES.UNIT_REPOSITORY)
         .toDynamicValue(({container}) => new InJsonFileRepository<Unit>(container.get(TYPES.UNIT_JSON_MAPPER))
-            .withBaseUrl("data/units"));
+            .withBaseUrl(basePath + "/units"));
 }
 
 // Services

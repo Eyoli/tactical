@@ -4,14 +4,15 @@ import iocContainer from '../inversify.config';
 import { TYPES } from '../types';
 import BadRequestError from './error/bad-request-error';
 import { IGameService } from '../domain/port/primary/services';
+import GameDTO from './dto/gameDTO';
 
 const gameRouter = express.Router();
 
 const gameService = iocContainer.get<IGameService>(TYPES.GAME_SERVICE);
 
 gameRouter.get('/', function (req, res) {
-	const map = gameService.getGames();
-	res.json(map);
+	const games = gameService.getGames();
+	res.json(games.map(game =>new GameDTO(game)));
 });
 
 gameRouter.post('/', function (req, res) {
@@ -25,27 +26,30 @@ gameRouter.post('/', function (req, res) {
 
 	const game = data.toGame();
 	const id = gameService.createGame(game, data.fieldId);
-	res.json(req.baseUrl + req.path + id);
+	res.json({
+		id: id,
+		path: req.baseUrl + req.path + id
+	});
 });
 
 gameRouter.get('/:id', function (req, res) {
 	const id = req.params.id;
 	const game = gameService.getGame(id);
-	res.json(game);
+	res.json(new GameDTO(game));
 });
 
 gameRouter.post('/:id/players', function (req, res) {
 	const id = req.params.id;
 	const playerIds = req.body.playerIds;
 	const game = gameService.addPlayers(id, playerIds);
-	res.json(game);
+	res.json(new GameDTO(game));
 });
 
 gameRouter.post('/:id/start', function (req, res) {
 	const id = req.params.id;
 	const startGameRequest = new StartGameRequest(req.body);
 	const game = gameService.startGame(id, startGameRequest.composition);
-	res.json(game);
+	res.json(new GameDTO(game));
 });
 
 export default gameRouter;

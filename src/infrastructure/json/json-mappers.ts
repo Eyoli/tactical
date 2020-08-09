@@ -31,11 +31,18 @@ export class UnitJsonMapper implements JsonMapper<Unit> {
     fromJson(json: any): Unit {
         const unit = new Unit(json.name);
         unit.id = json.id;
+        unit.jumps = json.jumps;
+        unit.moves = json.moves;
         return unit;
     }
 
     toJson(object: Unit): any {
-        return {};
+        return {
+            id: object.id,
+            name: object.name,
+            jumps: object.jumps,
+            moves: object.moves
+        };
     }
 }
 
