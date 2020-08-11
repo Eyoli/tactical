@@ -5,10 +5,10 @@ import Repository from "../port/secondary/repository";
 import { TYPES } from "../../types";
 import Field from "../model/field";
 import ResourceNotFoundError from "../error/resource-not-found-error";
-import GameError from "../error/game-error";
 import Position from "../model/position";
 import { UnitStateBuilder, UnitState } from "../model/unit-state";
 import { UnitsComposition, UnitsPlacement } from "../model/aliases";
+import { GameError, GameErrorCode } from "../error/game-error";
 
 @injectable()
 export default class GameService implements IGameService {
@@ -52,10 +52,10 @@ export default class GameService implements IGameService {
     startGame(gameId: string, unitsComposition: UnitsComposition): Game {
         const game = this.getGame(gameId);
         if(game.hasStarted()) {
-            throw new GameError("GAME_ALREADY_STARTED", "Game has already started");
+            throw new GameError(GameErrorCode.GAME_ALREADY_STARTED);
         }
         if(game.players.length < 2) {
-            throw new GameError("IMPOSSIBLE_TO_START_GAME", "Not enough players");
+            throw new GameError(GameErrorCode.NOT_ENOUGH_PLAYERS);
         }
 
         unitsComposition.forEach(
@@ -64,7 +64,7 @@ export default class GameService implements IGameService {
         if(game.players
             .map(player => game.getUnits(player))
             .some(units => !units || units.length < 1)) {
-            throw new GameError("IMPOSSIBLE_TO_START_GAME", "Not enough units");
+            throw new GameError(GameErrorCode.NOT_ENOUGH_UNITS);
         }
         
         game.start();
@@ -119,17 +119,16 @@ export default class GameService implements IGameService {
         return [];
     }
 
-    moveUnit(gameId: string, playerId: string, unitId: string, p: Position): UnitState {
+    moveUnit(gameId: string, unitId: string, p: Position): UnitState {
         const game = this.getGame(gameId);
         const unit = this.unitService.getUnit(unitId);
-        const player = this.playerService.getPlayer(playerId);
         const unitState = game.getUnitState(unit);
 
-        if(unitState?.hasMoved === false && this.movementService.isAccessible(game.field, unitState, p)) {
-            const newUnitState = new UnitStateBuilder().fromState(unitState).movingTo(p).build();
+        if(game.canAct(unit) && this.movementService.isAccessible(game.field, unitState!, p)) {
+            const newUnitState = new UnitStateBuilder().fromState(unitState!).movingTo(p).build();
             game.setUnitState(unit, newUnitState);
             return newUnitState;
         }
-        throw new GameError("IMPOSSIBLE_TO_MOVE_UNIT", "Impossible to move the unit");
+        throw new GameError(GameErrorCode.IMPOSSIBLE_TO_MOVE_UNIT);
     }
 }

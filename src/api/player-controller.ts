@@ -16,11 +16,9 @@ playerRouter.get('/', function (req, res) {
 
 playerRouter.post('/', function (req, res) {
 	const data = new CreatePlayerRequest(req.body);
-
-	try {
-		data.validate();	
-	} catch(error) {
-        throw new BadRequestError(error.message);
+	const errors = data.validate();	
+	if (errors.length > 0) { 
+        throw new BadRequestError(errors.toString());
 	}
 
 	const player = data.toField();

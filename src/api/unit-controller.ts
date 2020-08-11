@@ -16,11 +16,9 @@ unitRouter.get('/', function (req, res) {
 
 unitRouter.post('/', function (req, res) {
 	const data = new CreateUnitRequest(req.body);
-
-	try {
-		data.validate();	
-	} catch(error) {
-        throw new BadRequestError(error.message);
+	const errors = data.validate();	
+	if (errors.length > 0) { 
+        throw new BadRequestError(errors.toString());
 	}
 
 	const unit = data.toUnit();

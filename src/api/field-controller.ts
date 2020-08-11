@@ -16,11 +16,9 @@ fieldRouter.get('/', function (req, res) {
 
 fieldRouter.post('/', function (req, res) {
 	const data = new CreateFieldRequest(req.body);
-
-	try {
-		data.validate();	
-	} catch(error) {
-        throw new BadRequestError(error.message);
+	const errors = data.validate();	
+	if (errors.length > 0) { 
+        throw new BadRequestError(errors.toString());
 	}
 
 	const field = data.toField();

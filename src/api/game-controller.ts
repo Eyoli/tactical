@@ -17,11 +17,9 @@ gameRouter.get('/', function (req, res) {
 
 gameRouter.post('/', function (req, res) {
 	const data = new CreateGameRequest(req.body);
-
-	try {
-		data.validate();
-	} catch(error) {
-        throw new BadRequestError(error.message);
+	const errors = data.validate();	
+	if (errors.length > 0) { 
+        throw new BadRequestError(errors.toString());
 	}
 
 	const game = data.toGame();
@@ -50,6 +48,20 @@ gameRouter.post('/:id/start', function (req, res) {
 	const startGameRequest = new StartGameRequest(req.body);
 	const game = gameService.startGame(id, startGameRequest.composition);
 	res.json(new GameDTO(game));
+});
+
+gameRouter.post('/:id/endTurn', function (req, res) {
+	const id = req.params.id;
+	const game = gameService.finishTurn(id);
+	res.json(new GameDTO(game));
+});
+
+gameRouter.post('/:id/units/:unitId/move', function (req, res) {
+	const id = req.params.id;
+	const unitId = req.params.unitId;
+	const position = req.body.position;
+	const unitState = gameService.moveUnit(id, unitId, position);
+	res.json(unitState);
 });
 
 export default gameRouter;

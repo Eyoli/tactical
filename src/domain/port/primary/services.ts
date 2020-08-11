@@ -19,7 +19,7 @@ export interface IGameService {
     getGames(): Game[];
     addPlayers(gameId: string, playerIds: string[]): Game;
     getAccessiblePositions(gameId: string, unitId: string): Position[];
-    moveUnit(gameId: string, playerId: string, unitId: string, p: Position): UnitState;
+    moveUnit(gameId: string, unitId: string, p: Position): UnitState;
 }
 
 export interface IPlayerService {

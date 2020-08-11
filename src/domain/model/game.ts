@@ -66,6 +66,17 @@ export default class Game {
         }
     }
 
+    canAct(unit: Unit): boolean {
+        if(this.hasStarted()) {
+            const unitState = this.getUnitState(unit);
+            const player = this.getCurrentPlayer();
+            return unitState?.hasMoved === false && this.getUnits(player!)
+                .map(u => u.id)
+                .includes(unit.id);
+        }
+        return false;
+    }
+
     getUnitState(unit: Unit): UnitState | undefined {
         const states = this.unitStates.get(unit.id);
         if(states) {

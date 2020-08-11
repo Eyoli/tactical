@@ -13,9 +13,11 @@ export class CreateFieldRequest {
     }
 
     validate() {
+        const warnings = [];
         if(!this.name) {
-            throw new Error("Name is required");
+            warnings.push("name is required");
         }
+        return warnings;
     }
 
     toField(): Field {
@@ -31,10 +33,12 @@ export class CreateGameRequest {
         this.fieldId = input.fieldId;
     }
 
-    validate() {
+    validate(): string[] {
+        const warnings = [];
         if(!this.fieldId) {
-            throw new MissingInputError("fieldId");
+            warnings.push("fieldId is required");
         }
+        return warnings;
     }
 
     toGame(): Game {
@@ -50,10 +54,12 @@ export class CreatePlayerRequest {
         this.name = input.name;
     }
 
-    validate() {
+    validate(): string[] {
+        const warnings = [];
         if(!this.name) {
-            throw new MissingInputError("name");
+            warnings.push("name is required");
         }
+        return warnings;
     }
 
     toField(): Player {
@@ -73,16 +79,18 @@ export class CreateUnitRequest {
         this.jumps = input.jumps;
     }
 
-    validate() {
+    validate(): string[] {
+        const warnings = [];
         if(!this.name) {
-            throw new MissingInputError("name");
+            warnings.push("name is required")
         }
         if(!this.moves) {
-            throw new MissingInputError("moves");
+            warnings.push("moves is required")
         }
         if(!this.jumps) {
-            throw new MissingInputError("jumps");
+            warnings.push("jumps is required")
         }
+        return warnings;
     }
 
     toUnit(): Unit {
