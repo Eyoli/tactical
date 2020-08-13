@@ -33,8 +33,9 @@
   "scripts": {
     "test": "ts-mocha src/**/*.spec.ts",
     "build": "tsc",
-    "dev": "set NODE_ENV=dev&& ts-node-dev ./src/app.ts",
-    "in-memory": "set NODE_ENV=api-test&& ts-node-dev ./src/app.ts",
+    "ts-node": "ts-node-dev ./src/app.ts",
+    "dev": "set NODE_ENV=dev&& npm run ts-node",
+    "in-memory": "set NODE_ENV=api-test&& npm run ts-node",
     "prod": "tsc && node ./build/app.js",
     "api-test": "newman run src/api/test/tactical_api.postman_collection"
   },
