@@ -6,27 +6,27 @@ import { TYPES } from "../../types";
 import ResourceNotFoundError from "../error/resource-not-found-error";
 
 @injectable()
-export default class FieldService implements IFieldService {
-    private fieldRepository: Repository<Field>;
+export default class FieldService<T extends Field> implements IFieldService<T> {
+    private fieldRepository: Repository<T>;
 
     public constructor(
-        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: Repository<Field>) {
+        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: Repository<T>) {
         this.fieldRepository = fieldRepository;
     }
 
-    getFields(): Field[] {
+    getFields(): T[] {
         return this.fieldRepository.loadAll();
     }
 
-    createField(field: Field): string {
+    createField(field: T): string {
         field.withId(this.fieldRepository.save(field));
         return field.id;
     }
 
-    getField(fieldId: string): Field {
+    getField(fieldId: string): T {
         const field = this.fieldRepository.load(fieldId);
         if(!field) {
-            throw new ResourceNotFoundError(Field);
+            throw new ResourceNotFoundError("Field");
         }
         return field;
     }

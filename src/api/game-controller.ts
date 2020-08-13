@@ -5,6 +5,7 @@ import { TYPES } from '../types';
 import BadRequestError from './error/bad-request-error';
 import { IGameService } from '../domain/port/primary/services';
 import GameDTO from './dto/gameDTO';
+import Position from '../domain/model/position';
 
 const gameRouter = express.Router();
 
@@ -59,7 +60,7 @@ gameRouter.post('/:id/endTurn', function (req, res) {
 gameRouter.post('/:id/units/:unitId/move', function (req, res) {
 	const id = req.params.id;
 	const unitId = req.params.unitId;
-	const position = req.body.position;
+	const position = new Position(req.body.position.x, req.body.position.y);
 	const unitState = gameService.moveUnit(id, unitId, position);
 	res.json(unitState);
 });

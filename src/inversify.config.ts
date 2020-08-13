@@ -17,6 +17,7 @@ import MovementService from "./domain/service/movement-service";
 import { GameJsonMapper } from "./infrastructure/json/game-json-mapper";
 import config from "config";
 import InMemoryRepository from "./infrastructure/adapter/secondary/in-memory-repository";
+import TileBasedField from "./domain/model/tile-based-field";
 
 const iocContainer = new Container();
 
@@ -50,7 +51,7 @@ if (config.get("env") === "api-test") {
 }
 
 // Services
-iocContainer.bind<IFieldService>(TYPES.FIELD_SERVICE).to(FieldService);
+iocContainer.bind<IFieldService<TileBasedField>>(TYPES.FIELD_SERVICE).to(FieldService);
 iocContainer.bind<IGameService>(TYPES.GAME_SERVICE).to(GameService);
 iocContainer.bind<IPlayerService>(TYPES.PLAYER_SERVICE).to(PlayerService);
 iocContainer.bind<IUnitService>(TYPES.UNIT_SERVICE).to(UnitService);

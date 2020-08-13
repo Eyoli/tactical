@@ -5,6 +5,7 @@ import Field from "../../domain/model/field";
 import InMemoryRepository from "../../infrastructure/adapter/secondary/in-memory-repository";
 import { IFieldService } from "../../domain/port/primary/services";
 import Repository from "../../domain/port/secondary/repository";
+import TileBasedField from "../../domain/model/tile-based-field";
 
 describe('About fields we should be able to...', () => {
 
@@ -19,7 +20,7 @@ describe('About fields we should be able to...', () => {
     it('save a field', () => {
         // arrange
         // act
-        const id = fieldService.createField(new Field("Name"));
+        const id = fieldService.createField(new TileBasedField("Name"));
 
         // assert
         const field = fieldRepository.load(id);
@@ -28,7 +29,7 @@ describe('About fields we should be able to...', () => {
 
     it('get an existing field', () => {
         // arrange
-        const fieldId = fieldRepository.save(new Field("Name"));
+        const fieldId = fieldRepository.save(new TileBasedField("Name"));
 
         // act
         const field = fieldService.getField(fieldId);
@@ -39,8 +40,8 @@ describe('About fields we should be able to...', () => {
 
     it('get the list of all existing fields', () => {
         // arrange
-        fieldRepository.save(new Field("Name"));
-        fieldRepository.save(new Field("Name"));
+        fieldRepository.save(new TileBasedField("Name"));
+        fieldRepository.save(new TileBasedField("Name"));
 
         // act
         const fields = fieldService.getFields();

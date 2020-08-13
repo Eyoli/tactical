@@ -13,6 +13,7 @@ import ResourceNotFoundError from "../../domain/error/resource-not-found-error";
 import PlayerService from "../../domain/service/player-service";
 import UnitService from "../../domain/service/unit-service";
 import { FakeMovementService } from "../fake/services";
+import TileBasedField from "../../domain/model/tile-based-field";
 
 describe('About games we should be able to...', () => {
 
@@ -36,7 +37,7 @@ describe('About games we should be able to...', () => {
         it('valid case', () => {
             // arrange
             const gameIn = new Game();
-            const fieldId = fieldRepository.save(new Field("Name"));
+            const fieldId = fieldRepository.save(new TileBasedField("Name"));
 
             // act
             const id = gameService.createGame(gameIn, fieldId);
@@ -44,7 +45,6 @@ describe('About games we should be able to...', () => {
             // assert
             const gameOut = gameRepository.load(id);
             Assert.deepStrictEqual(gameOut?.id, id);
-            Assert.deepStrictEqual(gameOut?.field?.name, "Name");
         });
 
         it('no matching field', () => {
@@ -55,7 +55,7 @@ describe('About games we should be able to...', () => {
             const executor = () => gameService.createGame(gameIn, "fieldId");
 
             // assert
-            Assert.throws(executor, new ResourceNotFoundError(Field));
+            Assert.throws(executor, new ResourceNotFoundError("Field"));
         });
     });
 

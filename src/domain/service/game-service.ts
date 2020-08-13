@@ -34,7 +34,7 @@ export default class GameService implements IGameService {
     createGame(game: Game, fieldId: string): string {
         const field = this.fieldRepository.load(fieldId);
         if(!field) {
-            throw new ResourceNotFoundError(Field);
+            throw new ResourceNotFoundError("Field");
         }
         game.field = field;
 
@@ -58,6 +58,13 @@ export default class GameService implements IGameService {
             throw new GameError(GameErrorCode.NOT_ENOUGH_PLAYERS);
         }
 
+        const hasInvalidPosition = Array.from(unitsComposition.values()).some(
+            unitsPosition => Array.from(unitsPosition.values()).some(
+                position => !game.field?.isValidPosition(position)));
+        if(hasInvalidPosition) {
+            throw new GameError(GameErrorCode.INVALID_POSITION);
+        }
+
         unitsComposition.forEach(
             (unitsPosition, playerId) => this.setUnits(gameId, playerId, unitsPosition));
 
@@ -75,7 +82,7 @@ export default class GameService implements IGameService {
     getGame(key: string): Game {
         const game = this.gameRepository.load(key);
         if(!game) {
-            throw new ResourceNotFoundError(Game);
+            throw ResourceNotFoundError.fromClass(Game);
         }
         return game;
     }

@@ -5,10 +5,10 @@ import Unit from "../../model/unit";
 import Position from "../../model/position";
 import { UnitState } from "../../model/unit-state";
 
-export interface IFieldService {
-    createField(field: Field): string;
-    getField(id: string): Field;
-    getFields(): Field[];
+export interface IFieldService<T extends Field> {
+    createField(field: T): string;
+    getField(id: string): T;
+    getFields(): T[];
 }
 
 export interface IGameService {

@@ -14,6 +14,10 @@
 						"id": "d7abb73f-9381-4638-8f65-58d02729ac4d",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
+							"if (jsonData.error) {\r",
+							"    console.log(jsonData.error);\r",
+							"}\r",
+							"\r",
 							"pm.collectionVariables.set(\"FIELD_ID\", jsonData.id);"
 						],
 						"type": "text/javascript"
@@ -24,14 +28,13 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "name",
-							"value": "YYYY",
-							"type": "text"
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"My field\",\r\n    \"tileTypes\": [{\r\n        \"type\": 1,\r\n        \"src\": \"src\"\r\n    }],\r\n    \"tiles\": [\r\n        [[{\"type\": 1, \"cost\": 1}], [{\"type\": 1, \"cost\": 1}]],\r\n        [[{\"type\": 1, \"cost\": 1}], [{\"type\": 1, \"cost\": 1}]]\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
 						}
-					]
+					}
 				},
 				"url": {
 					"raw": "{{BASE_URL}}/fields",
@@ -85,6 +88,9 @@
 						"id": "a726e8b0-8cc3-4e53-ad5a-d6e8cd10b436",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
+							"if (jsonData.error) {\r",
+							"    console.log(jsonData.error);\r",
+							"}\r",
 							"pm.collectionVariables.set(\"UNIT_1_ID\", jsonData.id);"
 						],
 						"type": "text/javascript"
@@ -124,6 +130,9 @@
 						"id": "5c098564-eb51-4c4f-8839-1282d38b8958",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
+							"if (jsonData.error) {\r",
+							"    console.log(jsonData.error);\r",
+							"}\r",
 							"pm.collectionVariables.set(\"UNIT_2_ID\", jsonData.id);"
 						],
 						"type": "text/javascript"
@@ -201,6 +210,9 @@
 						"id": "f8a4153a-1eb9-4992-8b82-d5b7340bbc21",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
+							"if (jsonData.error) {\r",
+							"    console.log(jsonData.error);\r",
+							"}\r",
 							"pm.collectionVariables.set(\"PLAYER_1_ID\", jsonData.id);"
 						],
 						"type": "text/javascript"
@@ -301,6 +313,9 @@
 						"id": "3058ae1f-b63c-4598-8282-92e4d5717234",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
+							"if (jsonData.error) {\r",
+							"    console.log(jsonData.error);\r",
+							"}\r",
 							"pm.collectionVariables.set(\"PLAYER_2_ID\", jsonData.id);"
 						],
 						"type": "text/javascript"
@@ -432,6 +447,9 @@
 						"id": "86b71d7f-0760-4637-b33e-d43c98a6810a",
 						"exec": [
 							"var jsonData = pm.response.json();\r",
+							"if (jsonData.error) {\r",
+							"    console.log(jsonData.error);\r",
+							"}\r",
 							"pm.collectionVariables.set(\"GAME_ID\", jsonData.id);"
 						],
 						"type": "text/javascript"
@@ -513,6 +531,11 @@
 					"script": {
 						"id": "5632afc8-b051-4397-bea6-c8d158dcc42d",
 						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"if (jsonData.error) {\r",
+							"    console.log(jsonData.error);\r",
+							"}\r",
+							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
 							"});"
@@ -561,6 +584,11 @@
 					"script": {
 						"id": "182c078c-40d9-4fee-a4a2-a1c748fe1128",
 						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"if (jsonData.error) {\r",
+							"    console.log(jsonData.error);\r",
+							"}\r",
+							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
 							"});"
@@ -600,6 +628,109 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "moveUnit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0cff13a2-3237-4fce-9163-b69699c99784",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"if (jsonData.error) {\r",
+							"    console.log(jsonData.error);\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"position\": {\r\n        \"x\": 1,\r\n        \"y\": 1\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/games/:id/units/:unitId/move",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"games",
+						":id",
+						"units",
+						":unitId",
+						"move"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{GAME_ID}}"
+						},
+						{
+							"key": "unitId",
+							"value": "{{UNIT_1_ID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "endTurn",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7c0c8b91-2800-481f-83c2-74a02591e57c",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"if (jsonData.error) {\r",
+							"    console.log(jsonData.error);\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/games/:id/endTurn",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"games",
+						":id",
+						"endTurn"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{GAME_ID}}"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -626,37 +757,37 @@
 	],
 	"variable": [
 		{
-			"id": "d459f319-7708-478e-9cf8-a3a8190ba1b8",
+			"id": "8da1d7ec-c145-4abd-8c72-00f03875e386",
 			"key": "BASE_URL",
 			"value": "http://localhost:3000"
 		},
 		{
-			"id": "40081f02-1b34-411a-8d80-1447ba949805",
+			"id": "146f3df5-c3a7-462e-aa7f-67dc9a3f8cd1",
 			"key": "FIELD_ID",
 			"value": ""
 		},
 		{
-			"id": "4c5b0bc8-7a3b-4ffb-951c-53677abe63c8",
+			"id": "15a4f618-1dab-4d02-8eaf-2bf88c465c19",
 			"key": "UNIT_1_ID",
 			"value": ""
 		},
 		{
-			"id": "4bfcb3b9-a1e2-44fb-af41-3122bd19c887",
+			"id": "4992b4ce-9c05-4d60-889c-b4c1f66f2de0",
 			"key": "UNIT_2_ID",
 			"value": ""
 		},
 		{
-			"id": "32af688b-9e5e-4929-a52d-a00b3bb851ae",
+			"id": "8842aaee-d58e-4a8a-8702-3aa21c0028d5",
 			"key": "PLAYER_1_ID",
 			"value": ""
 		},
 		{
-			"id": "2d8017b2-0ea9-49fd-8e78-2f0b57ce767a",
+			"id": "674d02cd-801e-4dae-a1a8-60596e114d24",
 			"key": "PLAYER_2_ID",
 			"value": ""
 		},
 		{
-			"id": "15632000-75a2-4605-9972-1d8d8220e02c",
+			"id": "f71b154b-d5d5-40bd-83a3-59ffc889205b",
 			"key": "GAME_ID",
 			"value": ""
 		}

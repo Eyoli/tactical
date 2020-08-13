@@ -8,6 +8,7 @@ import Tile from "../../domain/model/tile";
 import Position from "../../domain/model/position";
 import MovementService from "../../domain/service/movement-service";
 import { UnitStateBuilder } from "../../domain/model/unit-state";
+import TileBasedField from "../../domain/model/tile-based-field";
 
 describe('About moving a unit in a field...', () => {
 
@@ -18,7 +19,7 @@ describe('About moving a unit in a field...', () => {
 
     it('flat and homogeneous field', () => {
         // arrange
-        const field = new Field("Field")
+        const field = new TileBasedField("Field")
             .withId("fieldId")
             .withTiles(
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
@@ -36,7 +37,7 @@ describe('About moving a unit in a field...', () => {
 
     it('heterogeneous field', () => {
         // arrange
-        const field = new Field("Field")
+        const field = new TileBasedField("Field")
             .withId("fieldId")
             .withTiles(
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
@@ -54,7 +55,7 @@ describe('About moving a unit in a field...', () => {
 
     it('unlevel field', () => {
         // arrange
-        const field = new Field("Field")
+        const field = new TileBasedField("Field")
             .withId("fieldId")
             .withTiles(
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
@@ -72,7 +73,7 @@ describe('About moving a unit in a field...', () => {
 
     it('check position accessibility', () => {
         // arrange
-        const field = new Field("Field")
+        const field = new TileBasedField("Field")
             .withId("fieldId")
             .withTiles(
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],

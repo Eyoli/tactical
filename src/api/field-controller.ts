@@ -1,17 +1,20 @@
 import express from 'express';
-import { CreateFieldRequest } from './request/requests';
 import iocContainer from '../inversify.config';
 import { IFieldService } from '../domain/port/primary/services';
 import { TYPES } from '../types';
 import BadRequestError from './error/bad-request-error';
+import CreateFieldRequest from './request/create-field-request';
+import FieldDTO from './dto/fieldDTO';
+import TileBasedField from '../domain/model/tile-based-field';
 
 const fieldRouter = express.Router();
 
-const fieldService = iocContainer.get<IFieldService>(TYPES.FIELD_SERVICE);
+const fieldService = iocContainer.get<IFieldService<TileBasedField>>(TYPES.FIELD_SERVICE);
 
 fieldRouter.get('/', function (req, res) {
-	const map = fieldService.getFields();
-	res.json(map);
+	const fields = fieldService.getFields()
+		.map(field => new FieldDTO(field));
+	res.json(fields);
 });
 
 fieldRouter.post('/', function (req, res) {
@@ -32,7 +35,7 @@ fieldRouter.post('/', function (req, res) {
 fieldRouter.get('/:id', function (req, res) {
 	const id = req.params.id;
 	const field = fieldService.getField(id);
-	res.json(field);
+	res.json(new FieldDTO(field));
 });
 
 export default fieldRouter;

@@ -1,6 +1,6 @@
 export default class Tile {
-    cost: number;
-    type: number;
+    readonly cost: number;
+    readonly type: number;
 
     constructor(type: number, cost: number = 1) {
         this.type = type;

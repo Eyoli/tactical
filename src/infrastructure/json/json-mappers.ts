@@ -1,7 +1,7 @@
-import Field from "../../domain/model/field";
 import Player from "../../domain/model/player";
 import Unit from "../../domain/model/unit";
 import { injectable } from "inversify";
+import TileBasedField from "../../domain/model/tile-based-field";
 
 export interface JsonMapper<T> {
     fromJson(json: any): T;
@@ -9,18 +9,23 @@ export interface JsonMapper<T> {
 }
 
 @injectable()
-export class FieldJsonMapper implements JsonMapper<Field> {
+export class FieldJsonMapper implements JsonMapper<TileBasedField> {
 
-    fromJson(json: any): Field {
-        const field = new Field(json.name);
+    fromJson(json: any): TileBasedField {
+        const field = new TileBasedField(json.name, json.width, json.length, json.height);
         field.id = json.id;
         return field;
     }
 
-    toJson(object: Field): any {
+    toJson(object: TileBasedField): any {
         return {
             id: object.id,
-            name: object.name
+            name: object.name,
+            width: object.width,
+            length: object.length,
+            height: object.height,
+            tiles: object.tiles,
+            tileTypes: object.getTileTypes()
         };
     }
 }

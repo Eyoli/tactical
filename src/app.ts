@@ -34,7 +34,7 @@ app.use('/units', unitRouter);
 app.use((err: BadRequestError, req: any, res: any, next: any) => {
 	res.statusCode = BAD_REQUEST_CODE;	
 	res.json({
-		error: new String(err)
+		error: new String(err.stack)
 	});
 })
 

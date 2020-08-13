@@ -17,7 +17,7 @@ export default class UnitService implements IUnitService {
         if(ids) {
             const units = this.unitRepository.loadSome(ids);
             if(units.length !== ids.length) {
-                throw new ResourceNotFoundError(Unit);
+                throw ResourceNotFoundError.fromClass(Unit);
             }
             return units;
         }
@@ -33,7 +33,7 @@ export default class UnitService implements IUnitService {
     getUnit(key: string): Unit {
         const unit = this.unitRepository.load(key);
         if(!unit) {
-            throw new ResourceNotFoundError(Unit);
+            throw ResourceNotFoundError.fromClass(Unit);
         }
         return unit;
     }

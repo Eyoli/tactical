@@ -1,15 +1,12 @@
-import { CreateFieldRequest } from "../../api/request/requests";
 import Tile from "./tile";
 import Position from "./position";
 
-export default class Field {
+export default abstract class Field {
     id!: string;
-    name: string;
-    private tiles: Tile[][][];
+    readonly name: string;
 
     constructor(name: string) {
         this.name = name;
-        this.tiles = [];
     }
 
     withId(id: string) {
@@ -17,45 +14,14 @@ export default class Field {
         return this;
     }
 
-    withTiles(...lines: Tile[][][]) {
-        this.tiles.push(...lines);
-        return this;
-    }
+    abstract getNeighbours(p: Position): Position[];
 
-    private getWidth(): number {
-        return this.tiles.length;
-    }
+    abstract getTopTile(p: Position): Tile;
 
-    private getLength(x: number): number {
-        return this.tiles[x].length;
-    }
+    abstract isValidPosition(p: Position): boolean;
 
-    getNeighbours(p: Position) {
-        const neighbours: Position[] = [];
-        if(p.x > 0) {
-            neighbours.push(new Position(p.x-1, p.y));
-        }
-        if(p.x < this.getWidth()-1) {
-            neighbours.push(new Position(p.x+1, p.y));
-        }
-        if(p.y > 0) {
-            neighbours.push(new Position(p.x, p.y-1));
-        }
-        if(p.y < this.getLength(p.x)-1) {
-            neighbours.push(new Position(p.x, p.y+1));
-        }
-        return neighbours;
-    }
+    abstract isNeighbourAccessible(p1: Position, p2: Position, moves: number, jumps: number): boolean;
 
-    getTopTile(p: Position): Tile {
-        return this.tiles[p.x][p.y][this.tiles[p.x][p.y].length-1];
-    }
-
-    isNeighbourAccessible(p1: Position, p2: Position, moves: number, jumps: number): boolean {
-        return this.getTopTile(p2).cost <= moves && this.getHeightDifference(p1, p2) <= jumps;
-    }
-
-    getHeightDifference(p1: Position, p2: Position): number {
-        return Math.abs(this.tiles[p1.x][p1.y].length - this.tiles[p2.x][p2.y].length);
-    }
+    abstract getHeightDifference(p1: Position, p2: Position): number;
 }
+

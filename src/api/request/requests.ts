@@ -1,30 +1,7 @@
-import MissingInputError from "../error/missing-input-error";
 import { UnitsComposition, UnitsPlacement } from "../../domain/model/aliases";
 import Player from "../../domain/model/player";
 import Game from "../../domain/model/game";
-import Field from "../../domain/model/field";
-import Unit from "../../domain/model/unit";
-
-export class CreateFieldRequest {
-    name: string;
-
-    constructor(input: any) {
-        this.name = input.name;
-    }
-
-    validate() {
-        const warnings = [];
-        if(!this.name) {
-            warnings.push("name is required");
-        }
-        return warnings;
-    }
-
-    toField(): Field {
-        const field = new Field(this.name);
-        return field;
-    }
-}
+import Position from "../../domain/model/position";
 
 export class CreateGameRequest {
     fieldId: string;
@@ -68,39 +45,6 @@ export class CreatePlayerRequest {
     }
 }
 
-export class CreateUnitRequest {
-    name!: string;
-    moves!: number;
-    jumps!: number;
-
-    constructor(input: any) {
-        this.name = input.name;
-        this.moves = input.moves;
-        this.jumps = input.jumps;
-    }
-
-    validate(): string[] {
-        const warnings = [];
-        if(!this.name) {
-            warnings.push("name is required")
-        }
-        if(!this.moves) {
-            warnings.push("moves is required")
-        }
-        if(!this.jumps) {
-            warnings.push("jumps is required")
-        }
-        return warnings;
-    }
-
-    toUnit(): Unit {
-        const unit = new Unit(this.name)
-            .withJumps(this.jumps)
-            .withMoves(this.moves);
-        return unit;
-    }
-}
-
 export class StartGameRequest {
     composition: UnitsComposition;
 
@@ -109,7 +53,7 @@ export class StartGameRequest {
         for(let playerInfo of input.composition) {
             const unitsPlacement: UnitsPlacement = new Map();
             for(let unitInfo of playerInfo.units) {
-                unitsPlacement.set(unitInfo.unitId, unitInfo.position);
+                unitsPlacement.set(unitInfo.unitId, new Position(unitInfo.position.x, unitInfo.position.y));
             }
             this.composition.set(playerInfo.playerId, unitsPlacement);
         }

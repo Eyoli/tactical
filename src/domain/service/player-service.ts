@@ -25,7 +25,7 @@ export default class PlayerService implements IPlayerService {
     getPlayer(key: string): Player {
         const player = this.playerService.load(key);
         if(!player) {
-            throw new ResourceNotFoundError(Player);
+            throw ResourceNotFoundError.fromClass(Player);
         }
         return player;
     }

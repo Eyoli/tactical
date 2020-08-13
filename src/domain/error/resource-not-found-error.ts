@@ -1,8 +1,12 @@
 export default class ResourceNotFoundError<T> extends Error {
 
-    constructor(constructor: {
+    static fromClass<T>(constructor: {
         new (...args: any[]): T;
     }) {
-        super(constructor.name + " not found");
-    } 
+        return new ResourceNotFoundError<T>(constructor.name);
+    }
+
+    constructor(name: string) {
+        super(name + " not found");
+    }
 }
