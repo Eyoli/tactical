@@ -9,14 +9,14 @@ on:
   pull_request:
     branches: [ master ]
 
-strategy:
-      matrix:
-        node-version: [12.16.1]
-
 jobs:
   build:
 
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.16.1]
 
     steps:
     - uses: actions/checkout@v2
@@ -28,13 +28,23 @@ jobs:
     - run: npm run build
     - run: npm test
 
-  test:
+  api-tests:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.16.1]
 
     env: 
       NODE_ENV: api-test
     
     steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
     - run: npm run ts-node &
     - run: npm run api-test
     - run: pkill -f tactical
