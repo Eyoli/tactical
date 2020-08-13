@@ -11,8 +11,6 @@ on:
 
 jobs:
   build:
-    env: 
-      NODE_ENV: api-test
 
     runs-on: ubuntu-latest
 
@@ -29,6 +27,11 @@ jobs:
     - run: npm ci
     - run: npm run build
     - run: npm test
+
+  test:
+    env: 
+      NODE_ENV: api-test
+      
     - run: npm run ts-node &
     - run: npm run api-test
     - run: pkill -f tactical
