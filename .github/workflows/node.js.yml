@@ -9,14 +9,14 @@ on:
   pull_request:
     branches: [ master ]
 
+strategy:
+      matrix:
+        node-version: [12.16.1]
+
 jobs:
   build:
 
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [12.16.1]
 
     steps:
     - uses: actions/checkout@v2
@@ -29,6 +29,8 @@ jobs:
     - run: npm test
 
   test:
+    runs-on: ubuntu-latest
+
     env: 
       NODE_ENV: api-test
     
