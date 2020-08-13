@@ -31,7 +31,8 @@ jobs:
   test:
     env: 
       NODE_ENV: api-test
-      
+    
+    steps:
     - run: npm run ts-node &
     - run: npm run api-test
     - run: pkill -f tactical
