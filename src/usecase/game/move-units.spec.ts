@@ -19,7 +19,7 @@ describe('About moving a unit in a field...', () => {
 
     it('flat and homogeneous field', () => {
         // arrange
-        const field = new TileBasedField("Field")
+        const field = new TileBasedField("Field", 3, 3, 3)
             .withId("fieldId")
             .withTiles(
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
@@ -37,7 +37,7 @@ describe('About moving a unit in a field...', () => {
 
     it('heterogeneous field', () => {
         // arrange
-        const field = new TileBasedField("Field")
+        const field = new TileBasedField("Field", 3, 3, 3)
             .withId("fieldId")
             .withTiles(
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
@@ -55,7 +55,7 @@ describe('About moving a unit in a field...', () => {
 
     it('unlevel field', () => {
         // arrange
-        const field = new TileBasedField("Field")
+        const field = new TileBasedField("Field", 3, 3, 3)
             .withId("fieldId")
             .withTiles(
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
@@ -73,7 +73,7 @@ describe('About moving a unit in a field...', () => {
 
     it('check position accessibility', () => {
         // arrange
-        const field = new TileBasedField("Field")
+        const field = new TileBasedField("Field", 3, 3, 3)
             .withId("fieldId")
             .withTiles(
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],

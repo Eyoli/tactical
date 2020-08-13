@@ -1,26 +1,25 @@
 import "reflect-metadata";
 import * as Assert from "assert";
 import FieldService from "../../domain/service/field-service";
-import Field from "../../domain/model/field";
 import InMemoryRepository from "../../infrastructure/adapter/secondary/in-memory-repository";
 import { IFieldService } from "../../domain/port/primary/services";
 import Repository from "../../domain/port/secondary/repository";
-import TileBasedField from "../../domain/model/tile-based-field";
+import FakeField from "../fake/fake-field";
 
 describe('About fields we should be able to...', () => {
 
-    let fieldService: IFieldService;
-    let fieldRepository: Repository<Field>;
+    let fieldService: IFieldService<FakeField>;
+    let fieldRepository: Repository<FakeField>;
 
     beforeEach(() => {
-        fieldRepository = new InMemoryRepository<Field>(); 
-        fieldService = new FieldService(fieldRepository);
+        fieldRepository = new InMemoryRepository<FakeField>(); 
+        fieldService = new FieldService<FakeField>(fieldRepository);
     });
 
     it('save a field', () => {
         // arrange
         // act
-        const id = fieldService.createField(new TileBasedField("Name"));
+        const id = fieldService.createField(new FakeField("Name"));
 
         // assert
         const field = fieldRepository.load(id);
@@ -29,7 +28,7 @@ describe('About fields we should be able to...', () => {
 
     it('get an existing field', () => {
         // arrange
-        const fieldId = fieldRepository.save(new TileBasedField("Name"));
+        const fieldId = fieldRepository.save(new FakeField("Name"));
 
         // act
         const field = fieldService.getField(fieldId);
@@ -40,8 +39,8 @@ describe('About fields we should be able to...', () => {
 
     it('get the list of all existing fields', () => {
         // arrange
-        fieldRepository.save(new TileBasedField("Name"));
-        fieldRepository.save(new TileBasedField("Name"));
+        fieldRepository.save(new FakeField("Name"));
+        fieldRepository.save(new FakeField("Name"));
 
         // act
         const fields = fieldService.getFields();

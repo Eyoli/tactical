@@ -51,8 +51,8 @@ export default class TileBasedField extends Field {
         return neighbours;
     }
 
-    getTopTile(p: Position): Tile {
-        return this.tiles[p.x][p.y][this.tiles[p.x][p.y].length-1];
+    getCost(p: Position): number {
+        return this.tiles[p.x][p.y][this.tiles[p.x][p.y].length-1].cost;
     }
 
     isValidPosition(p: Position): boolean {
@@ -61,7 +61,7 @@ export default class TileBasedField extends Field {
     }
 
     isNeighbourAccessible(p1: Position, p2: Position, moves: number, jumps: number): boolean {
-        return this.getTopTile(p2).cost <= moves && this.getHeightDifference(p1, p2) <= jumps;
+        return this.getCost(p2) <= moves && this.getHeightDifference(p1, p2) <= jumps;
     }
 
     getHeightDifference(p1: Position, p2: Position): number {

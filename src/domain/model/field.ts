@@ -16,7 +16,7 @@ export default abstract class Field {
 
     abstract getNeighbours(p: Position): Position[];
 
-    abstract getTopTile(p: Position): Tile;
+    abstract getCost(p: Position): number;
 
     abstract isValidPosition(p: Position): boolean;
 

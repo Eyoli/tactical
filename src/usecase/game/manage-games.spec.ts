@@ -13,7 +13,7 @@ import ResourceNotFoundError from "../../domain/error/resource-not-found-error";
 import PlayerService from "../../domain/service/player-service";
 import UnitService from "../../domain/service/unit-service";
 import { FakeMovementService } from "../fake/services";
-import TileBasedField from "../../domain/model/tile-based-field";
+import FakeField from "../fake/fake-field";
 
 describe('About games we should be able to...', () => {
 
@@ -37,7 +37,7 @@ describe('About games we should be able to...', () => {
         it('valid case', () => {
             // arrange
             const gameIn = new Game();
-            const fieldId = fieldRepository.save(new TileBasedField("Name"));
+            const fieldId = fieldRepository.save(new FakeField("Name"));
 
             // act
             const id = gameService.createGame(gameIn, fieldId);

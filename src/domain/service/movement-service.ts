@@ -33,8 +33,7 @@ export default class MovementService implements IMovementService {
     private getNeighbours(field: Field, p: Position, moves: number): PositionSearch[] {
         return field.getNeighbours(p)
             .map(p2 => {
-                const tile = field.getTopTile(p2);
-                return [p2, moves - tile.cost];
+                return [p2, moves - field.getCost(p2)];
             });
     }
 
