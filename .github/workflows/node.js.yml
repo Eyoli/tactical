@@ -11,6 +11,8 @@ on:
 
 jobs:
   build:
+    env: 
+      NODE_ENV: api-test
 
     runs-on: ubuntu-latest
 
@@ -19,8 +21,6 @@ jobs:
         node-version: [12.16.1]
 
     steps:
-      env: 
-        NODE_ENV: api-test
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
