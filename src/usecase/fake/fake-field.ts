@@ -2,9 +2,11 @@ import Field from "../../domain/model/field";
 import Position from "../../domain/model/position";
 
 export default class FakeField extends Field {
+    private validPositions: boolean;
 
-    constructor(name: string) {
+    constructor(name: string, validPositions: boolean = true) {
         super(name);
+        this.validPositions = validPositions;
     }
 
     getNeighbours(p: Position): Position[] {
@@ -16,7 +18,7 @@ export default class FakeField extends Field {
     }
 
     isValidPosition(p: Position): boolean {
-        return true;
+        return this.validPositions;
     }
 
     isNeighbourAccessible(p1: Position, p2: Position, moves: number, jumps: number): boolean {

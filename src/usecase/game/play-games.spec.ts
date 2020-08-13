@@ -15,8 +15,7 @@ import { FakeMovementService } from "../fake/services";
 import Position from "../../domain/model/position";
 import { UnitsComposition, UnitsPlacement } from "../../domain/model/aliases";
 import { GameError, GameErrorCode } from "../../domain/error/game-error";
-import Tile from "../../domain/model/tile";
-import TileBasedField from "../../domain/model/tile-based-field";
+import FakeField from "../fake/fake-field";
 
 describe('About playing we should be able to...', () => {
 
@@ -53,8 +52,8 @@ describe('About playing we should be able to...', () => {
 
         it('invalid position', () => {
             // arrange / act
-            const game = aGameWithTwoPlayers();
-            const unitsComposition = aUnitComposition(game.players[0], game.players[1], true);
+            const game = aGameWithTwoPlayers(false);
+            const unitsComposition = aUnitComposition(game.players[0], game.players[1]);
             const startGame = () => gameService.startGame(game.id, unitsComposition);
 
             // assert
@@ -119,7 +118,7 @@ describe('About playing we should be able to...', () => {
         });
     });
 
-    function aGameWithTwoPlayers() {
+    function aGameWithTwoPlayers(validPositions: boolean = true) {
         const player1 = new Player("Player 1");
         const player2 = new Player("Player 2");
         player1.id = playerRepository.save(player1);
@@ -129,29 +128,21 @@ describe('About playing we should be able to...', () => {
         game.addPlayers(player1, player2);
         game.id = gameRepository.save(game);
 
-        const field = new TileBasedField("Field")
-            .withTiles(
-                [[new Tile(1, 1)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 1)]]);
+        const field = new FakeField("Field", validPositions);
         field.id = fieldRepository.save(field);
         game.field = field;
 
         return game;
     }
 
-    function aUnitComposition(player1: Player, player2: Player, invalidPosition: boolean = false) {
+    function aUnitComposition(player1: Player, player2: Player) {
         const unit1 = new Unit("Unit 1");
         const unit2 = new Unit("Unit 2");
         unit1.id = unitRepository.save(unit1);
         unit2.id = unitRepository.save(unit2);
         const unitsComposition: UnitsComposition = new Map();
         const player1UnitsPlacement: UnitsPlacement = new Map();
-        if(invalidPosition) {
-            player1UnitsPlacement.set(unit1.id, new Position(9, -9));
-        } else {
-            player1UnitsPlacement.set(unit1.id, new Position(0, 0));
-        }
-
+        player1UnitsPlacement.set(unit1.id, new Position(0, 0));
         const player2UnitsPlacement: UnitsPlacement = new Map();
         player2UnitsPlacement.set(unit2.id, new Position(0, 0));
         unitsComposition.set(player1.id, player1UnitsPlacement);
