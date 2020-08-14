@@ -1,15 +1,15 @@
 import "reflect-metadata";
 import * as Assert from "assert";
 import InMemoryRepository from "../../infrastructure/adapter/secondary/in-memory-repository";
-import { IPlayerService } from "../../domain/port/primary/services";
-import Repository from "../../domain/port/secondary/repository";
+import { PlayerServicePort } from "../../domain/port/primary/services";
+import RepositoryPort from "../../domain/port/secondary/repository";
 import Player from "../../domain/model/player";
 import PlayerService from "../../domain/service/player-service";
 
 describe('About players we should be able to...', () => {
 
-    let playerService: IPlayerService;
-    let playerRepository: Repository<Player>;
+    let playerService: PlayerServicePort;
+    let playerRepository: RepositoryPort<Player>;
 
     beforeEach(() => {
         playerRepository = new InMemoryRepository<Player>(); 

@@ -1,6 +1,6 @@
 import Tile from "./tile";
-import Field from "./field";
-import Position from "./position";
+import Field from "../field";
+import Position from "../position";
 import TileType from "./tile-type";
 
 export default class TileBasedField extends Field {

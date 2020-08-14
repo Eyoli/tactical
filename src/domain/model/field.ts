@@ -1,4 +1,4 @@
-import Tile from "./tile";
+import Tile from "./tile-based-field/tile";
 import Position from "./position";
 
 export default abstract class Field {

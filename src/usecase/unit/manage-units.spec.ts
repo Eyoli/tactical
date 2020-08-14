@@ -1,15 +1,15 @@
 import "reflect-metadata";
 import * as Assert from "assert";
 import InMemoryRepository from "../../infrastructure/adapter/secondary/in-memory-repository";
-import { IUnitService } from "../../domain/port/primary/services";
-import Repository from "../../domain/port/secondary/repository";
+import { UnitServicePort } from "../../domain/port/primary/services";
+import RepositoryPort from "../../domain/port/secondary/repository";
 import UnitService from "../../domain/service/unit-service";
 import Unit from "../../domain/model/unit";
 
 describe('About units we should be able to...', () => {
 
-    let unitService: IUnitService;
-    let unitRepository: Repository<Unit>;
+    let unitService: UnitServicePort;
+    let unitRepository: RepositoryPort<Unit>;
 
     beforeEach(() => {
         unitRepository = new InMemoryRepository<Unit>(); 

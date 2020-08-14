@@ -1,7 +1,7 @@
 import Player from "../../domain/model/player";
 import Unit from "../../domain/model/unit";
 import { injectable } from "inversify";
-import TileBasedField from "../../domain/model/tile-based-field";
+import TileBasedField from "../../domain/model/tile-based-field/tile-based-field";
 
 export interface JsonMapper<T> {
     fromJson(json: any): T;

@@ -2,14 +2,14 @@ import "reflect-metadata";
 import * as Assert from "assert";
 import FieldService from "../../domain/service/field-service";
 import InMemoryRepository from "../../infrastructure/adapter/secondary/in-memory-repository";
-import { IFieldService } from "../../domain/port/primary/services";
-import Repository from "../../domain/port/secondary/repository";
+import { FieldServicePort } from "../../domain/port/primary/services";
+import RepositoryPort from "../../domain/port/secondary/repository";
 import FakeField from "../fake/fake-field";
 
 describe('About fields we should be able to...', () => {
 
-    let fieldService: IFieldService<FakeField>;
-    let fieldRepository: Repository<FakeField>;
+    let fieldService: FieldServicePort<FakeField>;
+    let fieldRepository: RepositoryPort<FakeField>;
 
     beforeEach(() => {
         fieldRepository = new InMemoryRepository<FakeField>(); 

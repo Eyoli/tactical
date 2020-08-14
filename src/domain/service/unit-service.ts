@@ -1,15 +1,15 @@
 import { injectable, inject } from "inversify";
-import { IUnitService } from "../port/primary/services";
-import Repository from "../port/secondary/repository";
+import { UnitServicePort } from "../port/primary/services";
+import RepositoryPort from "../port/secondary/repository";
 import { TYPES } from "../../types";
 import Unit from "../model/unit";
 import ResourceNotFoundError from "../error/resource-not-found-error";
 
 @injectable()
-export default class UnitService implements IUnitService {
-    private unitRepository: Repository<Unit>;
+export default class UnitService implements UnitServicePort {
+    private unitRepository: RepositoryPort<Unit>;
 
-    public constructor(@inject(TYPES.UNIT_REPOSITORY) unitRepository: Repository<Unit>) {
+    public constructor(@inject(TYPES.UNIT_REPOSITORY) unitRepository: RepositoryPort<Unit>) {
         this.unitRepository = unitRepository;
     }
 

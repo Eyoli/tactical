@@ -1,9 +1,9 @@
 import { Container } from "inversify";
 import "reflect-metadata";
 import { TYPES } from "./types";
-import { IFieldService, IGameService, IPlayerService, IUnitService, IMovementService } from "./domain/port/primary/services";
+import { FieldServicePort, GameServicePort, PlayerServicePort, UnitServicePort, MovementServicePort, ActionServicePort } from "./domain/port/primary/services";
 import FieldService from "./domain/service/field-service";
-import Repository from "./domain/port/secondary/repository";
+import RepositoryPort from "./domain/port/secondary/repository";
 import Field from "./domain/model/field";
 import { InJsonFileRepository } from "./infrastructure/adapter/secondary/in-json-file-repository";
 import { FieldJsonMapper, UnitJsonMapper, PlayerJsonMapper } from "./infrastructure/json/json-mappers";
@@ -17,7 +17,8 @@ import MovementService from "./domain/service/movement-service";
 import { GameJsonMapper } from "./infrastructure/json/game-json-mapper";
 import config from "config";
 import InMemoryRepository from "./infrastructure/adapter/secondary/in-memory-repository";
-import TileBasedField from "./domain/model/tile-based-field";
+import TileBasedField from "./domain/model/tile-based-field/tile-based-field";
+import ActionService from "./domain/service/action-service";
 
 const iocContainer = new Container();
 
@@ -36,25 +37,26 @@ if (config.get("env") === "api-test") {
 } else {
     const basePath = config.get("persistence.json.base-path");
 
-    iocContainer.bind(TYPES.FIELD_REPOSITORY)
-    .toDynamicValue(({container}) => new InJsonFileRepository<Field>(container.get(TYPES.FIELD_JSON_MAPPER))
-        .withBaseUrl(basePath + "/fields"))
-    iocContainer.bind(TYPES.GAME_REPOSITORY)
-        .toDynamicValue(({container}) => new InJsonFileRepository<Game>(container.get(TYPES.GAME_JSON_MAPPER))
+    iocContainer.bind(TYPES.FIELD_REPOSITORY).toDynamicValue(
+        ({ container }) => new InJsonFileRepository<Field>(container.get(TYPES.FIELD_JSON_MAPPER))
+            .withBaseUrl(basePath + "/fields"))
+    iocContainer.bind(TYPES.GAME_REPOSITORY).toDynamicValue(
+        ({ container }) => new InJsonFileRepository<Game>(container.get(TYPES.GAME_JSON_MAPPER))
             .withBaseUrl(basePath + "/games"));
-    iocContainer.bind<Repository<Player>>(TYPES.PLAYER_REPOSITORY)
-        .toDynamicValue(({container}) => new InJsonFileRepository<Player>(container.get(TYPES.PLAYER_JSON_MAPPER))
-                .withBaseUrl(basePath + "/players"));
-    iocContainer.bind(TYPES.UNIT_REPOSITORY)
-        .toDynamicValue(({container}) => new InJsonFileRepository<Unit>(container.get(TYPES.UNIT_JSON_MAPPER))
+    iocContainer.bind<RepositoryPort<Player>>(TYPES.PLAYER_REPOSITORY).toDynamicValue(
+        ({ container }) => new InJsonFileRepository<Player>(container.get(TYPES.PLAYER_JSON_MAPPER))
+            .withBaseUrl(basePath + "/players"));
+    iocContainer.bind(TYPES.UNIT_REPOSITORY).toDynamicValue(
+        ({ container }) => new InJsonFileRepository<Unit>(container.get(TYPES.UNIT_JSON_MAPPER))
             .withBaseUrl(basePath + "/units"));
 }
 
 // Services
-iocContainer.bind<IFieldService<TileBasedField>>(TYPES.FIELD_SERVICE).to(FieldService);
-iocContainer.bind<IGameService>(TYPES.GAME_SERVICE).to(GameService);
-iocContainer.bind<IPlayerService>(TYPES.PLAYER_SERVICE).to(PlayerService);
-iocContainer.bind<IUnitService>(TYPES.UNIT_SERVICE).to(UnitService);
-iocContainer.bind<IMovementService>(TYPES.MOVEMENT_SERVICE).to(MovementService);
+iocContainer.bind<FieldServicePort<TileBasedField>>(TYPES.FIELD_SERVICE).to(FieldService);
+iocContainer.bind<GameServicePort>(TYPES.GAME_SERVICE).to(GameService);
+iocContainer.bind<PlayerServicePort>(TYPES.PLAYER_SERVICE).to(PlayerService);
+iocContainer.bind<UnitServicePort>(TYPES.UNIT_SERVICE).to(UnitService);
+iocContainer.bind<MovementServicePort>(TYPES.MOVEMENT_SERVICE).to(MovementService);
+iocContainer.bind<ActionServicePort>(TYPES.ACTION_SERVICE).to(ActionService);
 
 export default iocContainer;

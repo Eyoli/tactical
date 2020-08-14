@@ -1,18 +1,17 @@
 import "reflect-metadata";
-import Field from "../../domain/model/field";
 import Unit from "../../domain/model/unit";
 import * as Assert from "assert";
 import * as mocha from "mocha";
-import { IMovementService } from "../../domain/port/primary/services";
-import Tile from "../../domain/model/tile";
+import { MovementServicePort } from "../../domain/port/primary/services";
+import Tile from "../../domain/model/tile-based-field/tile";
 import Position from "../../domain/model/position";
 import MovementService from "../../domain/service/movement-service";
-import { UnitStateBuilder } from "../../domain/model/unit-state";
-import TileBasedField from "../../domain/model/tile-based-field";
+import UnitState from "../../domain/model/unit-state";
+import TileBasedField from "../../domain/model/tile-based-field/tile-based-field";
 
 describe('About moving a unit in a field...', () => {
 
-    const movementService: IMovementService = new MovementService();
+    const movementService: MovementServicePort = new MovementService();
 
     beforeEach(() => {
     });
@@ -26,7 +25,7 @@ describe('About moving a unit in a field...', () => {
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
         const unit = new Unit("Unit").withMoves(2).withJumps(1);
-        const unitState = new UnitStateBuilder().init(unit, new Position(0, 0)).build();
+        const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
 
         // act
         const accessiblePositions = movementService.getAccessiblePositions(field, unitState);
@@ -44,7 +43,7 @@ describe('About moving a unit in a field...', () => {
                 [[new Tile(1, 1)], [new Tile(1, 2)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
         const unit = new Unit("Unit").withMoves(2).withJumps(1);
-        const unitState = new UnitStateBuilder().init(unit, new Position(0, 0)).build();
+        const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
 
         // act
         const accessiblePositions = movementService.getAccessiblePositions(field, unitState);
@@ -62,7 +61,7 @@ describe('About moving a unit in a field...', () => {
                 [[new Tile(1, 1)], [new Tile(1, 1), new Tile(1, 1)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
         const unit = new Unit("Unit").withMoves(2).withJumps(0);
-        const unitState = new UnitStateBuilder().init(unit, new Position(0, 0)).build();
+        const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
 
         // act
         const accessiblePositions = movementService.getAccessiblePositions(field, unitState);
@@ -80,7 +79,7 @@ describe('About moving a unit in a field...', () => {
                 [[new Tile(1, 1)], [new Tile(1, 1), new Tile(1, 1)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
         const unit = new Unit("Unit").withMoves(2).withJumps(0);
-        const unitState = new UnitStateBuilder().init(unit, new Position(0, 0)).build();
+        const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
 
         // act
         const inaccessiblePosition = movementService.isAccessible(field, unitState, new Position(1, 1));

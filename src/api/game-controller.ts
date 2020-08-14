@@ -3,13 +3,13 @@ import { CreateGameRequest, StartGameRequest } from './request/requests';
 import iocContainer from '../inversify.config';
 import { TYPES } from '../types';
 import BadRequestError from './error/bad-request-error';
-import { IGameService } from '../domain/port/primary/services';
+import { GameServicePort } from '../domain/port/primary/services';
 import GameDTO from './dto/gameDTO';
 import Position from '../domain/model/position';
 
 const gameRouter = express.Router();
 
-const gameService = iocContainer.get<IGameService>(TYPES.GAME_SERVICE);
+const gameService = iocContainer.get<GameServicePort>(TYPES.GAME_SERVICE);
 
 gameRouter.get('/', function (req, res) {
 	const games = gameService.getGames();

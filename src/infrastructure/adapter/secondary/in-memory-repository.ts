@@ -1,6 +1,6 @@
-import Repository from "../../../domain/port/secondary/repository";
+import RepositoryPort from "../../../domain/port/secondary/repository";
 
-export default class InMemoryRepository<T> implements Repository<T> {
+export default class InMemoryRepository<T> implements RepositoryPort<T> {
     private content: Map<string, T>;
     private counter = 1;
 

@@ -1,13 +1,13 @@
 import express from 'express';
 import iocContainer from '../inversify.config';
-import { IPlayerService } from '../domain/port/primary/services';
+import { PlayerServicePort } from '../domain/port/primary/services';
 import { CreatePlayerRequest } from './request/requests';
 import { TYPES } from '../types';
 import BadRequestError from './error/bad-request-error';
 
 const playerRouter = express.Router();
 
-const playerService = iocContainer.get<IPlayerService>(TYPES.PLAYER_SERVICE);
+const playerService = iocContainer.get<PlayerServicePort>(TYPES.PLAYER_SERVICE);
 
 playerRouter.get('/', function (req, res) {
 	const map = playerService.getPlayers();

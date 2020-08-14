@@ -1,6 +1,6 @@
-import TileType from "../../domain/model/tile-type";
-import Tile from "../../domain/model/tile";
-import TileBasedField from "../../domain/model/tile-based-field";
+import TileType from "../../domain/model/tile-based-field/tile-type";
+import Tile from "../../domain/model/tile-based-field/tile";
+import TileBasedField from "../../domain/model/tile-based-field/tile-based-field";
 import Field from "../../domain/model/field";
 
 export default class CreateFieldRequest {

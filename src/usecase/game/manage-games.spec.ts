@@ -7,21 +7,22 @@ import Player from "../../domain/model/player";
 import Unit from "../../domain/model/unit";
 import * as Assert from "assert";
 import * as mocha from "mocha";
-import Repository from "../../domain/port/secondary/repository";
-import { IGameService } from "../../domain/port/primary/services";
+import RepositoryPort from "../../domain/port/secondary/repository";
+import { GameServicePort } from "../../domain/port/primary/services";
 import ResourceNotFoundError from "../../domain/error/resource-not-found-error";
 import PlayerService from "../../domain/service/player-service";
 import UnitService from "../../domain/service/unit-service";
 import { FakeMovementService } from "../fake/services";
 import FakeField from "../fake/fake-field";
+import FakeActionService from "../fake/fake-action-service";
 
 describe('About games we should be able to...', () => {
 
-    let gameService: IGameService;
-    let playerRepository: Repository<Player>;
-    let gameRepository: Repository<Game>;
-    let unitRepository: Repository<Unit>;
-    let fieldRepository: Repository<Field>;
+    let gameService: GameServicePort;
+    let playerRepository: RepositoryPort<Player>;
+    let gameRepository: RepositoryPort<Game>;
+    let unitRepository: RepositoryPort<Unit>;
+    let fieldRepository: RepositoryPort<Field>;
 
     beforeEach(() => {
         playerRepository = new InMemoryRepository<Player>();
@@ -29,8 +30,13 @@ describe('About games we should be able to...', () => {
         unitRepository = new InMemoryRepository<Unit>();
         fieldRepository = new InMemoryRepository<Field>();
 
-        gameService = new GameService(gameRepository, new PlayerService(playerRepository),
-            new UnitService(unitRepository), fieldRepository, new FakeMovementService());
+        gameService = new GameService(
+            gameRepository, 
+            new PlayerService(playerRepository),
+            new UnitService(unitRepository), 
+            fieldRepository, 
+            new FakeMovementService(),
+            new FakeActionService());
     });
 
     describe('create a new game', () => {

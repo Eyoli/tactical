@@ -1,16 +1,16 @@
 import { injectable, inject } from "inversify";
-import { IFieldService } from "../port/primary/services";
+import { FieldServicePort as FieldServicePort } from "../port/primary/services";
 import Field from "../model/field";
-import Repository from "../port/secondary/repository";
+import RepositoryPort from "../port/secondary/repository";
 import { TYPES } from "../../types";
 import ResourceNotFoundError from "../error/resource-not-found-error";
 
 @injectable()
-export default class FieldService<T extends Field> implements IFieldService<T> {
-    private fieldRepository: Repository<T>;
+export default class FieldService<T extends Field> implements FieldServicePort<T> {
+    private fieldRepository: RepositoryPort<T>;
 
     public constructor(
-        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: Repository<T>) {
+        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: RepositoryPort<T>) {
         this.fieldRepository = fieldRepository;
     }
 

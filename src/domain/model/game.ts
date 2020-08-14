@@ -2,7 +2,7 @@ import Field from "./field";
 import Player from "./player";
 import Unit from "./unit";
 import { CreateGameRequest } from "../../api/request/requests";
-import { UnitState } from "./unit-state";
+import UnitState from "./unit-state";
 
 enum GameState {
     INITIATED = "INITIATED", 
@@ -17,12 +17,14 @@ export default class Game {
     private unitsPerPlayer: Map<string, Unit[]>;
     private currentPlayerIndex: number;
     private state: GameState = GameState.INITIATED;
-    private unitStates: Map<string, UnitState[]>;
+
+    private currentTurnStates: Map<string, UnitState[]>;
+    private currentTurnChanges: string[][] = [];
 
     constructor() {
         this.players = [];
         this.unitsPerPlayer = new Map<string,Unit[]>();
-        this.unitStates = new Map<string, UnitState[]>();
+        this.currentTurnStates = new Map<string, UnitState[]>();
         this.currentPlayerIndex = 0;
     }
 
@@ -33,7 +35,7 @@ export default class Game {
     setUnits(player: Player, units: Unit[]) {
         if(player.id) {
             this.unitsPerPlayer.set(player.id, units);
-            units.forEach(unit => this.unitStates.set(unit.id, []));
+            units.forEach(unit => this.currentTurnStates.set(unit.id, []));
         }
     }
 
@@ -70,7 +72,7 @@ export default class Game {
         if(this.hasStarted()) {
             const unitState = this.getUnitState(unit);
             const player = this.getCurrentPlayer();
-            return unitState?.hasMoved === false && this.getUnits(player!)
+            return unitState?.hasMoved() === false && this.getUnits(player!)
                 .map(u => u.id)
                 .includes(unit.id);
         }
@@ -78,17 +80,32 @@ export default class Game {
     }
 
     getUnitState(unit: Unit): UnitState | undefined {
-        const states = this.unitStates.get(unit.id);
+        const states = this.currentTurnStates.get(unit.id);
         if(states) {
             return states[0];
         }
         return undefined;
     }
 
-    setUnitState(unit: Unit, newUnitState: UnitState) {
-        const states = this.unitStates.get(unit.id);
-        if(states) {
-            states.unshift(newUnitState);
+    integrate(saveStateChanges: boolean, ...newStates: UnitState[]): void {
+        if (saveStateChanges) {
+            this.currentTurnChanges.unshift(newStates.map(state => state.getUnitId()));
+        }
+        
+        newStates.forEach(newState => {
+            const states = this.currentTurnStates.get(newState.getUnitId());
+            if (states) {
+                states.unshift(newState);
+            }
+        });
+    }
+
+    rollbackLastAction(): void {
+        const lastActionChanges = this.currentTurnChanges.shift();
+        if (lastActionChanges) {
+            lastActionChanges
+                .map(unitId => this.currentTurnStates.get(unitId))
+                .forEach(currentTurnUnitStates => currentTurnUnitStates?.shift());
         }
     }
 }

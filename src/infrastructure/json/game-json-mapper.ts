@@ -3,7 +3,7 @@ import Game from "../../domain/model/game";
 import Player from "../../domain/model/player";
 import { injectable, inject } from "inversify";
 import { TYPES } from "../../types";
-import Repository from "../../domain/port/secondary/repository";
+import RepositoryPort from "../../domain/port/secondary/repository";
 
 export interface JsonMapper<T> {
     fromJson(json: any): T;
@@ -12,12 +12,12 @@ export interface JsonMapper<T> {
 
 @injectable()
 export class GameJsonMapper implements JsonMapper<Game> {
-    private fieldRepository: Repository<Field>;
-    private playerRepository: Repository<Player>;
+    private fieldRepository: RepositoryPort<Field>;
+    private playerRepository: RepositoryPort<Player>;
 
     constructor(
-        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: Repository<Field>,
-        @inject(TYPES.PLAYER_REPOSITORY) playerRepository: Repository<Player>) {
+        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: RepositoryPort<Field>,
+        @inject(TYPES.PLAYER_REPOSITORY) playerRepository: RepositoryPort<Player>) {
         this.fieldRepository = fieldRepository;
         this.playerRepository = playerRepository;
     }
