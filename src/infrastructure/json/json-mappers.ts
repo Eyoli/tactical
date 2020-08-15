@@ -1,10 +1,7 @@
-import Field from "../../domain/model/field";
-import Game from "../../domain/model/game";
 import Player from "../../domain/model/player";
 import Unit from "../../domain/model/unit";
-import { injectable, inject } from "inversify";
-import { TYPES } from "../../types";
-import Repository from "../../domain/port/secondary/repository";
+import { injectable } from "inversify";
+import TileBasedField from "../../domain/model/tile-based-field/tile-based-field";
 
 export interface JsonMapper<T> {
     fromJson(json: any): T;
@@ -12,18 +9,23 @@ export interface JsonMapper<T> {
 }
 
 @injectable()
-export class FieldJsonMapper implements JsonMapper<Field> {
+export class FieldJsonMapper implements JsonMapper<TileBasedField> {
 
-    fromJson(json: any): Field {
-        const field = new Field(json.name);
+    fromJson(json: any): TileBasedField {
+        const field = new TileBasedField(json.name, json.width, json.length, json.height);
         field.id = json.id;
         return field;
     }
 
-    toJson(object: Field): any {
+    toJson(object: TileBasedField): any {
         return {
             id: object.id,
-            name: object.name
+            name: object.name,
+            width: object.width,
+            length: object.length,
+            height: object.height,
+            tiles: object.tiles,
+            tileTypes: object.getTileTypes()
         };
     }
 }
@@ -32,41 +34,18 @@ export class FieldJsonMapper implements JsonMapper<Field> {
 export class UnitJsonMapper implements JsonMapper<Unit> {
 
     fromJson(json: any): Unit {
-        const unit = new Unit(json.name);
+        const unit = new Unit()
+            .withName(json.name)
+            .withStatistics(json.statistics);
         unit.id = json.id;
         return unit;
     }
 
     toJson(object: Unit): any {
-        return {};
-    }
-}
-
-@injectable()
-export class GameJsonMapper implements JsonMapper<Game> {
-    private fieldRepository: Repository<Field>;
-    private playerRepository: Repository<Player>;
-
-    constructor(
-        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: Repository<Field>,
-        @inject(TYPES.PLAYER_REPOSITORY) playerRepository: Repository<Player>) {
-        this.fieldRepository = fieldRepository;
-        this.playerRepository = playerRepository;
-    }
-
-    fromJson(json: any): Game {
-        const game = new Game();
-        game.id = json.id;
-        game.field = this.fieldRepository.load(json.fieldId);
-        game.players = this.playerRepository.loadSome(json.playerIds);
-        return game;
-    }
-
-    toJson(object: Game): any {
         return {
             id: object.id,
-            fieldId: object.field?.id,
-            playerIds: object.players.map(p => p.id)
+            name: object.name,
+            statistics: object.getStatistics()
         };
     }
 }
@@ -81,6 +60,9 @@ export class PlayerJsonMapper implements JsonMapper<Player> {
     }
 
     toJson(object: Player): any {
-        return {};
+        return {
+            id: object.id,
+            name: object.name
+        };
     }
 }

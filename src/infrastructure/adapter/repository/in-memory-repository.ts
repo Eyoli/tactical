@@ -1,7 +1,9 @@
-import Repository from "../../../domain/port/secondary/repository";
+import RepositoryPort from "../../../domain/port/secondary/repository";
+import Logger from "../../../domain/logger/logger";
 
-export default class InMemoryRepository<T> implements Repository<T> {
+export default class InMemoryRepository<T extends Object> implements RepositoryPort<T> {
     private content: Map<string, T>;
+    private counter = 1;
 
     constructor() {
         this.content = new Map();
@@ -11,12 +13,17 @@ export default class InMemoryRepository<T> implements Repository<T> {
         this.content.set(id, object);
     }
 
-    save(object: T, id: string): void {
+    save(object: T): string {
+        const id = "object" + this.counter;
+        this.counter++;
         this.content.set(id, object);
+        return id;
     }
 
     load(id: string): T | undefined {
-        return this.content.get(id);
+        const object = this.content.get(id);
+        Logger.log(() => "load " + object?.constructor.name + " : " + id + " from memory");
+        return object;
     }
 
     loadSome(ids: string[]): T[] {

@@ -1,49 +1,93 @@
-import { IGameService } from "../port/primary/services";
-import Player from "../model/player";
+import { GameServicePort as GameServicePort, MovementServicePort as MovementServicePort, PlayerServicePort as PlayerServicePort, UnitServicePort as UnitServicePort, ActionServicePort as ActionServicePort } from "../port/primary/services";
 import Game from "../model/game";
 import { inject, injectable } from "inversify";
-import Repository from "../port/secondary/repository";
-import * as UUID from "uuid";
-import Unit from "../model/unit";
+import RepositoryPort from "../port/secondary/repository";
 import { TYPES } from "../../types";
 import Field from "../model/field";
-import ResourceNotFound from "../error/ResourceNotFound";
+import ResourceNotFoundError from "../error/resource-not-found-error";
+import Position from "../model/position";
+import UnitState from "../model/unit-state";
+import { UnitsComposition, UnitsPlacement } from "../model/aliases";
+import { GameError, GameErrorCode } from "../error/game-error";
+import { ActionType } from "../model/action/action-type";
+import Player from "../model/player";
 
 @injectable()
-export default class GameService implements IGameService {
-    private gameRepository: Repository<Game>;
-    private playerRepository: Repository<Player>;
-    private unitRepository: Repository<Unit>;
-    private fieldRepository: Repository<Unit>;
+export default class GameService implements GameServicePort {
+    private gameRepository: RepositoryPort<Game>;
+    private playerService: PlayerServicePort;
+    private unitService: UnitServicePort;
+    private fieldRepository: RepositoryPort<Field>;
+    private movementService: MovementServicePort;
+    private actionService: ActionServicePort;
 
     constructor(
-        @inject(TYPES.GAME_REPOSITORY) gameRepository: Repository<Game>,
-        @inject(TYPES.PLAYER_REPOSITORY) playerRepository: Repository<Player>,
-        @inject(TYPES.UNIT_REPOSITORY) unitRepository: Repository<Unit>,
-        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: Repository<Field>) {
+        @inject(TYPES.GAME_REPOSITORY) gameRepository: RepositoryPort<Game>,
+        @inject(TYPES.PLAYER_SERVICE) playerService: PlayerServicePort,
+        @inject(TYPES.UNIT_SERVICE) unitService: UnitServicePort,
+        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: RepositoryPort<Field>,
+        @inject(TYPES.MOVEMENT_SERVICE) movementService: MovementServicePort,
+        @inject(TYPES.ACTION_SERVICE) actionService: ActionServicePort) {
         this.gameRepository = gameRepository;
-        this.playerRepository = playerRepository;
-        this.unitRepository = unitRepository;
+        this.playerService = playerService;
+        this.unitService = unitService;
         this.fieldRepository = fieldRepository;
+        this.movementService = movementService;
+        this.actionService = actionService;
     }
 
     createGame(game: Game, fieldId: string): string {
-        game.id = UUID.v4();
-
         const field = this.fieldRepository.load(fieldId);
         if(!field) {
-            throw new ResourceNotFound(Field);
+            throw new ResourceNotFoundError("Field");
         }
         game.field = field;
 
-        this.gameRepository.save(game, game.id);
+        game.id = this.gameRepository.save(game);
         return game.id;
+    }
+
+    finishTurn(gameId: string): Game {
+        const game = this.getGame(gameId);
+        game.finishTurn();
+        this.gameRepository.update(game, gameId);
+        return game;
+    }
+
+    startGame(gameId: string, unitsComposition: UnitsComposition): Game {
+        const game = this.getGame(gameId);
+        if(game.hasStarted()) {
+            throw new GameError(GameErrorCode.GAME_ALREADY_STARTED);
+        }
+        if(game.players.length < 2) {
+            throw new GameError(GameErrorCode.NOT_ENOUGH_PLAYERS);
+        }
+
+        const hasInvalidPosition = Array.from(unitsComposition.values()).some(
+            unitsPosition => Array.from(unitsPosition.values()).some(
+                position => !game.field?.isValidPosition(position)));
+        if(hasInvalidPosition) {
+            throw new GameError(GameErrorCode.INVALID_POSITION);
+        }
+
+        game.players.forEach(
+            player => this.initUnitsState(game, player, unitsComposition.get(player.id)!));
+
+        if(game.players
+            .map(player => game.getUnits(player))
+            .some(units => !units || units.length < 1)) {
+            throw new GameError(GameErrorCode.NOT_ENOUGH_UNITS);
+        }
+        
+        game.start();
+        this.gameRepository.update(game, gameId);
+        return game;
     }
 
     getGame(key: string): Game {
         const game = this.gameRepository.load(key);
         if(!game) {
-            throw new ResourceNotFound(Game);
+            throw ResourceNotFoundError.fromClass(Game);
         }
         return game;
     }
@@ -52,36 +96,81 @@ export default class GameService implements IGameService {
         return this.gameRepository.loadAll();
     }
 
-    addPlayer(gameId: string, playerId: string): Game {
+    addPlayers(gameId: string, playerId: string[]): Game {
         const game = this.getGame(gameId);
-        const player = this.getPlayer(playerId);
+        const players = playerId
+            .map(id => this.playerService.getPlayer(id));
 
-        game.addPlayer(player);
+        game.addPlayers(...players);
         this.gameRepository.update(game, gameId);
 
         return game;
     }
 
-    setUnits(gameId: string, playerId: string, unitIds: string[]): Game {
-        const game = this.getGame(gameId);
-        const player = this.getPlayer(playerId);
-
-        const units = this.unitRepository.loadSome(unitIds);
-        if(units.length !== unitIds.length) {
-            throw new Error("At least one invalid unit");
-        }
+    private initUnitsState(game: Game, player: Player, unitsPositions: UnitsPlacement): void {
+        const units = this.unitService.getUnits(Array.from(unitsPositions.keys()));
 
         game.setUnits(player, units);
-        this.gameRepository.update(game, gameId);
-
-        return game;
+        units.forEach(unit => {
+            const position = unitsPositions.get(unit.id);
+            if(position) {
+                game.integrate(false, new UnitState.Builder().init(unit, position).build());
+            }
+        });
     }
-    
-    private getPlayer(playerId: string): Player {
-        const player = this.playerRepository.load(playerId);
-        if(!player) {
-            throw new ResourceNotFound(Player);
+
+    getAccessiblePositions(gameId: string, unitId: string): Position[] {
+        const game = this.getGame(gameId);
+        const unitState = game.getUnitState(unitId);
+        if(game.field && unitState) {
+            return this.movementService.getAccessiblePositions(game?.field, unitState);
         }
-        return player;
+        return [];
+    }
+
+    actOnTarget(gameId: string, srcUnitId: string, targetUnitId: string, actionType: ActionType): UnitState[] {
+        const game = this.getGame(gameId);
+        if(!game.hasStarted()) {
+            throw new GameError(GameErrorCode.GAME_NOT_STARTED);
+        }
+
+        const srcUnit = game.getUnit(srcUnitId);
+        if (game.canAct(srcUnit)) {
+            const srcUnitState = new UnitState.Builder().fromState(game.getUnitState(srcUnitId))
+                .acting().build();
+                game.integrate(false, srcUnitState);
+            const targetUnitState = game.getUnitState(targetUnitId);
+            const action = this.actionService.generateActionOnTarget(srcUnitState!, targetUnitState!, actionType);
+            const newStates = action.apply();
+            game.integrate(true, ...newStates);
+            this.gameRepository.update(game, gameId);
+
+            return newStates;
+        }
+        throw new GameError(GameErrorCode.IMPOSSIBLE_TO_ACT);
+    }
+
+    moveUnit(gameId: string, unitId: string, p: Position): UnitState {
+        const game = this.getGame(gameId);
+        if(!game.hasStarted()) {
+            throw new GameError(GameErrorCode.GAME_NOT_STARTED);
+        }
+        
+        const unit = game.getUnit(unitId);
+        const unitState = game.getUnitState(unitId);
+
+        if(game.canMove(unit) && this.movementService.isAccessible(game.field, unitState!, p)) {
+            const newUnitState = new UnitState.Builder().fromState(unitState!).movingTo(p).build();
+            game.integrate(true, newUnitState);
+            this.gameRepository.update(game, gameId);
+
+            return newUnitState;
+        }
+        throw new GameError(GameErrorCode.IMPOSSIBLE_TO_MOVE_UNIT);
+    }
+
+    rollbackLastAction(gameId: string): void {
+        const game = this.getGame(gameId);
+        game.rollbackLastAction();
     }
 }

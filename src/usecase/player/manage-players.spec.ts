@@ -1,15 +1,15 @@
 import "reflect-metadata";
 import * as Assert from "assert";
-import InMemoryRepository from "../../infrastructure/adapter/secondary/in-memory-repository";
-import { IPlayerService } from "../../domain/port/primary/services";
-import Repository from "../../domain/port/secondary/repository";
+import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
+import { PlayerServicePort } from "../../domain/port/primary/services";
+import RepositoryPort from "../../domain/port/secondary/repository";
 import Player from "../../domain/model/player";
 import PlayerService from "../../domain/service/player-service";
 
 describe('About players we should be able to...', () => {
 
-    let playerService: IPlayerService;
-    let playerRepository: Repository<Player>;
+    let playerService: PlayerServicePort;
+    let playerRepository: RepositoryPort<Player>;
 
     beforeEach(() => {
         playerRepository = new InMemoryRepository<Player>(); 
@@ -23,30 +23,30 @@ describe('About players we should be able to...', () => {
 
         // assert
         const player = playerRepository.load(id);
-        Assert.deepEqual(player?.name, "Name");
+        Assert.deepStrictEqual(player?.name, "Name");
     });
 
     it('get an existing player', () => {
         // arrange
-        playerRepository.save(new Player("Name"), "key");
+        const playerId = playerRepository.save(new Player("Name"));
 
         // act
-        const player = playerService.getPlayer("key");
+        const player = playerService.getPlayer(playerId);
 
         // assert
-        Assert.deepEqual(player.name, "Name");
+        Assert.deepStrictEqual(player.name, "Name");
     });
 
     it('get the list of all existing players', () => {
         // arrange
-        playerRepository.save(new Player("Name"), "key1");
-        playerRepository.save(new Player("Name"), "key2");
+        playerRepository.save(new Player("Name"));
+        playerRepository.save(new Player("Name"));
 
         // act
         const players = playerService.getPlayers();
 
         // assert
-        Assert.deepEqual(players.length, 2);
+        Assert.deepStrictEqual(players.length, 2);
     });
 
 });
