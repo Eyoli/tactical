@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import InMemoryRepository from "../../infrastructure/adapter/secondary/in-memory-repository";
+import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
 import GameService from "../../domain/service/game-service";
 import Game from "../../domain/model/game";
 import Field from "../../domain/model/field";

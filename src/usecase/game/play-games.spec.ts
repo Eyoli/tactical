@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import InMemoryRepository from "../../infrastructure/adapter/secondary/in-memory-repository";
+import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
 import GameService from "../../domain/service/game-service";
 import Game from "../../domain/model/game";
 import Field from "../../domain/model/field";
@@ -19,6 +19,7 @@ import FakeField from "../fake/fake-field";
 import FakeAction from "../fake/fake-action";
 import FakeActionService from "../fake/fake-action-service";
 import { ActionType } from "../../domain/model/action/action-type";
+import Statistics from "../../domain/model/statistics";
 
 describe('About playing we should be able to...', () => {
 
@@ -138,10 +139,12 @@ describe('About playing we should be able to...', () => {
 
         // act
         gameService.actOnTarget(game.id, unit1.id, unit2.id, ActionType.ATTACK);
+        const actASecondTime = () => gameService.actOnTarget(game.id, unit1.id, unit2.id, ActionType.ATTACK);
 
         // assert
-        const unitState = game.getUnitState(unit2);
+        const unitState = game.getUnitState(unit2.id);
         Assert.deepStrictEqual(unitState?.getPosition(), new Position(1, 1));
+        Assert.throws(actASecondTime, new GameError(GameErrorCode.IMPOSSIBLE_TO_ACT));
     });
 
     it('rollback an action performed during a turn', () => {
@@ -159,7 +162,7 @@ describe('About playing we should be able to...', () => {
         gameService.rollbackLastAction(game.id);
 
         // assert
-        const unitState = game.getUnitState(unit2);
+        const unitState = game.getUnitState(unit2.id);
         Assert.deepStrictEqual(unitState?.getPosition(), new Position(0, 0));
     });
 
@@ -176,7 +179,7 @@ describe('About playing we should be able to...', () => {
         gameService.rollbackLastAction(game.id);
 
         // assert
-        const unitState = game.getUnitState(unit1);
+        const unitState = game.getUnitState(unit1.id);
         Assert.deepStrictEqual(unitState?.getPosition(), new Position(0, 0));
     });
 
@@ -198,8 +201,8 @@ describe('About playing we should be able to...', () => {
     }
 
     function aUnitComposition(player1: Player, player2: Player) {
-        const unit1 = new Unit("Unit 1");
-        const unit2 = new Unit("Unit 2");
+        const unit1 = new Unit().withStatistics(new Statistics());
+        const unit2 = new Unit().withStatistics(new Statistics());
         unit1.id = unitRepository.save(unit1);
         unit2.id = unitRepository.save(unit2);
         const unitsComposition: UnitsComposition = new Map();

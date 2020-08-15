@@ -1,11 +1,13 @@
+import Weapon from "./weapon";
+import Statistics from "./statistics";
+
 export default class Unit {
     id!: string;
-    name: string;
-    moves!: number;
-    jumps!: number;
+    name!: string;
+    private weapon!: Weapon;
+    private statistics!: Statistics;
 
-    constructor(name: string) {
-        this.name = name;
+    constructor() {
     }
 
     withId(id: string): Unit {
@@ -13,13 +15,21 @@ export default class Unit {
         return this;
     }
 
-    withMoves(moves: number): Unit {
-        this.moves = moves;
+    withName(name: string): Unit {
+        this.name = name;
         return this;
     }
 
-    withJumps(jumps: number): Unit {
-        this.jumps = jumps;
+    withStatistics(statistics: Statistics): Unit {
+        this.statistics = statistics;
         return this;
+    } 
+
+    getStatistics() {
+        return this.statistics;
+    }
+
+    getWeapon() {
+        return this.weapon;
     }
 }

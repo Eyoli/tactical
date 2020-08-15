@@ -9,6 +9,10 @@ export default class Position implements ValueObject {
         this.y = y;
     }
 
+    distanceTo(p: Position): number {
+        return Math.sqrt((p.x - this.x) * (p.x - this.x) + (p.y - this.y) * (p.y - this.y));
+    }
+
     equals(other: any): boolean {
         return this.x === other.x && this.y === other.y;
     }

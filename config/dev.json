@@ -1,5 +1,6 @@
 {
     "env": "dev",
+    "logger": true,
     "app": {
         "port": 3000
     },
@@ -7,6 +8,7 @@
         "title": "tactical"
     },
     "persistence": {
+        "type": "json",
         "json": {
             "base-path": "data"
         }

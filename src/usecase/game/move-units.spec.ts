@@ -8,6 +8,7 @@ import Position from "../../domain/model/position";
 import MovementService from "../../domain/service/movement-service";
 import UnitState from "../../domain/model/unit-state";
 import TileBasedField from "../../domain/model/tile-based-field/tile-based-field";
+import Statistics from "../../domain/model/statistics";
 
 describe('About moving a unit in a field...', () => {
 
@@ -24,7 +25,8 @@ describe('About moving a unit in a field...', () => {
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
-        const unit = new Unit("Unit").withMoves(2).withJumps(1);
+        const unit = new Unit().withStatistics(new Statistics()
+            .withMoves(2).withJumps(1));
         const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
 
         // act
@@ -42,7 +44,8 @@ describe('About moving a unit in a field...', () => {
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 2)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
-        const unit = new Unit("Unit").withMoves(2).withJumps(1);
+                const unit = new Unit().withStatistics(new Statistics()
+                .withMoves(2).withJumps(1));
         const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
 
         // act
@@ -60,7 +63,8 @@ describe('About moving a unit in a field...', () => {
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1), new Tile(1, 1)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
-        const unit = new Unit("Unit").withMoves(2).withJumps(0);
+                const unit = new Unit().withStatistics(new Statistics()
+                .withMoves(2).withJumps(0));
         const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
 
         // act
@@ -78,7 +82,8 @@ describe('About moving a unit in a field...', () => {
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1), new Tile(1, 1)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
-        const unit = new Unit("Unit").withMoves(2).withJumps(0);
+                const unit = new Unit().withStatistics(new Statistics()
+                .withMoves(2).withJumps(0));
         const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
 
         // act

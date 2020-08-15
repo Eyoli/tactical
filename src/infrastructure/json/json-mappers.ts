@@ -34,10 +34,10 @@ export class FieldJsonMapper implements JsonMapper<TileBasedField> {
 export class UnitJsonMapper implements JsonMapper<Unit> {
 
     fromJson(json: any): Unit {
-        const unit = new Unit(json.name);
+        const unit = new Unit()
+            .withName(json.name)
+            .withStatistics(json.statistics);
         unit.id = json.id;
-        unit.jumps = json.jumps;
-        unit.moves = json.moves;
         return unit;
     }
 
@@ -45,8 +45,7 @@ export class UnitJsonMapper implements JsonMapper<Unit> {
         return {
             id: object.id,
             name: object.name,
-            jumps: object.jumps,
-            moves: object.moves
+            statistics: object.getStatistics()
         };
     }
 }

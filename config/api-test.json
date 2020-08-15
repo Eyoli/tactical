@@ -1,9 +1,13 @@
 {
     "env": "api-test",
+    "logger": false,
     "app": {
         "port": 3000
     },
     "process": {
         "title": "tactical"
+    },
+    "persistence": {
+        "type": "in-memory"
     }
 }

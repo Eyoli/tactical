@@ -1,4 +1,5 @@
 import Unit from "../../domain/model/unit";
+import Statistics from "../../domain/model/statistics";
 
 export default class CreateUnitRequest {
     name!: string;
@@ -26,9 +27,11 @@ export default class CreateUnitRequest {
     }
 
     toUnit(): Unit {
-        const unit = new Unit(this.name)
-            .withJumps(this.jumps)
-            .withMoves(this.moves);
+        const unit = new Unit()
+            .withName(this.name)
+            .withStatistics(new Statistics()
+                .withJumps(this.jumps)
+                .withMoves(this.moves));
         return unit;
     }
 }

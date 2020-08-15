@@ -1,5 +1,4 @@
-import { UnitState } from "../unit-state";
-import Game from "../game";
+import UnitState from "../unit-state";
 
 export default interface Action {
 

@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import * as Assert from "assert";
-import InMemoryRepository from "../../infrastructure/adapter/secondary/in-memory-repository";
+import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
 import { PlayerServicePort } from "../../domain/port/primary/services";
 import RepositoryPort from "../../domain/port/secondary/repository";
 import Player from "../../domain/model/player";

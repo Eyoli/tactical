@@ -21,7 +21,7 @@ export interface GameServicePort {
     getGames(): Game[];
     addPlayers(gameId: string, playerIds: string[]): Game;
     getAccessiblePositions(gameId: string, unitId: string): Position[];
-    actOnTarget(gameId: string, srcUnitId: string, targetUnitId: string, actionType: ActionType): void;
+    actOnTarget(gameId: string, srcUnitId: string, targetUnitId: string, actionType: ActionType): UnitState[];
     moveUnit(gameId: string, unitId: string, p: Position): UnitState;
     rollbackLastAction(gameId: string): void;
 }

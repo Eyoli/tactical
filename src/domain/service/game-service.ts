@@ -121,31 +121,49 @@ export default class GameService implements GameServicePort {
 
     getAccessiblePositions(gameId: string, unitId: string): Position[] {
         const game = this.getGame(gameId);
-        const unit = this.unitService.getUnit(unitId);
-        const unitState = game.getUnitState(unit);
+        const unitState = game.getUnitState(unitId);
         if(game.field && unitState) {
             return this.movementService.getAccessiblePositions(game?.field, unitState);
         }
         return [];
     }
 
-    actOnTarget(gameId: string, srcUnitId: string, targetUnitId: string, actionType: ActionType): void {
+    actOnTarget(gameId: string, srcUnitId: string, targetUnitId: string, actionType: ActionType): UnitState[] {
         const game = this.getGame(gameId);
-        const srcUnitState = game.getUnitState(this.unitService.getUnit(srcUnitId));
-        const targetUnitState = game.getUnitState(this.unitService.getUnit(targetUnitId));
-        const action = this.actionService.generateActionOnTarget(srcUnitState!, targetUnitState!, actionType);
-        const newStates = action.apply();
-        game.integrate(true, ...newStates);
+        if(!game.hasStarted()) {
+            throw new GameError(GameErrorCode.GAME_NOT_STARTED);
+        }
+
+        const srcUnit = game.getUnit(srcUnitId);
+        if (game.canAct(srcUnit)) {
+            const srcUnitState = new UnitState.Builder().fromState(game.getUnitState(srcUnitId))
+                .acting().build();
+                game.integrate(false, srcUnitState);
+            const targetUnitState = game.getUnitState(targetUnitId);
+            const action = this.actionService.generateActionOnTarget(srcUnitState!, targetUnitState!, actionType);
+            const newStates = action.apply();
+            game.integrate(true, ...newStates);
+            this.gameRepository.update(game, gameId);
+
+            return newStates;
+        }
+        throw new GameError(GameErrorCode.IMPOSSIBLE_TO_ACT);
     }
 
     moveUnit(gameId: string, unitId: string, p: Position): UnitState {
         const game = this.getGame(gameId);
-        const unit = this.unitService.getUnit(unitId);
-        const unitState = game.getUnitState(unit);
+        if(!game.hasStarted()) {
+            throw new GameError(GameErrorCode.GAME_NOT_STARTED);
+        }
+        
+        const unit = game.getUnit(unitId);
+        const unitState = game.getUnitState(unitId);
 
-        if(game.canAct(unit) && this.movementService.isAccessible(game.field, unitState!, p)) {
+        if(game.canMove(unit) && this.movementService.isAccessible(game.field, unitState!, p)) {
             const newUnitState = new UnitState.Builder().fromState(unitState!).movingTo(p).build();
             game.integrate(true, newUnitState);
+            this.gameRepository.update(game, gameId);
+
             return newUnitState;
         }
         throw new GameError(GameErrorCode.IMPOSSIBLE_TO_MOVE_UNIT);

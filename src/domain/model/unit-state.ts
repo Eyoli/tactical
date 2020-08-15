@@ -1,26 +1,31 @@
 import Unit from "./unit";
 import Position from "./position";
+import Statistics from "./statistics";
+import { stat } from "fs";
 
 /**
  * Represent a given state of a unit 
  */
 export default class UnitState {
-    private unitId!: string;
-    private position!: Position;
-    private jumps!: number;
-    private moves!: number;
-    private moved!: boolean;
+    private unit!: Unit;
 
-    getUnitId(): string {
-        return this.unitId;
+    private statistics!: Statistics;
+    private position!: Position;
+    private health!: number;
+    private spirit!: number;
+    private moved: boolean = false;
+    private acted: boolean = false;
+
+    getUnit(): Unit {
+        return this.unit;
     }
 
     getJumps(): number {
-        return this.jumps;
+        return this.statistics.jumps;
     }
 
     getMoves(): number {
-        return this.moves;
+        return this.statistics.moves;
     }
 
     getPosition(): Position {
@@ -29,6 +34,10 @@ export default class UnitState {
 
     hasMoved(): boolean {
         return this.moved;
+    }
+
+    hasActed(): boolean {
+        return this.acted;
     }
 
     private constructor() {}
@@ -41,24 +50,24 @@ export default class UnitState {
         }
     
         init(unit: Unit, p: Position): Builder {
-            this.unitState.unitId = unit.id;
-            this.unitState.moved = false;
+            this.unitState.unit = unit;
             this.unitState.position = p;
-            this.unitState.jumps = unit.jumps;
-            this.unitState.moves = unit.moves;
             return this;
         }
     
-        fromState(state: UnitState): Builder {
-            this.unitState.unitId = state.unitId;
-            this.unitState.moved = state.moved;
-            this.unitState.jumps = state.jumps;
-            this.unitState.moves = state.moves;
+        fromState(previousState: UnitState): Builder {
+            this.unitState.unit = previousState.unit;
+            this.unitState.moved = previousState.moved;
+            this.unitState.acted = previousState.acted;
+            this.unitState.position = previousState.position;
+            this.unitState.health = previousState.health;
+            this.unitState.spirit = previousState.spirit;
             return this;
         }
     
         toNextTurn(): Builder {
             this.unitState.moved = false;
+            this.unitState.acted = false;
             return this;
         }
     
@@ -67,8 +76,14 @@ export default class UnitState {
             this.unitState.moved = true;
             return this;
         }
+
+        acting(): Builder {
+            this.unitState.acted = true;
+            return this;
+        }
     
         build(): UnitState {
+            this.unitState.statistics = this.unitState.unit.getStatistics().copy();
             return this.unitState;
         }
     }
