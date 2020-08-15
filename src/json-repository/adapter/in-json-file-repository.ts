@@ -1,8 +1,8 @@
 import fs from "fs";
-import RepositoryPort from "../../../domain/port/secondary/repository";
+import RepositoryPort from "../../domain/port/secondary/repository";
 import { injectable } from "inversify";
-import { JsonMapper } from "../../json/json-mappers";
 import * as UUID from "uuid";
+import JsonMapperPort from "../port/json-mapper-port";
 
 const FILE_ENCODING = "utf8";
 const FILE_SUFFIX = ".json";
@@ -10,9 +10,9 @@ const FILE_SUFFIX = ".json";
 @injectable()
 export class InJsonFileRepository<T> implements RepositoryPort<T> {
     private baseUrl!: string;
-    private jsonMapper: JsonMapper<T>;
+    private jsonMapper: JsonMapperPort<T>;
 
-    constructor(jsonMapper: JsonMapper<T>) {
+    constructor(jsonMapper: JsonMapperPort<T>) {
         this.jsonMapper = jsonMapper;
     }
 

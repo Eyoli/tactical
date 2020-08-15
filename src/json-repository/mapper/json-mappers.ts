@@ -2,14 +2,10 @@ import Player from "../../domain/model/player";
 import Unit from "../../domain/model/unit";
 import { injectable } from "inversify";
 import TileBasedField from "../../domain/model/tile-based-field/tile-based-field";
-
-export interface JsonMapper<T> {
-    fromJson(json: any): T;
-    toJson(object: T): any;
-}
+import JsonMapperPort from "../port/json-mapper-port";
 
 @injectable()
-export class FieldJsonMapper implements JsonMapper<TileBasedField> {
+export class FieldJsonMapper implements JsonMapperPort<TileBasedField> {
 
     fromJson(json: any): TileBasedField {
         const field = new TileBasedField(json.name, json.width, json.length, json.height);
@@ -31,7 +27,7 @@ export class FieldJsonMapper implements JsonMapper<TileBasedField> {
 }
 
 @injectable()
-export class UnitJsonMapper implements JsonMapper<Unit> {
+export class UnitJsonMapper implements JsonMapperPort<Unit> {
 
     fromJson(json: any): Unit {
         const unit = new Unit()
@@ -51,7 +47,7 @@ export class UnitJsonMapper implements JsonMapper<Unit> {
 }
 
 @injectable()
-export class PlayerJsonMapper implements JsonMapper<Player> {
+export class PlayerJsonMapper implements JsonMapperPort<Player> {
 
     fromJson(json: any): Player {
         const player = new Player(json.name);

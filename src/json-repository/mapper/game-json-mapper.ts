@@ -4,14 +4,10 @@ import Player from "../../domain/model/player";
 import { injectable, inject } from "inversify";
 import { TYPES } from "../../types";
 import RepositoryPort from "../../domain/port/secondary/repository";
-
-export interface JsonMapper<T> {
-    fromJson(json: any): T;
-    toJson(object: T): any;
-}
+import JsonMapperPort from "../port/json-mapper-port";
 
 @injectable()
-export class GameJsonMapper implements JsonMapper<Game> {
+export class GameJsonMapper implements JsonMapperPort<Game> {
     private fieldRepository: RepositoryPort<Field>;
     private playerRepository: RepositoryPort<Player>;
 

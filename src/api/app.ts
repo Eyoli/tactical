@@ -1,11 +1,11 @@
 import express from 'express';
 import http from 'http';
 import bodyParser from 'body-parser';
-import BadRequestError from './api/error/bad-request-error';
-import fieldRouter from './api/field-controller';
-import gameRouter from './api/game-controller';
-import playerRouter from './api/player-controller';
-import unitRouter from './api/unit-controller';
+import BadRequestError from './error/bad-request-error';
+import fieldRouter from './controller/field-controller';
+import gameRouter from './controller/game-controller';
+import playerRouter from './controller/player-controller';
+import unitRouter from './controller/unit-controller';
 import config from 'config';
 
 process.title = config.get("process.title");

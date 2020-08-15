@@ -1,11 +1,11 @@
 import express from 'express';
-import { CreateGameRequest, StartGameRequest } from './request/requests';
-import iocContainer from '../inversify.config';
-import { TYPES } from '../types';
-import BadRequestError from './error/bad-request-error';
-import { GameServicePort } from '../domain/port/primary/services';
-import GameDTO from './dto/gameDTO';
-import Position from '../domain/model/position';
+import { CreateGameRequest, StartGameRequest } from '../request/requests';
+import iocContainer from '../../inversify.config';
+import { TYPES } from '../../types';
+import BadRequestError from '../error/bad-request-error';
+import { GameServicePort } from '../../domain/port/primary/services';
+import GameDTO from '../dto/gameDTO';
+import Position from '../../domain/model/position';
 
 const gameRouter = express.Router();
 

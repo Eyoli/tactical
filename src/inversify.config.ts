@@ -5,8 +5,8 @@ import { FieldServicePort, GameServicePort, PlayerServicePort, UnitServicePort, 
 import FieldService from "./domain/service/field-service";
 import RepositoryPort from "./domain/port/secondary/repository";
 import Field from "./domain/model/field";
-import { InJsonFileRepository } from "./infrastructure/adapter/repository/in-json-file-repository";
-import { FieldJsonMapper, UnitJsonMapper, PlayerJsonMapper } from "./infrastructure/json/json-mappers";
+import { InJsonFileRepository } from "./json-repository/adapter/in-json-file-repository";
+import { FieldJsonMapper, UnitJsonMapper, PlayerJsonMapper } from "./json-repository/mapper/json-mappers";
 import GameService from "./domain/service/game-service";
 import Unit from "./domain/model/unit";
 import Player from "./domain/model/player";
@@ -14,7 +14,7 @@ import Game from "./domain/model/game";
 import PlayerService from "./domain/service/player-service";
 import UnitService from "./domain/service/unit-service";
 import MovementService from "./domain/service/movement-service";
-import { GameJsonMapper } from "./infrastructure/json/game-json-mapper";
+import { GameJsonMapper } from "./json-repository/mapper/game-json-mapper";
 import config from "config";
 import InMemoryRepository from "./infrastructure/adapter/repository/in-memory-repository";
 import TileBasedField from "./domain/model/tile-based-field/tile-based-field";
@@ -62,6 +62,7 @@ iocContainer.bind<UnitServicePort>(TYPES.UNIT_SERVICE).to(UnitService);
 iocContainer.bind<MovementServicePort>(TYPES.MOVEMENT_SERVICE).to(MovementService);
 iocContainer.bind<ActionServicePort>(TYPES.ACTION_SERVICE).to(ActionService);
 
+// Logging
 if (config.get("logger") === true) {
     Logger.setLogger(new ConsoleLoggerService());
 }
