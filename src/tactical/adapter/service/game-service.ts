@@ -1,16 +1,16 @@
-import { GameServicePort as GameServicePort, MovementServicePort as MovementServicePort, PlayerServicePort as PlayerServicePort, UnitServicePort as UnitServicePort, ActionServicePort as ActionServicePort } from "../port/primary/services";
-import Game from "../model/game";
+import { GameServicePort as GameServicePort, MovementServicePort as MovementServicePort, PlayerServicePort as PlayerServicePort, UnitServicePort as UnitServicePort, ActionServicePort as ActionServicePort } from "../../domain/port/primary/services";
+import Game from "../../domain/model/game";
 import { inject, injectable } from "inversify";
-import RepositoryPort from "../port/secondary/repository";
-import { TYPES } from "../../types";
-import Field from "../model/field";
-import ResourceNotFoundError from "../error/resource-not-found-error";
-import Position from "../model/position";
-import UnitState from "../model/unit-state";
-import { UnitsComposition, UnitsPlacement } from "../model/aliases";
-import { GameError, GameErrorCode } from "../error/game-error";
-import { ActionType } from "../model/action/action-type";
-import Player from "../model/player";
+import RepositoryPort from "../../domain/port/secondary/repository";
+import { TYPES } from "../../../types";
+import Field from "../../domain/model/field";
+import ResourceNotFoundError from "../../domain/model/error/resource-not-found-error";
+import Position from "../../domain/model/position";
+import UnitState from "../../domain/model/unit-state";
+import { UnitsComposition, UnitsPlacement } from "../../domain/model/aliases";
+import { GameError, GameErrorCode } from "../../domain/model/error/game-error";
+import { ActionType } from "../../domain/model/action/action-type";
+import Player from "../../domain/model/player";
 
 @injectable()
 export default class GameService implements GameServicePort {

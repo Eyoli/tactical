@@ -1,7 +1,7 @@
-import { UnitsComposition, UnitsPlacement } from "../../domain/model/aliases";
-import Player from "../../domain/model/player";
-import Game from "../../domain/model/game";
-import Position from "../../domain/model/position";
+import { UnitsComposition, UnitsPlacement } from "../../tactical/domain/model/aliases";
+import Player from "../../tactical/domain/model/player";
+import Game from "../../tactical/domain/model/game";
+import Position from "../../tactical/domain/model/position";
 
 export class CreateGameRequest {
     fieldId: string;

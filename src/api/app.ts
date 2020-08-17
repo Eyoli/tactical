@@ -13,7 +13,7 @@ process.title = config.get("process.title");
 const app = express();
 const server = new http.Server(app);
 
-const EXPRESS_PORT_NUMBER = config.get("app.port");
+const EXPRESS_PORT_NUMBER = config.get("api.port");
 
 const BAD_REQUEST_CODE = 400;
 

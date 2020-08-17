@@ -1,5 +1,5 @@
-import Unit from "../../domain/model/unit";
-import Statistics from "../../domain/model/statistics";
+import Unit from "../../tactical/domain/model/unit";
+import Statistics from "../../tactical/domain/model/statistics";
 
 export default class CreateUnitRequest {
     name!: string;

@@ -1,8 +1,8 @@
-import Player from "../../domain/model/player";
-import Unit from "../../domain/model/unit";
+import Player from "../../../tactical/domain/model/player";
+import Unit from "../../../tactical/domain/model/unit";
 import { injectable } from "inversify";
-import TileBasedField from "../../domain/model/tile-based-field/tile-based-field";
-import JsonMapperPort from "../port/json-mapper-port";
+import TileBasedField from "../../../tactical/domain/model/tile-based-field/tile-based-field";
+import JsonMapperPort from "../../port/json-mapper-port";
 
 @injectable()
 export class FieldJsonMapper implements JsonMapperPort<TileBasedField> {

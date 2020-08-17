@@ -1,9 +1,9 @@
 import { injectable, inject } from "inversify";
-import { PlayerServicePort } from "../port/primary/services";
-import RepositoryPort from "../port/secondary/repository";
-import { TYPES } from "../../types";
-import Player from "../model/player";
-import ResourceNotFoundError from "../error/resource-not-found-error";
+import { PlayerServicePort } from "../../domain/port/primary/services";
+import RepositoryPort from "../../domain/port/secondary/repository";
+import { TYPES } from "../../../types";
+import Player from "../../domain/model/player";
+import ResourceNotFoundError from "../../domain/model/error/resource-not-found-error";
 
 @injectable()
 export default class PlayerService implements PlayerServicePort {

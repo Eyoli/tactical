@@ -1,10 +1,10 @@
-import Field from "../../domain/model/field";
-import Game from "../../domain/model/game";
-import Player from "../../domain/model/player";
+import Field from "../../../tactical/domain/model/field";
+import Game from "../../../tactical/domain/model/game";
+import Player from "../../../tactical/domain/model/player";
 import { injectable, inject } from "inversify";
-import { TYPES } from "../../types";
-import RepositoryPort from "../../domain/port/secondary/repository";
-import JsonMapperPort from "../port/json-mapper-port";
+import { TYPES } from "../../../types";
+import RepositoryPort from "../../../tactical/domain/port/secondary/repository";
+import JsonMapperPort from "../../port/json-mapper-port";
 
 @injectable()
 export class GameJsonMapper implements JsonMapperPort<Game> {

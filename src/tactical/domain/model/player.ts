@@ -1,4 +1,4 @@
-import { CreatePlayerRequest } from "../../api/request/requests";
+import { CreatePlayerRequest } from "../../../api/request/requests";
 
 export default class Player {
     id!: string;

@@ -1,10 +1,10 @@
 import "reflect-metadata";
 import * as Assert from "assert";
 import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
-import { PlayerServicePort } from "../../domain/port/primary/services";
-import RepositoryPort from "../../domain/port/secondary/repository";
-import Player from "../../domain/model/player";
-import PlayerService from "../../domain/service/player-service";
+import { PlayerServicePort } from "../../tactical/domain/port/primary/services";
+import RepositoryPort from "../../tactical/domain/port/secondary/repository";
+import Player from "../../tactical/domain/model/player";
+import PlayerService from "../../tactical/adapter/service/player-service";
 
 describe('About players we should be able to...', () => {
 

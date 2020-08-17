@@ -1,9 +1,9 @@
-import { MovementServicePort } from "../port/primary/services";
-import Field from "../model/field";
-import Position from "../model/position";
+import { MovementServicePort } from "../../domain/port/primary/services";
+import Field from "../../domain/model/field";
+import Position from "../../domain/model/position";
 import { Set } from "immutable";
 import { injectable } from "inversify";
-import UnitState from "../model/unit-state";
+import UnitState from "../../domain/model/unit-state";
 
 type PositionSearch = [Position, number];
 

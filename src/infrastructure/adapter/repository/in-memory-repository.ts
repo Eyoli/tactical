@@ -1,5 +1,5 @@
-import RepositoryPort from "../../../domain/port/secondary/repository";
-import Logger from "../../../domain/logger/logger";
+import RepositoryPort from "../../../tactical/domain/port/secondary/repository";
+import Logger from "../../../tactical/domain/logger/logger";
 
 export default class InMemoryRepository<T extends Object> implements RepositoryPort<T> {
     private content: Map<string, T>;

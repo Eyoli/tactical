@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import * as Assert from "assert";
 import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
-import { UnitServicePort } from "../../domain/port/primary/services";
-import RepositoryPort from "../../domain/port/secondary/repository";
-import UnitService from "../../domain/service/unit-service";
-import Unit from "../../domain/model/unit";
-import Statistics from "../../domain/model/statistics";
+import { UnitServicePort } from "../../tactical/domain/port/primary/services";
+import RepositoryPort from "../../tactical/domain/port/secondary/repository";
+import UnitService from "../../tactical/adapter/service/unit-service";
+import Unit from "../../tactical/domain/model/unit";
+import Statistics from "../../tactical/domain/model/statistics";
 
 describe('About units we should be able to...', () => {
 

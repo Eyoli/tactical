@@ -1,22 +1,18 @@
 import "reflect-metadata";
 import * as Assert from "assert";
-import FieldService from "../../domain/service/field-service";
+import FieldService from "../../tactical/adapter/service/field-service";
 import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
-import { FieldServicePort } from "../../domain/port/primary/services";
-import RepositoryPort from "../../domain/port/secondary/repository";
+import { FieldServicePort } from "../../tactical/domain/port/primary/services";
+import RepositoryPort from "../../tactical/domain/port/secondary/repository";
 import FakeField from "../fake/fake-field";
-import Logger from "../../domain/logger/logger";
-import ConsoleLoggerService from "../../infrastructure/adapter/console-logger-service";
 
 describe('About fields we should be able to...', () => {
-
-    // Logger.setLogger(new ConsoleLoggerService());
 
     let fieldService: FieldServicePort<FakeField>;
     let fieldRepository: RepositoryPort<FakeField>;
 
     beforeEach(() => {
-        fieldRepository = new InMemoryRepository<FakeField>(); 
+        fieldRepository = new InMemoryRepository<FakeField>();
         fieldService = new FieldService<FakeField>(fieldRepository);
     });
 

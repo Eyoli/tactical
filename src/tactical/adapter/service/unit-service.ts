@@ -1,9 +1,9 @@
 import { injectable, inject } from "inversify";
-import { UnitServicePort } from "../port/primary/services";
-import RepositoryPort from "../port/secondary/repository";
-import { TYPES } from "../../types";
-import Unit from "../model/unit";
-import ResourceNotFoundError from "../error/resource-not-found-error";
+import { UnitServicePort } from "../../domain/port/primary/services";
+import RepositoryPort from "../../domain/port/secondary/repository";
+import { TYPES } from "../../../types";
+import Unit from "../../domain/model/unit";
+import ResourceNotFoundError from "../../domain/model/error/resource-not-found-error";
 
 @injectable()
 export default class UnitService implements UnitServicePort {

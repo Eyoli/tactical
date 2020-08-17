@@ -1,5 +1,5 @@
 import fs from "fs";
-import RepositoryPort from "../../domain/port/secondary/repository";
+import RepositoryPort from "../../tactical/domain/port/secondary/repository";
 import { injectable } from "inversify";
 import * as UUID from "uuid";
 import JsonMapperPort from "../port/json-mapper-port";

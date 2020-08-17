@@ -1,5 +1,5 @@
-import Field from "../../domain/model/field";
-import Position from "../../domain/model/position";
+import Field from "../../tactical/domain/model/field";
+import Position from "../../tactical/domain/model/position";
 
 export default class FakeField extends Field {
     private validPositions: boolean;

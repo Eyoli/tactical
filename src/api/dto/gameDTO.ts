@@ -1,4 +1,4 @@
-import Game from "../../domain/model/game";
+import Game from "../../tactical/domain/model/game";
 
 export default class GameDTO {
     private readonly state: string;

@@ -1,6 +1,6 @@
-import Action from "../../domain/model/action/action";
-import UnitState from "../../domain/model/unit-state";
-import Position from "../../domain/model/position";
+import Action from "../../tactical/domain/model/action/action";
+import UnitState from "../../tactical/domain/model/unit-state";
+import Position from "../../tactical/domain/model/position";
 
 export default class FakeAction implements Action {
     private unitState!: UnitState;

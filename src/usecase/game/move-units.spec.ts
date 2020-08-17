@@ -1,14 +1,14 @@
 import "reflect-metadata";
-import Unit from "../../domain/model/unit";
+import Unit from "../../tactical/domain/model/unit";
 import * as Assert from "assert";
 import * as mocha from "mocha";
-import { MovementServicePort } from "../../domain/port/primary/services";
-import Tile from "../../domain/model/tile-based-field/tile";
-import Position from "../../domain/model/position";
-import MovementService from "../../domain/service/movement-service";
-import UnitState from "../../domain/model/unit-state";
-import TileBasedField from "../../domain/model/tile-based-field/tile-based-field";
-import Statistics from "../../domain/model/statistics";
+import { MovementServicePort } from "../../tactical/domain/port/primary/services";
+import Tile from "../../tactical/domain/model/tile-based-field/tile";
+import Position from "../../tactical/domain/model/position";
+import MovementService from "../../tactical/adapter/service/movement-service";
+import UnitState from "../../tactical/domain/model/unit-state";
+import TileBasedField from "../../tactical/domain/model/tile-based-field/tile-based-field";
+import Statistics from "../../tactical/domain/model/statistics";
 
 describe('About moving a unit in a field...', () => {
 

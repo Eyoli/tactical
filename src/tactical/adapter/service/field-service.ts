@@ -1,9 +1,9 @@
 import { injectable, inject } from "inversify";
-import { FieldServicePort as FieldServicePort } from "../port/primary/services";
-import Field from "../model/field";
-import RepositoryPort from "../port/secondary/repository";
-import { TYPES } from "../../types";
-import ResourceNotFoundError from "../error/resource-not-found-error";
+import { FieldServicePort as FieldServicePort } from "../../domain/port/primary/services";
+import Field from "../../domain/model/field";
+import RepositoryPort from "../../domain/port/secondary/repository";
+import { TYPES } from "../../../types";
+import ResourceNotFoundError from "../../domain/model/error/resource-not-found-error";
 
 @injectable()
 export default class FieldService<T extends Field> implements FieldServicePort<T> {

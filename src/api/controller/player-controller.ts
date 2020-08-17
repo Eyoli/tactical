@@ -1,6 +1,6 @@
 import express from 'express';
 import iocContainer from '../../inversify.config';
-import { PlayerServicePort } from '../../domain/port/primary/services';
+import { PlayerServicePort } from '../../tactical/domain/port/primary/services';
 import { CreatePlayerRequest } from '../request/requests';
 import { TYPES } from '../../types';
 import BadRequestError from '../error/bad-request-error';

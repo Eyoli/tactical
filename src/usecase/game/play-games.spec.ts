@@ -1,27 +1,28 @@
 import "reflect-metadata";
 import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
-import GameService from "../../domain/service/game-service";
-import Game from "../../domain/model/game";
-import Field from "../../domain/model/field";
-import Player from "../../domain/model/player";
-import Unit from "../../domain/model/unit";
+import GameService from "../../tactical/adapter/service/game-service";
+import Game from "../../tactical/domain/model/game";
+import Field from "../../tactical/domain/model/field";
+import Player from "../../tactical/domain/model/player";
+import Unit from "../../tactical/domain/model/unit";
 import * as Assert from "assert";
 import * as mocha from "mocha";
-import RepositoryPort from "../../domain/port/secondary/repository";
-import { GameServicePort } from "../../domain/port/primary/services";
-import PlayerService from "../../domain/service/player-service";
-import UnitService from "../../domain/service/unit-service";
+import RepositoryPort from "../../tactical/domain/port/secondary/repository";
+import PlayerService from "../../tactical/adapter/service/player-service";
+import UnitService from "../../tactical/adapter/service/unit-service";
 import { FakeMovementService } from "../fake/services";
-import Position from "../../domain/model/position";
-import { UnitsComposition, UnitsPlacement } from "../../domain/model/aliases";
-import { GameError, GameErrorCode } from "../../domain/error/game-error";
+import Position from "../../tactical/domain/model/position";
+import { UnitsComposition, UnitsPlacement } from "../../tactical/domain/model/aliases";
+import { GameError, GameErrorCode } from "../../tactical/domain/model/error/game-error";
 import FakeField from "../fake/fake-field";
-import FakeAction from "../fake/fake-action";
 import FakeActionService from "../fake/fake-action-service";
-import { ActionType } from "../../domain/model/action/action-type";
-import Statistics from "../../domain/model/statistics";
+import { ActionType } from "../../tactical/domain/model/action/action-type";
+import Statistics from "../../tactical/domain/model/statistics";
+import { GameServicePort } from "../../tactical/domain/port/primary/services";
 
 describe('About playing we should be able to...', () => {
+
+    // Logger.setLogger(new ConsoleLoggerService());
 
     let gameService: GameServicePort;
     let playerRepository: RepositoryPort<Player>;
