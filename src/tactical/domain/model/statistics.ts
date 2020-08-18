@@ -21,6 +21,11 @@ export default class Statistics {
         return this;
     }
 
+    withHealth(health: number): Statistics {
+        this.health = health;
+        return this;
+    }
+
     copy(): Statistics {
         const statistics = new Statistics();
         statistics.health = this.health;

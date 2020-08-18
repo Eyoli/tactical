@@ -27,7 +27,7 @@ describe('About moving a unit in a field...', () => {
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
         const unit = new Unit().withStatistics(new Statistics()
             .withMoves(2).withJumps(1));
-        const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
+        const unitState = UnitState.init(unit, new Position(0, 0));
 
         // act
         const accessiblePositions = movementService.getAccessiblePositions(field, unitState);
@@ -44,9 +44,9 @@ describe('About moving a unit in a field...', () => {
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 2)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
-                const unit = new Unit().withStatistics(new Statistics()
-                .withMoves(2).withJumps(1));
-        const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
+        const unit = new Unit().withStatistics(new Statistics()
+            .withMoves(2).withJumps(1));
+        const unitState = UnitState.init(unit, new Position(0, 0));
 
         // act
         const accessiblePositions = movementService.getAccessiblePositions(field, unitState);
@@ -63,9 +63,9 @@ describe('About moving a unit in a field...', () => {
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1), new Tile(1, 1)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
-                const unit = new Unit().withStatistics(new Statistics()
-                .withMoves(2).withJumps(0));
-        const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
+        const unit = new Unit().withStatistics(new Statistics()
+            .withMoves(2).withJumps(0));
+        const unitState = UnitState.init(unit, new Position(0, 0));
 
         // act
         const accessiblePositions = movementService.getAccessiblePositions(field, unitState);
@@ -82,9 +82,9 @@ describe('About moving a unit in a field...', () => {
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1), new Tile(1, 1)], [new Tile(1, 1)]],
                 [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
-                const unit = new Unit().withStatistics(new Statistics()
-                .withMoves(2).withJumps(0));
-        const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
+        const unit = new Unit().withStatistics(new Statistics()
+            .withMoves(2).withJumps(0));
+        const unitState = UnitState.init(unit, new Position(0, 0));
 
         // act
         const inaccessiblePosition = movementService.isAccessible(field, unitState, new Position(1, 1));

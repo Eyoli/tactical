@@ -12,10 +12,13 @@ export default class AttackAction implements Action {
 
     validate(): boolean {
         const distance = this.srcUnitState.getPosition().distanceTo(this.targetUnitState.getPosition());
-        return distance <= this.srcUnitState.getUnit().getWeapon().getRange();
+        return distance <= this.srcUnitState.getUnit().getWeapon().rangeMax
+            && distance >= this.srcUnitState.getUnit().getWeapon().rangeMin;
     }
 
     apply(): UnitState[] {
-        throw new Error("Method not implemented.");
+        return [
+            this.targetUnitState.damaged(this.srcUnitState.computeWeaponDamage())
+        ];
     }
 }

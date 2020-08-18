@@ -1,4 +1,4 @@
-import Weapon from "./weapon";
+import { Weapon } from "./weapon";
 import Statistics from "./statistics";
 
 export default class Unit {
@@ -23,7 +23,12 @@ export default class Unit {
     withStatistics(statistics: Statistics): Unit {
         this.statistics = statistics;
         return this;
-    } 
+    }
+
+    withWeapon(weapon: Weapon): Unit {
+        this.weapon = weapon;
+        return this;
+    }
 
     getStatistics() {
         return this.statistics;

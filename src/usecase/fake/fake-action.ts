@@ -15,10 +15,9 @@ export default class FakeAction implements Action {
     }
 
     apply(): UnitState[] {
-        return [new UnitState.Builder()
-            .fromState(this.unitState)
-            .movingTo(new Position(1,1))
-            .build()];
+        return [
+            this.unitState.movingTo(new Position(1,1))
+        ];
     }
 
 }

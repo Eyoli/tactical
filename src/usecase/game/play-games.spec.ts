@@ -16,7 +16,7 @@ import { UnitsComposition, UnitsPlacement } from "../../tactical/domain/model/al
 import { GameError, GameErrorCode } from "../../tactical/domain/model/error/game-error";
 import FakeField from "../fake/fake-field";
 import FakeActionService from "../fake/fake-action-service";
-import { ActionType } from "../../tactical/domain/model/action/action-type";
+import ActionType from "../../tactical/domain/model/action/action-type";
 import Statistics from "../../tactical/domain/model/statistics";
 import { GameServicePort } from "../../tactical/domain/port/primary/services";
 

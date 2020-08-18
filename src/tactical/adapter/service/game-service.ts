@@ -1,4 +1,4 @@
-import { GameServicePort as GameServicePort, MovementServicePort as MovementServicePort, PlayerServicePort as PlayerServicePort, UnitServicePort as UnitServicePort, ActionServicePort as ActionServicePort } from "../../domain/port/primary/services";
+import { GameServicePort, MovementServicePort, PlayerServicePort, UnitServicePort, ActionServicePort } from "../../domain/port/primary/services";
 import Game from "../../domain/model/game";
 import { inject, injectable } from "inversify";
 import RepositoryPort from "../../domain/port/secondary/repository";
@@ -9,7 +9,7 @@ import Position from "../../domain/model/position";
 import UnitState from "../../domain/model/unit-state";
 import { UnitsComposition, UnitsPlacement } from "../../domain/model/aliases";
 import { GameError, GameErrorCode } from "../../domain/model/error/game-error";
-import { ActionType } from "../../domain/model/action/action-type";
+import ActionType from "../../domain/model/action/action-type";
 import Player from "../../domain/model/player";
 
 @injectable()
@@ -114,7 +114,7 @@ export default class GameService implements GameServicePort {
         units.forEach(unit => {
             const position = unitsPositions.get(unit.id);
             if(position) {
-                game.integrate(false, new UnitState.Builder().init(unit, position).build());
+                game.integrate(false, UnitState.init(unit, position));
             }
         });
     }
@@ -136,16 +136,17 @@ export default class GameService implements GameServicePort {
 
         const srcUnit = game.getUnit(srcUnitId);
         if (game.canAct(srcUnit)) {
-            const srcUnitState = new UnitState.Builder().fromState(game.getUnitState(srcUnitId))
-                .acting().build();
+            const srcUnitState = game.getUnitState(srcUnitId).acting();
                 game.integrate(false, srcUnitState);
             const targetUnitState = game.getUnitState(targetUnitId);
+            
             const action = this.actionService.generateActionOnTarget(srcUnitState!, targetUnitState!, actionType);
-            const newStates = action.apply();
-            game.integrate(true, ...newStates);
-            this.gameRepository.update(game, gameId);
-
-            return newStates;
+            if (action.validate() === true) {
+                const newStates = action.apply();
+                game.integrate(true, ...newStates);
+                this.gameRepository.update(game, gameId);
+                return newStates;
+            }
         }
         throw new GameError(GameErrorCode.IMPOSSIBLE_TO_ACT);
     }
@@ -160,7 +161,7 @@ export default class GameService implements GameServicePort {
         const unitState = game.getUnitState(unitId);
 
         if(game.canMove(unit) && this.movementService.isAccessible(game.field, unitState!, p)) {
-            const newUnitState = new UnitState.Builder().fromState(unitState!).movingTo(p).build();
+            const newUnitState = unitState!.movingTo(p);
             game.integrate(true, newUnitState);
             this.gameRepository.update(game, gameId);
 

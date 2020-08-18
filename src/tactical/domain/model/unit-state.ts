@@ -1,35 +1,38 @@
 import Unit from "./unit";
 import Position from "./position";
-import Statistics from "./statistics";
-import { stat } from "fs";
+import { Damage } from "./weapon";
 
 /**
  * Represent a given state of a unit 
  */
 export default class UnitState {
     private unit!: Unit;
-
-    private statistics!: Statistics;
     private position!: Position;
     private health!: number;
     private spirit!: number;
-    private moved: boolean = false;
-    private acted: boolean = false;
+    private moved!: boolean;
+    private acted!: boolean;
+
+    private constructor() {}
 
     getUnit(): Unit {
         return this.unit;
     }
 
     getJumps(): number {
-        return this.statistics.jumps;
+        return this.unit.getStatistics().jumps;
     }
 
     getMoves(): number {
-        return this.statistics.moves;
+        return this.unit.getStatistics().moves;
     }
 
     getPosition(): Position {
         return this.position;
+    }
+
+    getHealth(): number {
+        return this.health;
     }
 
     hasMoved(): boolean {
@@ -40,51 +43,55 @@ export default class UnitState {
         return this.acted;
     }
 
-    private constructor() {}
+    computeWeaponDamage(): Damage {
+        return this.getUnit().getWeapon().damage;
+    }
 
-    static Builder = class Builder {
-        private unitState: UnitState;
+    copy(): UnitState {
+        const unitState = new UnitState();
+        unitState.unit = this.unit;
+        unitState.moved = this.moved;
+        unitState.acted = this.acted;
+        unitState.position = this.position;
+        unitState.health = this.health;
+        unitState.spirit = this.spirit;
+        return unitState;
+    }
 
-        constructor() {
-            this.unitState = new UnitState();
-        }
-    
-        init(unit: Unit, p: Position): Builder {
-            this.unitState.unit = unit;
-            this.unitState.position = p;
-            return this;
-        }
-    
-        fromState(previousState: UnitState): Builder {
-            this.unitState.unit = previousState.unit;
-            this.unitState.moved = previousState.moved;
-            this.unitState.acted = previousState.acted;
-            this.unitState.position = previousState.position;
-            this.unitState.health = previousState.health;
-            this.unitState.spirit = previousState.spirit;
-            return this;
-        }
-    
-        toNextTurn(): Builder {
-            this.unitState.moved = false;
-            this.unitState.acted = false;
-            return this;
-        }
-    
-        movingTo(p: Position): Builder {
-            this.unitState.position = p;
-            this.unitState.moved = true;
-            return this;
-        }
+    toNextTurn(): UnitState {
+        const unitState = this.copy();
+        unitState.moved = false;
+        unitState.acted = false;
+        return unitState;
+    }
 
-        acting(): Builder {
-            this.unitState.acted = true;
-            return this;
-        }
-    
-        build(): UnitState {
-            this.unitState.statistics = this.unitState.unit.getStatistics().copy();
-            return this.unitState;
-        }
+    movingTo(p: Position): UnitState {
+        const unitState = this.copy();
+        unitState.position = p;
+        unitState.moved = true;
+        return unitState;
+    }
+
+    damaged(damage: Damage): UnitState {
+        const unitState = this.copy();
+        unitState.health -= damage.amount;
+        return unitState;
+    }
+
+    acting(): UnitState {
+        const unitState = this.copy();
+        unitState.acted = true;
+        return unitState;
+    }
+
+    static init(unit: Unit, p: Position): UnitState {
+        const unitState = new UnitState();
+        unitState.unit = unit;
+        unitState.position = p;
+        unitState.health = unit.getStatistics().health;
+        unitState.spirit = unit.getStatistics().spirit;
+        unitState.moved = false;
+        unitState.acted = false;
+        return unitState;
     }
 }

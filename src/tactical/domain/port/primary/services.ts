@@ -5,7 +5,7 @@ import Unit from "../../model/unit";
 import Position from "../../model/position";
 import UnitState from "../../model/unit-state";
 import Action from "../../model/action/action";
-import { ActionType } from "../../model/action/action-type";
+import ActionType from "../../model/action/action-type";
 
 export interface FieldServicePort<T extends Field> {
     createField(field: T): string;

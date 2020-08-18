@@ -1,3 +1,5 @@
-export enum ActionType {
+enum ActionType {
     ATTACK = "attack"
 }
+
+export default ActionType;
