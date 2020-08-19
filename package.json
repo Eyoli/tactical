@@ -38,8 +38,7 @@
     "dev": "set NODE_ENV=dev&& npm run ts-node",
     "in-memory": "set NODE_ENV=api-test&& npm run ts-node",
     "prod": "tsc && node ./build/api/app.js",
-    "api-test": "newman run src/api/test/tactical_api.postman_collection",
-    "front": "set NODE_ENV=dev&& ts-node-dev ./src/front/app.ts"
+    "api-test": "newman run src/api/test/tactical_api.postman_collection"
   },
   "repository": {
     "type": "git",
