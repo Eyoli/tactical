@@ -29,7 +29,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"My field\",\r\n    \"tileTypes\": [{\r\n        \"type\": 1,\r\n        \"src\": \"src\"\r\n    }],\r\n    \"tiles\": [\r\n        [[{\"type\": 1, \"cost\": 1}], [{\"type\": 1, \"cost\": 1}]],\r\n        [[{\"type\": 1, \"cost\": 1}], [{\"type\": 1, \"cost\": 1}]]\r\n    ]\r\n}",
+					"raw": "{\r\n    \"name\": \"My field\",\r\n    \"tileTypes\": [{\r\n        \"type\": 1,\r\n        \"cost\": 1,\r\n        \"src\": \"blocks_38.png\"\r\n    },\r\n    {\r\n        \"type\": 2,\r\n        \"cost\": 2,\r\n        \"src\": \"blocks_39.png\"\r\n    },\r\n    {\r\n        \"type\": 3,\r\n        \"cost\": 99,\r\n        \"src\": \"blocks_69.png\"\r\n    }],\r\n    \"tiles\": [\r\n        [[1],[1],[1,2]],\r\n        [[1],[1],[1],[1],[1],[1]],\r\n        [[1],[1],[3],[3],[3],[1]],\r\n        [[1],[1],[3],[3],[3],[1]],\r\n        [[1],[1],[3],[3],[3],[1]],\r\n        [[1],[1],[3],[3],[3],[1]],\r\n        [[1],[1],[1],[1],[1],[1]]\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -757,37 +757,37 @@
 	],
 	"variable": [
 		{
-			"id": "8da1d7ec-c145-4abd-8c72-00f03875e386",
+			"id": "83135c48-3e5a-43df-9c53-f8d78edd60cb",
 			"key": "BASE_URL",
 			"value": "http://localhost:3000"
 		},
 		{
-			"id": "146f3df5-c3a7-462e-aa7f-67dc9a3f8cd1",
+			"id": "9ed388c8-0b0b-48a9-be72-ae9ff263605e",
 			"key": "FIELD_ID",
 			"value": ""
 		},
 		{
-			"id": "15a4f618-1dab-4d02-8eaf-2bf88c465c19",
+			"id": "952d6a28-cef7-4944-8fbd-aeb25e9e2911",
 			"key": "UNIT_1_ID",
 			"value": ""
 		},
 		{
-			"id": "4992b4ce-9c05-4d60-889c-b4c1f66f2de0",
+			"id": "51a73744-1010-4f3e-b522-5c71f7f54301",
 			"key": "UNIT_2_ID",
 			"value": ""
 		},
 		{
-			"id": "8842aaee-d58e-4a8a-8702-3aa21c0028d5",
+			"id": "beee8076-6f07-4c0a-afab-c612796f784e",
 			"key": "PLAYER_1_ID",
 			"value": ""
 		},
 		{
-			"id": "674d02cd-801e-4dae-a1a8-60596e114d24",
+			"id": "4a37c244-39bb-4953-a7e7-a704abee36b7",
 			"key": "PLAYER_2_ID",
 			"value": ""
 		},
 		{
-			"id": "f71b154b-d5d5-40bd-83a3-59ffc889205b",
+			"id": "7e3ca745-86b2-4a3b-812b-5431e3c70625",
 			"key": "GAME_ID",
 			"value": ""
 		}

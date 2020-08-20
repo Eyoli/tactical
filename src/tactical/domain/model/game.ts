@@ -110,6 +110,11 @@ export default class Game {
         return states[0];
     }
 
+    getUnitStates(): UnitState[] {
+        return Array.from(this.currentTurnStates.values())
+            .map(unitStates => unitStates[0]);
+    }
+
     integrate(saveStateChanges: boolean, ...newStates: UnitState[]): void {
         if (saveStateChanges) {
             this.currentTurnChanges.unshift(newStates.map(state => state.getUnit().id));

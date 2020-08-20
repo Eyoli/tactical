@@ -6,7 +6,7 @@ import Field from "../../tactical/domain/model/field";
 export default class CreateFieldRequest {
     private name: string;
     private tileTypes: TileType[] = [];
-    private tiles: Tile[][][] = [];
+    private tiles: number[][][] = [];
     private width: number;
     private length: number;
     private height: number;
@@ -14,7 +14,7 @@ export default class CreateFieldRequest {
     constructor(input: any) {
         this.name = input.name;
         for (let tileType of input.tileTypes) {
-            this.tileTypes.push(new TileType(tileType.type, tileType.src));
+            this.tileTypes.push(new TileType(tileType.type, tileType.cost, tileType.src));
         }
         this.tiles = input.tiles;
         this.width = this.tiles.length;
@@ -39,7 +39,7 @@ export default class CreateFieldRequest {
 
     toField(): TileBasedField {
         return new TileBasedField(this.name, this.width, this.length, this.height)
-            .withTileTypes(this.tileTypes)
+            .withTileTypes(...this.tileTypes)
             .withTiles(...this.tiles);
     }
 }

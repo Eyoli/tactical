@@ -9,6 +9,7 @@ import MovementService from "../../tactical/adapter/service/movement-service";
 import UnitState from "../../tactical/domain/model/unit-state";
 import TileBasedField from "../../tactical/domain/model/tile-based-field/tile-based-field";
 import Statistics from "../../tactical/domain/model/statistics";
+import TileType from "../../tactical/domain/model/tile-based-field/tile-type";
 
 describe('About moving a unit in a field...', () => {
 
@@ -21,10 +22,11 @@ describe('About moving a unit in a field...', () => {
         // arrange
         const field = new TileBasedField("Field", 3, 3, 3)
             .withId("fieldId")
+            .withTileTypes(new TileType(1, 1, ""))
             .withTiles(
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
+                [[1], [1], [1]],
+                [[1], [1], [1]],
+                [[1], [1], [1]]);
         const unit = new Unit().withStatistics(new Statistics()
             .withMoves(2).withJumps(1));
         const unitState = UnitState.init(unit, new Position(0, 0));
@@ -40,10 +42,11 @@ describe('About moving a unit in a field...', () => {
         // arrange
         const field = new TileBasedField("Field", 3, 3, 3)
             .withId("fieldId")
+            .withTileTypes(new TileType(1, 1, ""), new TileType(2, 2, ""))
             .withTiles(
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 2)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
+                [[1], [1], [1]],
+                [[1], [2], [1]],
+                [[1], [1], [1]]);
         const unit = new Unit().withStatistics(new Statistics()
             .withMoves(2).withJumps(1));
         const unitState = UnitState.init(unit, new Position(0, 0));
@@ -59,10 +62,11 @@ describe('About moving a unit in a field...', () => {
         // arrange
         const field = new TileBasedField("Field", 3, 3, 3)
             .withId("fieldId")
+            .withTileTypes(new TileType(1, 1, ""))
             .withTiles(
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 1), new Tile(1, 1)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
+                [[1], [1], [1]],
+                [[1], [1, 1], [1]],
+                [[1], [1], [1]]);
         const unit = new Unit().withStatistics(new Statistics()
             .withMoves(2).withJumps(0));
         const unitState = UnitState.init(unit, new Position(0, 0));
@@ -78,10 +82,11 @@ describe('About moving a unit in a field...', () => {
         // arrange
         const field = new TileBasedField("Field", 3, 3, 3)
             .withId("fieldId")
+            .withTileTypes(new TileType(1, 1, ""))
             .withTiles(
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 1), new Tile(1, 1)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
+                [[1], [1], [1]],
+                [[1], [1, 1], [1]],
+                [[1], [1], [1]]);
         const unit = new Unit().withStatistics(new Statistics()
             .withMoves(2).withJumps(0));
         const unitState = UnitState.init(unit, new Position(0, 0));
