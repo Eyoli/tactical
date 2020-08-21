@@ -29,7 +29,7 @@ describe('About moving a unit in a field...', () => {
                 [[1], [1], [1]]);
         const unit = new Unit().withStatistics(new Statistics()
             .withMoves(2).withJumps(1));
-        const unitState = UnitState.init(unit, new Position(0, 0));
+        const unitState = UnitState.init(unit, new Position(0, 0, 0));
 
         // act
         const accessiblePositions = movementService.getAccessiblePositions(field, unitState);
@@ -49,7 +49,7 @@ describe('About moving a unit in a field...', () => {
                 [[1], [1], [1]]);
         const unit = new Unit().withStatistics(new Statistics()
             .withMoves(2).withJumps(1));
-        const unitState = UnitState.init(unit, new Position(0, 0));
+        const unitState = UnitState.init(unit, new Position(0, 0, 0));
 
         // act
         const accessiblePositions = movementService.getAccessiblePositions(field, unitState);
@@ -69,7 +69,7 @@ describe('About moving a unit in a field...', () => {
                 [[1], [1], [1]]);
         const unit = new Unit().withStatistics(new Statistics()
             .withMoves(2).withJumps(0));
-        const unitState = UnitState.init(unit, new Position(0, 0));
+        const unitState = UnitState.init(unit, new Position(0, 0, 0));
 
         // act
         const accessiblePositions = movementService.getAccessiblePositions(field, unitState);
@@ -89,15 +89,17 @@ describe('About moving a unit in a field...', () => {
                 [[1], [1], [1]]);
         const unit = new Unit().withStatistics(new Statistics()
             .withMoves(2).withJumps(0));
-        const unitState = UnitState.init(unit, new Position(0, 0));
+        const unitState = UnitState.init(unit, new Position(0, 0, 0));
 
         // act
-        const inaccessiblePosition = movementService.isAccessible(field, unitState, new Position(1, 1));
-        const samePosition = movementService.isAccessible(field, unitState, new Position(0, 0));
-        const accessiblePosition = movementService.isAccessible(field, unitState, new Position(1, 0));
+        const unreachablePosition = movementService.isAccessible(field, unitState, new Position(1, 1, 1));
+        const invalidHeight = movementService.isAccessible(field, unitState, new Position(1, 0, 1));
+        const samePosition = movementService.isAccessible(field, unitState, new Position(0, 0, 0));
+        const accessiblePosition = movementService.isAccessible(field, unitState, new Position(1, 0, 0));
 
         // assert
-        Assert.deepStrictEqual(inaccessiblePosition, false);
+        Assert.deepStrictEqual(unreachablePosition, false);
+        Assert.deepStrictEqual(invalidHeight, false);
         Assert.deepStrictEqual(samePosition, false);
         Assert.deepStrictEqual(accessiblePosition, true);
     });

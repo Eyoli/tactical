@@ -36,27 +36,28 @@ export default class TileBasedField extends Field {
     getNeighbours(p: Position): Position[] {
         const neighbours: Position[] = [];
         if(p.x > 0) {
-            neighbours.push(new Position(p.x-1, p.y));
+            neighbours.push(new Position(p.x-1, p.y, this.tiles[p.x-1][p.y].length-1));
         }
         if(p.x < this.width-1) {
-            neighbours.push(new Position(p.x+1, p.y));
+            neighbours.push(new Position(p.x+1, p.y, this.tiles[p.x+1][p.y].length-1));
         }
         if(p.y > 0) {
-            neighbours.push(new Position(p.x, p.y-1));
+            neighbours.push(new Position(p.x, p.y-1, this.tiles[p.x][p.y-1].length-1));
         }
         if(p.y < this.length-1) {
-            neighbours.push(new Position(p.x, p.y+1));
+            neighbours.push(new Position(p.x, p.y+1, this.tiles[p.x][p.y+1].length-1));
         }
         return neighbours;
     }
 
     getCost(p: Position): number {
-        return this.tileTypes.get(this.tiles[p.x][p.y][this.tiles[p.x][p.y].length-1])!.cost;
+        return this.tileTypes.get(this.tiles[p.x][p.y][p.z])!.cost;
     }
 
     isValidPosition(p: Position): boolean {
         return p.x >= 0 && p.x < this.tiles.length
-            && p.y >= 0 && p.y < this.tiles[p.x].length;
+            && p.y >= 0 && p.y < this.tiles[p.x].length
+            && p.z === this.tiles[p.x][p.y+1].length-1;
     }
 
     isNeighbourAccessible(p1: Position, p2: Position, moves: number, jumps: number): boolean {
@@ -64,6 +65,6 @@ export default class TileBasedField extends Field {
     }
 
     getHeightDifference(p1: Position, p2: Position): number {
-        return Math.abs(this.tiles[p1.x][p1.y].length - this.tiles[p2.x][p2.y].length);
+        return Math.abs(p1.z - p2.z);
     }
 }

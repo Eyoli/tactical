@@ -23,8 +23,8 @@ describe('About action we should be able to...', () => {
         it('valid case', () => {
             // arrange
             srcUnit.withWeapon(new Weapon(1, 1, new Damage(10, DamageType.CUTTING)))
-            const srcUnitState = UnitState.init(srcUnit, new Position(0, 0));
-            const targetUnitState = UnitState.init(targetUnit, new Position(1, 0));
+            const srcUnitState = UnitState.init(srcUnit, new Position(0, 0, 0));
+            const targetUnitState = UnitState.init(targetUnit, new Position(1, 0, 0));
 
             // act
             const attackAction = actionService.generateActionOnTarget(srcUnitState, targetUnitState, ActionType.ATTACK);
@@ -40,8 +40,8 @@ describe('About action we should be able to...', () => {
         it('invalid range', () => {
             // arrange
             srcUnit.withWeapon(new Weapon(1, 1, new Damage(10, DamageType.CUTTING)))
-            const srcUnitState = UnitState.init(srcUnit, new Position(0, 0));
-            const targetUnitState = UnitState.init(targetUnit, new Position(2, 0));
+            const srcUnitState = UnitState.init(srcUnit, new Position(0, 0, 0));
+            const targetUnitState = UnitState.init(targetUnit, new Position(2, 0, 0));
 
             // act
             const attackAction = actionService.generateActionOnTarget(srcUnitState, targetUnitState, ActionType.ATTACK);

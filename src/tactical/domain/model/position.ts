@@ -3,10 +3,12 @@ import { ValueObject, hash } from "immutable";
 export default class Position implements ValueObject {
     readonly x: number;
     readonly y: number;
+    readonly z: number;
 
-    constructor(x: number, y: number) {
+    constructor(x: number, y: number, z: number) {
         this.x = x;
         this.y = y;
+        this.z = z;
     }
 
     distanceTo(p: Position): number {
@@ -14,7 +16,7 @@ export default class Position implements ValueObject {
     }
 
     equals(other: any): boolean {
-        return this.x === other.x && this.y === other.y;
+        return this.x === other.x && this.y === other.y && this.z === other.z;
     }
 
     hashCode(): number {

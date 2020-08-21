@@ -53,7 +53,8 @@ export class StartGameRequest {
         for(let playerInfo of input.composition) {
             const unitsPlacement: UnitsPlacement = new Map();
             for(let unitInfo of playerInfo.units) {
-                unitsPlacement.set(unitInfo.unitId, new Position(unitInfo.position.x, unitInfo.position.y));
+                unitsPlacement.set(unitInfo.unitId, 
+                    new Position(unitInfo.position.x, unitInfo.position.y, unitInfo.position.z));
             }
             this.composition.set(playerInfo.playerId, unitsPlacement);
         }

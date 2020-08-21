@@ -57,10 +57,17 @@ gameRouter.post('/:id/endTurn', function (req, res) {
 	res.json(new GameDTO(game));
 });
 
+gameRouter.get('/:id/units/:unitId/positions', function (req, res) {
+	const id = req.params.id;
+	const unitId = req.params.unitId;
+	const positions = gameService.getAccessiblePositions(id, unitId);
+	res.json(positions);
+});
+
 gameRouter.post('/:id/units/:unitId/move', function (req, res) {
 	const id = req.params.id;
 	const unitId = req.params.unitId;
-	const position = new Position(req.body.position.x, req.body.position.y);
+	const position = new Position(req.body.position.x, req.body.position.y, req.body.position.z);
 	const unitState = gameService.moveUnit(id, unitId, position);
 	res.json(unitState);
 });
