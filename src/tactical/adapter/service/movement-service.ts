@@ -23,8 +23,7 @@ export default class MovementService implements MovementServicePort {
             if(currentSearch) {
                 accessiblePositions.add(currentSearch[0]);
                 searches.push(...this.getNeighbours(field, currentSearch[0], currentSearch[1])
-                    .filter(search => field.isNeighbourAccessible(currentSearch[0], search[0], currentSearch[1], unitState.getJumps()))    
-                    .filter(search => !accessiblePositions.has(search[0])));
+                    .filter(search => field.isNeighbourAccessible(currentSearch[0], search[0], currentSearch[1], unitState.getJumps()))); 
             }
         }
         return accessiblePositions;

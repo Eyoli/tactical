@@ -80,6 +80,14 @@ export default class Game {
     finishTurn(): void {
         if(this.hasStarted()) {
             this.currentTurnPlayerIndex = (this.currentTurnPlayerIndex + 1) % this.players.length;
+
+            this.unitsPerPlayer.get(this.getCurrentPlayer()!.id)!
+                .map(unitId => this.currentTurnStates.get(unitId)!)
+                .forEach(unitStates => {
+                    const lastState = unitStates.shift()!;
+                    unitStates.splice(0);
+                    unitStates.unshift(lastState.toNextTurn());
+                });
         }
     }
 

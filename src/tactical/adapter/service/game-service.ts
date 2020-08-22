@@ -160,14 +160,18 @@ export default class GameService implements GameServicePort {
         const unit = game.getUnit(unitId);
         const unitState = game.getUnitState(unitId);
 
-        if(game.canMove(unit) && this.movementService.isAccessible(game.field, unitState!, p)) {
-            const newUnitState = unitState!.movingTo(p);
+        if (!game.canMove(unit)) {
+            throw new GameError(GameErrorCode.IMPOSSIBLE_TO_MOVE_UNIT);
+        }
+        
+        if (!this.movementService.isAccessible(game.field, unitState!, p)) {
+            throw new GameError(GameErrorCode.UNREACHABLE_POSITION);
+        }
+        
+        const newUnitState = unitState!.movingTo(p);
             game.integrate(true, newUnitState);
             this.gameRepository.update(game, gameId);
-
             return newUnitState;
-        }
-        throw new GameError(GameErrorCode.IMPOSSIBLE_TO_MOVE_UNIT);
     }
 
     rollbackLastAction(gameId: string): void {

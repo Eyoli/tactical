@@ -9,6 +9,7 @@ export class GameErrorCode {
     static readonly INVALID_POSITION = new GameErrorCode("INVALID_POSITION", "There is an invalid position");
     static readonly IMPOSSIBLE_TO_ACT = new GameErrorCode("IMPOSSIBLE_TO_ACT", "Impossible to act");
     static readonly GAME_NOT_STARTED = new GameErrorCode("GAME_NOT_STARTED", "Game has not started yet");
+    static readonly UNREACHABLE_POSITION = new GameErrorCode("UNREACHABLE_POSITION", "Unreachable position");
 
     private constructor(code: string, message: string) {
         this.code = code;
