@@ -2,10 +2,11 @@ import Field from "./field";
 import Player from "./player";
 import Unit from "./unit";
 import UnitState from "./unit-state";
+import TurnManager from "./turn-manager";
 
 export const enum GameState {
-    INITIATED = "INITIATED", 
-    STARTED = "STARTED", 
+    INITIATED = "INITIATED",
+    STARTED = "STARTED",
     FINISHED = "FINISHED"
 }
 
@@ -16,8 +17,8 @@ export default class Game {
     private units: Map<string, Unit>;
     private unitsPerPlayer: Map<string, string[]>;
     private state: GameState;
+    private turnManager!: TurnManager;
 
-    private currentTurnPlayerIndex: number;
     private currentTurnStates: Map<string, UnitState[]>;
     private currentTurnChanges: string[][];
 
@@ -29,7 +30,6 @@ export default class Game {
 
         this.currentTurnStates = new Map();
         this.currentTurnChanges = [];
-        this.currentTurnPlayerIndex = 0;
     }
 
     addPlayers(...players: Player[]) {
@@ -37,7 +37,7 @@ export default class Game {
     }
 
     setUnits(player: Player, units: Unit[]) {
-        if(player.id) {
+        if (player.id) {
             this.unitsPerPlayer.set(player.id, units.map(unit => unit.id));
             units.forEach(unit => {
                 this.units.set(unit.id, unit);
@@ -49,7 +49,7 @@ export default class Game {
     getUnits(player: Player): Unit[] {
         const units = this.unitsPerPlayer.get(player.id)
             ?.map(unitId => this.units.get(unitId)!);
-        if(!units) {
+        if (!units) {
             return [];
         }
         return units;
@@ -59,10 +59,8 @@ export default class Game {
         return this.units.get(unitId)!;
     }
 
-    getCurrentPlayer(): Player | undefined {
-        if(this.hasStarted()) {
-            return this.players[this.currentTurnPlayerIndex];
-        }
+    getCurrentUnit(): Unit {
+        return this.turnManager.getCurrentUnit();
     }
 
     getState(): string {
@@ -71,6 +69,7 @@ export default class Game {
 
     start(): void {
         this.state = GameState.STARTED;
+        this.turnManager = new TurnManager(Array.from(this.units.values()));
     }
 
     hasStarted(): boolean {
@@ -78,37 +77,30 @@ export default class Game {
     }
 
     finishTurn(): void {
-        if(this.hasStarted()) {
-            this.currentTurnPlayerIndex = (this.currentTurnPlayerIndex + 1) % this.players.length;
+        if (this.hasStarted()) {
+            this.turnManager.next();
 
-            this.unitsPerPlayer.get(this.getCurrentPlayer()!.id)!
-                .map(unitId => this.currentTurnStates.get(unitId)!)
-                .forEach(unitStates => {
-                    const lastState = unitStates.shift()!;
-                    unitStates.splice(0);
-                    unitStates.unshift(lastState.toNextTurn());
-                });
+            const unitStates = this.currentTurnStates.get(this.getCurrentUnit().id)!
+            const lastState = unitStates.shift()!;
+            unitStates.splice(0);
+            unitStates.unshift(lastState.toNextTurn());
         }
     }
 
     canMove(unit: Unit): boolean {
-        if(this.hasStarted()) {
+        if (this.hasStarted()) {
             const unitState = this.getUnitState(unit.id);
-            const player = this.getCurrentPlayer();
-            return unitState.hasMoved() === false && this.getUnits(player!)
-                .map(u => u.id)
-                .includes(unit.id);
+            return unitState.hasMoved() === false
+                && this.turnManager.getCurrentUnit().id === unit.id;
         }
         return false;
     }
 
     canAct(unit: Unit): boolean {
-        if(this.hasStarted()) {
+        if (this.hasStarted()) {
             const unitState = this.getUnitState(unit.id);
-            const player = this.getCurrentPlayer();
-            return unitState.hasActed() === false && this.getUnits(player!)
-                .map(u => u.id)
-                .includes(unit.id);
+            return unitState.hasActed() === false
+                && this.turnManager.getCurrentUnit().id === unit.id;
         }
         return false;
     }
@@ -127,7 +119,7 @@ export default class Game {
         if (saveStateChanges) {
             this.currentTurnChanges.unshift(newStates.map(state => state.getUnit().id));
         }
-        
+
         newStates.forEach(newState => {
             const states = this.currentTurnStates.get(newState.getUnit().id);
             if (states) {

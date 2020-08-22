@@ -77,19 +77,23 @@ describe('About playing we should be able to...', () => {
         let game = aGameWithTwoPlayers();
         const unitsComposition = aUnitComposition(game.players[0], game.players[1]);
         gameService.startGame(game.id, unitsComposition);
+        const player1 = game.players[0];
+        const unit1 = game.getUnits(player1)[0];
+        const player2 = game.players[1];
+        const unit2 = game.getUnits(player2)[0];
 
         // act
-        const playerPerTurn = [];
-        playerPerTurn.push(game.getCurrentPlayer());
+        const unitPerTurn = [];
+        unitPerTurn.push(game.getCurrentUnit());
         game = gameService.finishTurn(game.id);
-        playerPerTurn.push(game.getCurrentPlayer());
+        unitPerTurn.push(game.getCurrentUnit());
         game = gameService.finishTurn(game.id);
-        playerPerTurn.push(game.getCurrentPlayer());
+        unitPerTurn.push(game.getCurrentUnit());
 
         // assert
-        Assert.deepStrictEqual(playerPerTurn[0]?.name, "Player 1");
-        Assert.deepStrictEqual(playerPerTurn[1]?.name, "Player 2");
-        Assert.deepStrictEqual(playerPerTurn[2]?.name, "Player 1");
+        Assert.deepStrictEqual(unitPerTurn[0]?.id, unit1.id);
+        Assert.deepStrictEqual(unitPerTurn[1]?.id, unit2.id);
+        Assert.deepStrictEqual(unitPerTurn[2]?.id, unit1.id);
     });
 
     describe('move a unit...', () => {

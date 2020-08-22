@@ -26,6 +26,11 @@ export default class Statistics {
         return this;
     }
 
+    withSpeed(speed: number): Statistics {
+        this.speed = speed;
+        return this;
+    }
+
     copy(): Statistics {
         const statistics = new Statistics();
         statistics.health = this.health;
