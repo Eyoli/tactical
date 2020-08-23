@@ -1,6 +1,7 @@
 import Field from "../field";
 import Position from "../position";
 import TileType from "./tile-type";
+import UnitState from "../unit-state";
 
 export default class TileBasedField extends Field {
     private tileTypes: Map<number, TileType>;
@@ -23,7 +24,7 @@ export default class TileBasedField extends Field {
     }
 
     withTileTypes(...tileTypes: TileType[]) {
-        for(let tileType of tileTypes) {
+        for (let tileType of tileTypes) {
             this.tileTypes.set(tileType.type, tileType);
         }
         return this;
@@ -35,17 +36,17 @@ export default class TileBasedField extends Field {
 
     getNeighbours(p: Position): Position[] {
         const neighbours: Position[] = [];
-        if(p.x > 0 && p.y < this.tiles[p.x-1].length) {
-            neighbours.push(new Position(p.x-1, p.y, this.tiles[p.x-1][p.y].length-1));
+        if (p.x > 0 && p.y < this.tiles[p.x - 1].length) {
+            neighbours.push(new Position(p.x - 1, p.y, this.tiles[p.x - 1][p.y].length - 1));
         }
-        if(p.x < this.tiles.length-1 && p.y < this.tiles[p.x+1].length) {
-            neighbours.push(new Position(p.x+1, p.y, this.tiles[p.x+1][p.y].length-1));
+        if (p.x < this.tiles.length - 1 && p.y < this.tiles[p.x + 1].length) {
+            neighbours.push(new Position(p.x + 1, p.y, this.tiles[p.x + 1][p.y].length - 1));
         }
-        if(p.y > 0) {
-            neighbours.push(new Position(p.x, p.y-1, this.tiles[p.x][p.y-1].length-1));
+        if (p.y > 0) {
+            neighbours.push(new Position(p.x, p.y - 1, this.tiles[p.x][p.y - 1].length - 1));
         }
-        if(p.y < this.tiles[p.x].length-1) {
-            neighbours.push(new Position(p.x, p.y+1, this.tiles[p.x][p.y+1].length-1));
+        if (p.y < this.tiles[p.x].length - 1) {
+            neighbours.push(new Position(p.x, p.y + 1, this.tiles[p.x][p.y + 1].length - 1));
         }
         return neighbours;
     }
@@ -57,11 +58,12 @@ export default class TileBasedField extends Field {
     isValidPosition(p: Position): boolean {
         return p.x >= 0 && p.x < this.tiles.length
             && p.y >= 0 && p.y < this.tiles[p.x].length
-            && p.z === this.tiles[p.x][p.y+1].length-1;
+            && p.z === this.tiles[p.x][p.y].length - 1;
     }
 
-    isNeighbourAccessible(p1: Position, p2: Position, moves: number, jumps: number): boolean {
-        return this.getCost(p2) <= moves && this.getHeightDifference(p1, p2) <= jumps;
+    isNeighbourAccessible(p1: Position, p2: Position, moves: number, unitState: UnitState): boolean {
+        return this.getCost(p2) <= moves
+            && this.getHeightDifference(p1, p2) <= unitState.getJumps();
     }
 
     getHeightDifference(p1: Position, p2: Position): number {

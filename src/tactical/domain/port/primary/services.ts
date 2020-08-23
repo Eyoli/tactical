@@ -43,6 +43,6 @@ export interface UnitServicePort {
 }
 
 export interface MovementServicePort {
-    isAccessible(field: Field | undefined, unit: UnitState, p: Position): boolean;
+    isAccessible(field: Field | undefined, unitState: UnitState, p: Position): boolean;
     getAccessiblePositions(field: Field, unitState: UnitState): Position[];
 }

@@ -1,5 +1,6 @@
 import Tile from "./tile-based-field/tile";
 import Position from "./position";
+import UnitState from "./unit-state";
 
 export default abstract class Field {
     id!: string;
@@ -20,7 +21,7 @@ export default abstract class Field {
 
     abstract isValidPosition(p: Position): boolean;
 
-    abstract isNeighbourAccessible(p1: Position, p2: Position, moves: number, jumps: number): boolean;
+    abstract isNeighbourAccessible(p1: Position, p2: Position, moves: number, unitState: UnitState): boolean;
 
     abstract getHeightDifference(p1: Position, p2: Position): number;
 }

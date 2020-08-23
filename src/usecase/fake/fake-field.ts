@@ -1,5 +1,6 @@
 import Field from "../../tactical/domain/model/field";
 import Position from "../../tactical/domain/model/position";
+import UnitState from "../../tactical/domain/model/unit-state";
 
 export default class FakeField extends Field {
     private validPositions: boolean;
@@ -21,7 +22,7 @@ export default class FakeField extends Field {
         return this.validPositions;
     }
 
-    isNeighbourAccessible(p1: Position, p2: Position, moves: number, jumps: number): boolean {
+    isNeighbourAccessible(p1: Position, p2: Position, moves: number, unitState: UnitState): boolean {
         return true;
     }
 
