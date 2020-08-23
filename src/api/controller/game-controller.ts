@@ -57,6 +57,12 @@ gameRouter.post('/:id/endTurn', function (req, res) {
 	res.json(new GameDTO(game));
 });
 
+gameRouter.post('/:id/rollbackAction', function (req, res) {
+	const id = req.params.id;
+	const game = gameService.rollbackLastAction(id);
+	res.json(new GameDTO(game));
+});
+
 gameRouter.get('/:id/units/:unitId/positions', function (req, res) {
 	const id = req.params.id;
 	const unitId = req.params.unitId;

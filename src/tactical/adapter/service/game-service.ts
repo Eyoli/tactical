@@ -174,8 +174,10 @@ export default class GameService implements GameServicePort {
             return newUnitState;
     }
 
-    rollbackLastAction(gameId: string): void {
+    rollbackLastAction(gameId: string): Game {
         const game = this.getGame(gameId);
         game.rollbackLastAction();
+        this.gameRepository.update(game, gameId);
+        return game;
     }
 }

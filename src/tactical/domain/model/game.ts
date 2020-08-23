@@ -132,8 +132,8 @@ export default class Game {
         const lastActionChanges = this.currentTurnChanges.shift();
         if (lastActionChanges) {
             lastActionChanges
-                .map(unitId => this.currentTurnStates.get(unitId))
-                .forEach(currentTurnUnitStates => currentTurnUnitStates?.shift());
+                .map(unitId => this.currentTurnStates.get(unitId)!)
+                .forEach(currentTurnUnitStates => currentTurnUnitStates.shift());
         }
     }
 }
