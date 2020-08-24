@@ -10,7 +10,7 @@ import * as mocha from "mocha";
 import RepositoryPort from "../../tactical/domain/port/secondary/repository";
 import PlayerService from "../../tactical/adapter/service/player-service";
 import UnitService from "../../tactical/adapter/service/unit-service";
-import { FakeMovementService } from "../fake/services";
+import { FakeFieldAlgorithmService } from "../fake/services";
 import Position from "../../tactical/domain/model/position";
 import { UnitsComposition, UnitsPlacement } from "../../tactical/domain/model/aliases";
 import { GameError, GameErrorCode } from "../../tactical/domain/model/error/game-error";
@@ -41,7 +41,7 @@ describe('About playing we should be able to...', () => {
             new PlayerService(playerRepository),
             new UnitService(unitRepository),
             fieldRepository,
-            new FakeMovementService(),
+            new FakeFieldAlgorithmService(),
             new FakeActionService()
         );
     });

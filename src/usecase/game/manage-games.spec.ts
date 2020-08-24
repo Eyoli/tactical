@@ -12,7 +12,7 @@ import { GameServicePort } from "../../tactical/domain/port/primary/services";
 import ResourceNotFoundError from "../../tactical/domain/model/error/resource-not-found-error";
 import PlayerService from "../../tactical/adapter/service/player-service";
 import UnitService from "../../tactical/adapter/service/unit-service";
-import { FakeMovementService } from "../fake/services";
+import { FakeFieldAlgorithmService } from "../fake/services";
 import FakeField from "../fake/fake-field";
 import FakeActionService from "../fake/fake-action-service";
 
@@ -35,7 +35,7 @@ describe('About games we should be able to...', () => {
             new PlayerService(playerRepository),
             new UnitService(unitRepository), 
             fieldRepository, 
-            new FakeMovementService(),
+            new FakeFieldAlgorithmService(),
             new FakeActionService());
     });
 

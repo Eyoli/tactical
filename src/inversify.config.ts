@@ -1,7 +1,7 @@
 import { Container } from "inversify";
 import "reflect-metadata";
 import { TYPES } from "./types";
-import { FieldServicePort, GameServicePort, PlayerServicePort, UnitServicePort, MovementServicePort, ActionServicePort } from "./tactical/domain/port/primary/services";
+import { FieldServicePort, GameServicePort, PlayerServicePort, UnitServicePort, FieldAlgorithmServicePort, ActionServicePort } from "./tactical/domain/port/primary/services";
 import FieldService from "./tactical/adapter/service/field-service";
 import RepositoryPort from "./tactical/domain/port/secondary/repository";
 import Field from "./tactical/domain/model/field";
@@ -13,7 +13,7 @@ import Player from "./tactical/domain/model/player";
 import Game from "./tactical/domain/model/game";
 import PlayerService from "./tactical/adapter/service/player-service";
 import UnitService from "./tactical/adapter/service/unit-service";
-import MovementService from "./tactical/adapter/service/movement-service";
+import FieldAlgorithmService from "./tactical/adapter/service/field-algorithm-service";
 import { GameJsonMapper } from "./json-repository/adapter/mapper/game-json-mapper";
 import config from "config";
 import InMemoryRepository from "./infrastructure/adapter/repository/in-memory-repository";
@@ -59,7 +59,7 @@ iocContainer.bind<FieldServicePort<TileBasedField>>(TYPES.FIELD_SERVICE).to(Fiel
 iocContainer.bind<GameServicePort>(TYPES.GAME_SERVICE).to(GameService);
 iocContainer.bind<PlayerServicePort>(TYPES.PLAYER_SERVICE).to(PlayerService);
 iocContainer.bind<UnitServicePort>(TYPES.UNIT_SERVICE).to(UnitService);
-iocContainer.bind<MovementServicePort>(TYPES.MOVEMENT_SERVICE).to(MovementService);
+iocContainer.bind<FieldAlgorithmServicePort>(TYPES.FIELD_ALGORITHM_SERVICE).to(FieldAlgorithmService);
 iocContainer.bind<ActionServicePort>(TYPES.ACTION_SERVICE).to(ActionService);
 
 // Logging

@@ -59,8 +59,10 @@ export default class Game {
         return this.units.get(unitId)!;
     }
 
-    getCurrentUnit(): Unit {
-        return this.turnManager.getCurrentUnit();
+    getCurrentUnit() {
+        if (this.hasStarted()) {
+            return this.turnManager.getCurrentUnit();
+        }
     }
 
     getState(): string {
@@ -80,7 +82,7 @@ export default class Game {
         if (this.hasStarted()) {
             this.turnManager.next();
 
-            const unitStates = this.currentTurnStates.get(this.getCurrentUnit().id)!
+            const unitStates = this.currentTurnStates.get(this.getCurrentUnit()!.id)!
             const lastState = unitStates.shift()!;
             unitStates.splice(0);
             unitStates.unshift(lastState.toNextTurn());

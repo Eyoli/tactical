@@ -22,7 +22,7 @@ export default class FakeField extends Field {
         return this.validPositions;
     }
 
-    isNeighbourAccessible(p1: Position, p2: Position, moves: number, unitState: UnitState): boolean {
+    isNeighbourAccessible(p1: Position, p2: Position, moves: number, jumps: number): boolean {
         return true;
     }
 

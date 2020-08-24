@@ -42,7 +42,8 @@ export interface UnitServicePort {
     getUnits(ids?: string[]): Unit[];
 }
 
-export interface MovementServicePort {
+export interface FieldAlgorithmServicePort {
     isAccessible(field: Field | undefined, unitState: UnitState, p: Position): boolean;
     getAccessiblePositions(field: Field, unitState: UnitState): Position[];
+    getPositionsInRange(field: Field, start: Position, range: number, height: number): Position[];
 }

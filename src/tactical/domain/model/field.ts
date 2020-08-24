@@ -21,7 +21,7 @@ export default abstract class Field {
 
     abstract isValidPosition(p: Position): boolean;
 
-    abstract isNeighbourAccessible(p1: Position, p2: Position, moves: number, unitState: UnitState): boolean;
+    abstract isNeighbourAccessible(p1: Position, p2: Position, moves: number, jumps: number): boolean;
 
     abstract getHeightDifference(p1: Position, p2: Position): number;
 }

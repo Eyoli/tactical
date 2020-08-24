@@ -1,4 +1,4 @@
-import { GameServicePort, MovementServicePort, PlayerServicePort, UnitServicePort, ActionServicePort } from "../../domain/port/primary/services";
+import { GameServicePort, FieldAlgorithmServicePort, PlayerServicePort, UnitServicePort, ActionServicePort } from "../../domain/port/primary/services";
 import Game from "../../domain/model/game";
 import { inject, injectable } from "inversify";
 import RepositoryPort from "../../domain/port/secondary/repository";
@@ -18,7 +18,7 @@ export default class GameService implements GameServicePort {
     private playerService: PlayerServicePort;
     private unitService: UnitServicePort;
     private fieldRepository: RepositoryPort<Field>;
-    private movementService: MovementServicePort;
+    private fieldAlgorithmService: FieldAlgorithmServicePort;
     private actionService: ActionServicePort;
 
     constructor(
@@ -26,13 +26,13 @@ export default class GameService implements GameServicePort {
         @inject(TYPES.PLAYER_SERVICE) playerService: PlayerServicePort,
         @inject(TYPES.UNIT_SERVICE) unitService: UnitServicePort,
         @inject(TYPES.FIELD_REPOSITORY) fieldRepository: RepositoryPort<Field>,
-        @inject(TYPES.MOVEMENT_SERVICE) movementService: MovementServicePort,
+        @inject(TYPES.FIELD_ALGORITHM_SERVICE) fieldAlgorithmService: FieldAlgorithmServicePort,
         @inject(TYPES.ACTION_SERVICE) actionService: ActionServicePort) {
         this.gameRepository = gameRepository;
         this.playerService = playerService;
         this.unitService = unitService;
         this.fieldRepository = fieldRepository;
-        this.movementService = movementService;
+        this.fieldAlgorithmService = fieldAlgorithmService;
         this.actionService = actionService;
     }
 
@@ -123,7 +123,7 @@ export default class GameService implements GameServicePort {
         const game = this.getGame(gameId);
         const unitState = game.getUnitState(unitId);
         if(game.field && unitState) {
-            return this.movementService.getAccessiblePositions(game?.field, unitState);
+            return this.fieldAlgorithmService.getAccessiblePositions(game?.field, unitState);
         }
         return [];
     }
@@ -164,7 +164,7 @@ export default class GameService implements GameServicePort {
             throw new GameError(GameErrorCode.IMPOSSIBLE_TO_MOVE_UNIT);
         }
         
-        if (!this.movementService.isAccessible(game.field, unitState!, p)) {
+        if (!this.fieldAlgorithmService.isAccessible(game.field, unitState!, p)) {
             throw new GameError(GameErrorCode.UNREACHABLE_POSITION);
         }
         

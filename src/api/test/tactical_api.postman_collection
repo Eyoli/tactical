@@ -488,6 +488,10 @@
 					"script": {
 						"id": "ea4c2008-82ae-434b-8552-928a9c239c42",
 						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"if (jsonData.error) {\r",
+							"    console.log(jsonData.error);\r",
+							"}\r",
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
 							"});"
@@ -757,37 +761,37 @@
 	],
 	"variable": [
 		{
-			"id": "5140a0dc-e5c5-4a22-836f-1dcfabafd6a4",
+			"id": "d5f3f437-217c-4914-a589-31c551179f02",
 			"key": "BASE_URL",
 			"value": "http://localhost:3000"
 		},
 		{
-			"id": "c023981c-0f8b-4f92-93aa-c27b498f9ce0",
+			"id": "e9a76195-3494-440f-8f15-1fbf566c6cf9",
 			"key": "FIELD_ID",
 			"value": ""
 		},
 		{
-			"id": "55740cca-7078-4eef-aec1-7e56d700c033",
+			"id": "c745743d-7602-4e92-82b8-1c43cd14bfbb",
 			"key": "UNIT_1_ID",
 			"value": ""
 		},
 		{
-			"id": "0487c8be-d4f9-42ef-9303-793fa2617fed",
+			"id": "61c00339-3b3d-42ea-8c7d-96e402de84cf",
 			"key": "UNIT_2_ID",
 			"value": ""
 		},
 		{
-			"id": "ba5b1deb-d642-4e85-bb33-8ab0a4157520",
+			"id": "c748b478-6709-4651-87d2-aeebb79a7bf3",
 			"key": "PLAYER_1_ID",
 			"value": ""
 		},
 		{
-			"id": "5e25dbf8-147e-43f3-9322-5868182bea07",
+			"id": "1b9b4c23-b155-4e6a-a464-3febfc5e59f6",
 			"key": "PLAYER_2_ID",
 			"value": ""
 		},
 		{
-			"id": "1b213edd-b21c-41ea-b8b0-761b37e444da",
+			"id": "1b71cb17-3faa-4fd8-88f2-dc8add7d8eae",
 			"key": "GAME_ID",
 			"value": ""
 		}

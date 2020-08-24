@@ -7,6 +7,7 @@ export default class GameDTO {
     private readonly id: string;
     private readonly fieldId: string | undefined;
     private readonly unitStates: UnitState[];
+    private readonly currentUnitId?: string;
 
     constructor(game: Game) {
         this.id = game.id;
@@ -17,5 +18,6 @@ export default class GameDTO {
             player.units = game.getUnits(player);
         }
         this.unitStates = game.getUnitStates();
+        this.currentUnitId = game.getCurrentUnit()?.id;
     }
 }
