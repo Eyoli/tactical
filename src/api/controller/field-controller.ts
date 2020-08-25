@@ -4,7 +4,7 @@ import { FieldServicePort } from '../../tactical/domain/port/primary/services';
 import { TYPES } from '../../types';
 import BadRequestError from '../error/bad-request-error';
 import CreateFieldRequest from '../request/create-field-request';
-import FieldDTO from '../dto/fieldDTO';
+import FieldDTO from '../dto/field-dto';
 import TileBasedField from '../../tactical/domain/model/tile-based-field/tile-based-field';
 
 const fieldRouter = express.Router();

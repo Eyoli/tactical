@@ -1,7 +1,7 @@
 import { injectable, inject } from "inversify";
 import { FieldServicePort as FieldServicePort } from "../../domain/port/primary/services";
 import Field from "../../domain/model/field";
-import RepositoryPort from "../../domain/port/secondary/repository";
+import RepositoryPort from "../../domain/port/secondary/repository-port";
 import { TYPES } from "../../../types";
 import ResourceNotFoundError from "../../domain/model/error/resource-not-found-error";
 

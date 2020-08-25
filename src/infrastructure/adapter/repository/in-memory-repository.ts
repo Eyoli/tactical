@@ -1,11 +1,13 @@
-import RepositoryPort from "../../../tactical/domain/port/secondary/repository";
+import RepositoryPort from "../../../tactical/domain/port/secondary/repository-port";
 import Logger from "../../../tactical/domain/logger/logger";
+import { IdGenerator } from "../../generator/id-generator";
 
 export default class InMemoryRepository<T extends Object> implements RepositoryPort<T> {
+    private idGenerator: IdGenerator<T, string>;
     private content: Map<string, T>;
-    private counter = 1;
 
-    constructor() {
+    constructor(idGenerator: IdGenerator<T, string>) {
+        this.idGenerator = idGenerator;
         this.content = new Map();
     }
     
@@ -14,8 +16,7 @@ export default class InMemoryRepository<T extends Object> implements RepositoryP
     }
 
     save(object: T): string {
-        const id = "object" + this.counter;
-        this.counter++;
+        const id = this.idGenerator.generate(object);
         this.content.set(id, object);
         return id;
     }

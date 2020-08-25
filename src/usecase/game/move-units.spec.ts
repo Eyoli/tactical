@@ -5,7 +5,7 @@ import * as mocha from "mocha";
 import { FieldAlgorithmServicePort as FieldAlgorithmServicePort } from "../../tactical/domain/port/primary/services";
 import Tile from "../../tactical/domain/model/tile-based-field/tile";
 import Position from "../../tactical/domain/model/position";
-import FieldAlgorithmService from "../../tactical/adapter/service/field-algorithm-service";
+import FieldAlgorithmService from "../../tactical/adapter/primary/field-algorithm-service";
 import UnitState from "../../tactical/domain/model/unit-state";
 import TileBasedField from "../../tactical/domain/model/tile-based-field/tile-based-field";
 import Statistics from "../../tactical/domain/model/statistics";

@@ -1,24 +1,25 @@
 import "reflect-metadata";
 import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
-import GameService from "../../tactical/adapter/service/game-service";
+import GameService from "../../tactical/adapter/primary/game-service";
 import Game from "../../tactical/domain/model/game";
 import Field from "../../tactical/domain/model/field";
 import Player from "../../tactical/domain/model/player";
 import Unit from "../../tactical/domain/model/unit";
 import * as Assert from "assert";
 import * as mocha from "mocha";
-import RepositoryPort from "../../tactical/domain/port/secondary/repository";
-import PlayerService from "../../tactical/adapter/service/player-service";
-import UnitService from "../../tactical/adapter/service/unit-service";
+import RepositoryPort from "../../tactical/domain/port/secondary/repository-port";
+import PlayerService from "../../tactical/adapter/primary/player-service";
+import UnitService from "../../tactical/adapter/primary/unit-service";
 import { FakeFieldAlgorithmService } from "../fake/services";
 import Position from "../../tactical/domain/model/position";
 import { UnitsComposition, UnitsPlacement } from "../../tactical/domain/model/aliases";
 import { GameError, GameErrorCode } from "../../tactical/domain/model/error/game-error";
 import FakeField from "../fake/fake-field";
 import FakeActionService from "../fake/fake-action-service";
-import ActionType from "../../tactical/domain/model/action/action-type";
+import { ActionType } from "../../tactical/domain/model/action/action-type";
 import Statistics from "../../tactical/domain/model/statistics";
 import { GameServicePort } from "../../tactical/domain/port/primary/services";
+import { CounterIdGenerator } from "../../infrastructure/generator/id-generator";
 
 describe('About playing we should be able to...', () => {
 
@@ -31,10 +32,10 @@ describe('About playing we should be able to...', () => {
     let fieldRepository: RepositoryPort<Field>;
 
     beforeEach(() => {
-        playerRepository = new InMemoryRepository<Player>();
-        gameRepository = new InMemoryRepository<Game>();
-        unitRepository = new InMemoryRepository<Unit>();
-        fieldRepository = new InMemoryRepository<Field>();
+        playerRepository = new InMemoryRepository<Player>(new CounterIdGenerator("player"));
+        gameRepository = new InMemoryRepository<Game>(new CounterIdGenerator("game"));
+        unitRepository = new InMemoryRepository<Unit>(new CounterIdGenerator("unit"));
+        fieldRepository = new InMemoryRepository<Field>(new CounterIdGenerator("field"));
 
         gameService = new GameService(
             gameRepository,
@@ -143,8 +144,8 @@ describe('About playing we should be able to...', () => {
         const unit2 = game.getUnits(game.players[1])[0];
 
         // act
-        gameService.actOnTarget(game.id, unit1.id, unit2.id, ActionType.ATTACK);
-        const actASecondTime = () => gameService.actOnTarget(game.id, unit1.id, unit2.id, ActionType.ATTACK);
+        gameService.actOnTarget(game.id, unit1.id, unit2.id, "attack");
+        const actASecondTime = () => gameService.actOnTarget(game.id, unit1.id, unit2.id, "attack");
 
         // assert
         const unitState = game.getUnitState(unit2.id);
@@ -162,7 +163,7 @@ describe('About playing we should be able to...', () => {
         const unit2 = game.getUnits(game.players[1])[0];
 
         // act
-        gameService.actOnTarget(game.id, unit1.id, unit2.id, ActionType.ATTACK);
+        gameService.actOnTarget(game.id, unit1.id, unit2.id, "attack");
         gameService.rollbackLastAction(game.id);
         gameService.rollbackLastAction(game.id);
 

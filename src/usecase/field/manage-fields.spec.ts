@@ -1,10 +1,11 @@
 import "reflect-metadata";
 import * as Assert from "assert";
-import FieldService from "../../tactical/adapter/service/field-service";
+import FieldService from "../../tactical/adapter/primary/field-service";
 import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
 import { FieldServicePort } from "../../tactical/domain/port/primary/services";
-import RepositoryPort from "../../tactical/domain/port/secondary/repository";
+import RepositoryPort from "../../tactical/domain/port/secondary/repository-port";
 import FakeField from "../fake/fake-field";
+import { CounterIdGenerator } from "../../infrastructure/generator/id-generator";
 
 describe('About fields we should be able to...', () => {
 
@@ -12,7 +13,7 @@ describe('About fields we should be able to...', () => {
     let fieldRepository: RepositoryPort<FakeField>;
 
     beforeEach(() => {
-        fieldRepository = new InMemoryRepository<FakeField>();
+        fieldRepository = new InMemoryRepository<FakeField>(new CounterIdGenerator("field"));
         fieldService = new FieldService<FakeField>(fieldRepository);
     });
 

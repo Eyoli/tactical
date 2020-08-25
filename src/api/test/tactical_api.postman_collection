@@ -693,6 +693,62 @@
 			"response": []
 		},
 		{
+			"name": "getActionInfo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e833f8b3-0eb2-41b2-8454-4f968a0c59a0",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"if (jsonData.error) {\r",
+							"    console.log(jsonData.error);\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/games/:id/units/:unitId/actions/:actionTypeId/info",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"games",
+						":id",
+						"units",
+						":unitId",
+						"actions",
+						":actionTypeId",
+						"info"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{GAME_ID}}"
+						},
+						{
+							"key": "unitId",
+							"value": "{{UNIT_1_ID}}"
+						},
+						{
+							"key": "actionTypeId",
+							"value": "attack"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "endTurn",
 			"event": [
 				{
@@ -761,37 +817,37 @@
 	],
 	"variable": [
 		{
-			"id": "d5f3f437-217c-4914-a589-31c551179f02",
+			"id": "327c3100-c264-4e48-8ead-1e159aa25858",
 			"key": "BASE_URL",
 			"value": "http://localhost:3000"
 		},
 		{
-			"id": "e9a76195-3494-440f-8f15-1fbf566c6cf9",
+			"id": "ea7f4253-4e32-4fec-b375-f93b811e6a3a",
 			"key": "FIELD_ID",
 			"value": ""
 		},
 		{
-			"id": "c745743d-7602-4e92-82b8-1c43cd14bfbb",
+			"id": "80f07060-bf78-4233-9133-8df6a8adcd2d",
 			"key": "UNIT_1_ID",
 			"value": ""
 		},
 		{
-			"id": "61c00339-3b3d-42ea-8c7d-96e402de84cf",
+			"id": "eed2cfe3-c864-46be-a35f-201b210e7bb2",
 			"key": "UNIT_2_ID",
 			"value": ""
 		},
 		{
-			"id": "c748b478-6709-4651-87d2-aeebb79a7bf3",
+			"id": "406ea61e-7444-4036-9ea9-cd138687030a",
 			"key": "PLAYER_1_ID",
 			"value": ""
 		},
 		{
-			"id": "1b9b4c23-b155-4e6a-a464-3febfc5e59f6",
+			"id": "fff77f8e-641a-41a9-8d45-8368e0c1df26",
 			"key": "PLAYER_2_ID",
 			"value": ""
 		},
 		{
-			"id": "1b71cb17-3faa-4fd8-88f2-dc8add7d8eae",
+			"id": "656955ef-991f-458a-962f-684e9fd8cce6",
 			"key": "GAME_ID",
 			"value": ""
 		}

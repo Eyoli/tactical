@@ -5,7 +5,7 @@ import Unit from "../../model/unit";
 import Position from "../../model/position";
 import UnitState from "../../model/unit-state";
 import Action from "../../model/action/action";
-import ActionType from "../../model/action/action-type";
+import { ActionType } from "../../model/action/action-type";
 
 export interface FieldServicePort<T extends Field> {
     createField(field: T): string;
@@ -21,13 +21,14 @@ export interface GameServicePort {
     getGames(): Game[];
     addPlayers(gameId: string, playerIds: string[]): Game;
     getAccessiblePositions(gameId: string, unitId: string): Position[];
-    actOnTarget(gameId: string, srcUnitId: string, targetUnitId: string, actionType: ActionType): UnitState[];
+    actOnTarget(gameId: string, srcUnitId: string, targetUnitId: string, actionTypeId: string): UnitState[];
     moveUnit(gameId: string, unitId: string, p: Position): UnitState;
     rollbackLastAction(gameId: string): Game;
 }
 
 export interface ActionServicePort {
-    generateActionOnTarget(srcUnitState: UnitState, targetUnitState: UnitState, actionType: ActionType): Action;
+    getActionType(id: string): ActionType;
+    generateActionOnTarget(actionTypeId: string, srcUnitState: UnitState, targetUnitState: UnitState): Action;
 }
 
 export interface PlayerServicePort {

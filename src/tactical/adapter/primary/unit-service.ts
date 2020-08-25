@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
 import { UnitServicePort } from "../../domain/port/primary/services";
-import RepositoryPort from "../../domain/port/secondary/repository";
+import RepositoryPort from "../../domain/port/secondary/repository-port";
 import { TYPES } from "../../../types";
 import Unit from "../../domain/model/unit";
 import ResourceNotFoundError from "../../domain/model/error/resource-not-found-error";

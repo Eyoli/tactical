@@ -3,7 +3,7 @@ import Game from "../../../tactical/domain/model/game";
 import Player from "../../../tactical/domain/model/player";
 import { injectable, inject } from "inversify";
 import { TYPES } from "../../../types";
-import RepositoryPort from "../../../tactical/domain/port/secondary/repository";
+import RepositoryPort from "../../../tactical/domain/port/secondary/repository-port";
 import JsonMapperPort from "../../port/json-mapper-port";
 
 @injectable()

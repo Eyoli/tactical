@@ -2,10 +2,11 @@ import "reflect-metadata";
 import * as Assert from "assert";
 import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
 import { UnitServicePort } from "../../tactical/domain/port/primary/services";
-import RepositoryPort from "../../tactical/domain/port/secondary/repository";
-import UnitService from "../../tactical/adapter/service/unit-service";
+import RepositoryPort from "../../tactical/domain/port/secondary/repository-port";
+import UnitService from "../../tactical/adapter/primary/unit-service";
 import Unit from "../../tactical/domain/model/unit";
 import Statistics from "../../tactical/domain/model/statistics";
+import { CounterIdGenerator } from "../../infrastructure/generator/id-generator";
 
 describe('About units we should be able to...', () => {
 
@@ -13,7 +14,7 @@ describe('About units we should be able to...', () => {
     let unitRepository: RepositoryPort<Unit>;
 
     beforeEach(() => {
-        unitRepository = new InMemoryRepository<Unit>(); 
+        unitRepository = new InMemoryRepository<Unit>(new CounterIdGenerator("unit")); 
         unitService = new UnitService(unitRepository);
     });
 

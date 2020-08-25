@@ -1,20 +1,21 @@
 import "reflect-metadata";
 import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
-import GameService from "../../tactical/adapter/service/game-service";
+import GameService from "../../tactical/adapter/primary/game-service";
 import Game from "../../tactical/domain/model/game";
 import Field from "../../tactical/domain/model/field";
 import Player from "../../tactical/domain/model/player";
 import Unit from "../../tactical/domain/model/unit";
 import * as Assert from "assert";
 import * as mocha from "mocha";
-import RepositoryPort from "../../tactical/domain/port/secondary/repository";
+import RepositoryPort from "../../tactical/domain/port/secondary/repository-port";
 import { GameServicePort } from "../../tactical/domain/port/primary/services";
 import ResourceNotFoundError from "../../tactical/domain/model/error/resource-not-found-error";
-import PlayerService from "../../tactical/adapter/service/player-service";
-import UnitService from "../../tactical/adapter/service/unit-service";
+import PlayerService from "../../tactical/adapter/primary/player-service";
+import UnitService from "../../tactical/adapter/primary/unit-service";
 import { FakeFieldAlgorithmService } from "../fake/services";
 import FakeField from "../fake/fake-field";
 import FakeActionService from "../fake/fake-action-service";
+import { CounterIdGenerator } from "../../infrastructure/generator/id-generator";
 
 describe('About games we should be able to...', () => {
 
@@ -25,10 +26,10 @@ describe('About games we should be able to...', () => {
     let fieldRepository: RepositoryPort<Field>;
 
     beforeEach(() => {
-        playerRepository = new InMemoryRepository<Player>();
-        gameRepository = new InMemoryRepository<Game>();
-        unitRepository = new InMemoryRepository<Unit>();
-        fieldRepository = new InMemoryRepository<Field>();
+        playerRepository = new InMemoryRepository<Player>(new CounterIdGenerator("player"));
+        gameRepository = new InMemoryRepository<Game>(new CounterIdGenerator("game"));
+        unitRepository = new InMemoryRepository<Unit>(new CounterIdGenerator("unit"));
+        fieldRepository = new InMemoryRepository<Field>(new CounterIdGenerator("field"));
 
         gameService = new GameService(
             gameRepository, 

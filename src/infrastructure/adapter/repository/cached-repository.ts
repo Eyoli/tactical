@@ -1,4 +1,4 @@
-import RepositoryPort from "../../../tactical/domain/port/secondary/repository";
+import RepositoryPort from "../../../tactical/domain/port/secondary/repository-port";
 import Logger from "../../../tactical/domain/logger/logger";
 
 export default class CachedRepository<T extends Object> implements RepositoryPort<T> {

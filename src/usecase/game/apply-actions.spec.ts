@@ -1,19 +1,22 @@
 import * as Assert from "assert";
-import ActionService from "../../tactical/adapter/service/action-service";
+import ActionService from "../../tactical/adapter/primary/action-service";
 import { ActionServicePort } from "../../tactical/domain/port/primary/services";
 import Unit from "../../tactical/domain/model/unit";
 import { Weapon, Damage, DamageType } from "../../tactical/domain/model/weapon";
 import UnitState from "../../tactical/domain/model/unit-state";
 import Position from "../../tactical/domain/model/position";
 import Statistics from "../../tactical/domain/model/statistics";
-import ActionType from "../../tactical/domain/model/action/action-type";
+import { ActionType } from "../../tactical/domain/model/action/action-type";
+import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
+import { CounterIdGenerator } from "../../infrastructure/generator/id-generator";
+import InMemoryActionTypeRepository from "../../infrastructure/adapter/repository/in-memory-action-type-repository";
 
 describe('About action we should be able to...', () => {
 
     let actionService: ActionServicePort;
 
     beforeEach(() => {
-        actionService = new ActionService();
+        actionService = new ActionService(new InMemoryActionTypeRepository());
     });
 
     describe('attack another player', () => {
@@ -27,7 +30,7 @@ describe('About action we should be able to...', () => {
             const targetUnitState = UnitState.init(targetUnit, new Position(1, 0, 0));
 
             // act
-            const attackAction = actionService.generateActionOnTarget(srcUnitState, targetUnitState, ActionType.ATTACK);
+            const attackAction = actionService.generateActionOnTarget("attack", srcUnitState, targetUnitState);
             const validation = attackAction.validate();
             const newStates = attackAction.apply();
 
@@ -44,7 +47,7 @@ describe('About action we should be able to...', () => {
             const targetUnitState = UnitState.init(targetUnit, new Position(2, 0, 0));
 
             // act
-            const attackAction = actionService.generateActionOnTarget(srcUnitState, targetUnitState, ActionType.ATTACK);
+            const attackAction = actionService.generateActionOnTarget("attack", srcUnitState, targetUnitState);
             const validation = attackAction.validate();
 
             // assert

@@ -1,7 +1,7 @@
 import { GameServicePort, FieldAlgorithmServicePort, PlayerServicePort, UnitServicePort, ActionServicePort } from "../../domain/port/primary/services";
 import Game from "../../domain/model/game";
 import { inject, injectable } from "inversify";
-import RepositoryPort from "../../domain/port/secondary/repository";
+import RepositoryPort from "../../domain/port/secondary/repository-port";
 import { TYPES } from "../../../types";
 import Field from "../../domain/model/field";
 import ResourceNotFoundError from "../../domain/model/error/resource-not-found-error";
@@ -9,7 +9,6 @@ import Position from "../../domain/model/position";
 import UnitState from "../../domain/model/unit-state";
 import { UnitsComposition, UnitsPlacement } from "../../domain/model/aliases";
 import { GameError, GameErrorCode } from "../../domain/model/error/game-error";
-import ActionType from "../../domain/model/action/action-type";
 import Player from "../../domain/model/player";
 
 @injectable()
@@ -128,7 +127,7 @@ export default class GameService implements GameServicePort {
         return [];
     }
 
-    actOnTarget(gameId: string, srcUnitId: string, targetUnitId: string, actionType: ActionType): UnitState[] {
+    actOnTarget(gameId: string, srcUnitId: string, targetUnitId: string, actionTypeId: string): UnitState[] {
         const game = this.getGame(gameId);
         if(!game.hasStarted()) {
             throw new GameError(GameErrorCode.GAME_NOT_STARTED);
@@ -140,7 +139,7 @@ export default class GameService implements GameServicePort {
                 game.integrate(false, srcUnitState);
             const targetUnitState = game.getUnitState(targetUnitId);
             
-            const action = this.actionService.generateActionOnTarget(srcUnitState!, targetUnitState!, actionType);
+            const action = this.actionService.generateActionOnTarget(actionTypeId, srcUnitState!, targetUnitState!);
             if (action.validate() === true) {
                 const newStates = action.apply();
                 game.integrate(true, ...newStates);

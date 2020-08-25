@@ -3,13 +3,15 @@ import { CreateGameRequest, StartGameRequest } from '../request/requests';
 import iocContainer from '../../inversify.config';
 import { TYPES } from '../../types';
 import BadRequestError from '../error/bad-request-error';
-import { GameServicePort } from '../../tactical/domain/port/primary/services';
-import GameDTO from '../dto/gameDTO';
+import { GameServicePort, ActionServicePort } from '../../tactical/domain/port/primary/services';
+import GameDTO from '../dto/game-dto';
 import Position from '../../tactical/domain/model/position';
+import ActionInfoDTO from '../dto/action-info-dto';
 
 const gameRouter = express.Router();
 
 const gameService = iocContainer.get<GameServicePort>(TYPES.GAME_SERVICE);
+const actionService = iocContainer.get<ActionServicePort>(TYPES.ACTION_SERVICE);
 
 gameRouter.get('/', function (req, res) {
 	const games = gameService.getGames();
@@ -57,7 +59,7 @@ gameRouter.post('/:id/endTurn', function (req, res) {
 	res.json(new GameDTO(game));
 });
 
-gameRouter.post('/:id/rollbackAction', function (req, res) {
+gameRouter.post('/:id/rollback/action', function (req, res) {
 	const id = req.params.id;
 	const game = gameService.rollbackLastAction(id);
 	res.json(new GameDTO(game));
@@ -76,6 +78,15 @@ gameRouter.post('/:id/units/:unitId/move', function (req, res) {
 	const position = new Position(req.body.position.x, req.body.position.y, req.body.position.z);
 	const unitState = gameService.moveUnit(id, unitId, position);
 	res.json(unitState);
+});
+
+gameRouter.get('/:id/units/:unitId/actions/:actionTypeId/info', function (req, res) {
+	const id = req.params.id;
+	const unitId = req.params.unitId;
+	const actionTypeId = req.params.actionTypeId;
+	const actionType = actionService.getActionType(actionTypeId);
+	const positions = gameService.getAccessiblePositions(id, unitId);
+	res.json(new ActionInfoDTO(actionType, positions));
 });
 
 export default gameRouter;

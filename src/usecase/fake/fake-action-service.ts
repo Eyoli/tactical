@@ -5,7 +5,7 @@ import FakeAction from "./fake-action";
 
 export default class FakeActionService implements ActionServicePort {
 
-    generateActionOnTarget(srcUnitState: UnitState, targetUnitState: UnitState, type: string): Action {
+    generateActionOnTarget(actionTypeId: string, srcUnitState: UnitState, targetUnitState: UnitState): Action {
         return new FakeAction().withUnitState(targetUnitState);
     }
 }
