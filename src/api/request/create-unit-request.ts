@@ -1,5 +1,7 @@
 import Unit from "../../tactical/domain/model/unit";
 import Statistics from "../../tactical/domain/model/statistics";
+import { Weapon, Damage, DamageType } from "../../tactical/domain/model/weapon";
+import { Range } from "../../tactical/domain/model/action/action-type";
 
 export default class CreateUnitRequest {
     name!: string;
@@ -31,7 +33,10 @@ export default class CreateUnitRequest {
             .withName(this.name)
             .withStatistics(new Statistics()
                 .withJumps(this.jumps)
-                .withMoves(this.moves));
+                .withMoves(this.moves))
+            .withWeapon(
+                new Weapon(new Range(1, 4, 1, 1), 
+                new Damage(10, DamageType.CUTTING)));
         return unit;
     }
 }

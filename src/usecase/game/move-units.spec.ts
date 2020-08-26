@@ -3,13 +3,14 @@ import Unit from "../../tactical/domain/model/unit";
 import * as Assert from "assert";
 import * as mocha from "mocha";
 import { FieldAlgorithmServicePort as FieldAlgorithmServicePort } from "../../tactical/domain/port/primary/services";
-import Tile from "../../tactical/domain/model/tile-based-field/tile";
 import Position from "../../tactical/domain/model/position";
 import FieldAlgorithmService from "../../tactical/adapter/primary/field-algorithm-service";
 import UnitState from "../../tactical/domain/model/unit-state";
 import TileBasedField from "../../tactical/domain/model/tile-based-field/tile-based-field";
 import Statistics from "../../tactical/domain/model/statistics";
 import TileType from "../../tactical/domain/model/tile-based-field/tile-type";
+import { ActionType, TargetType, RangeType, Range } from "../../tactical/domain/model/action/action-type";
+import { Weapon, Damage, DamageType } from "../../tactical/domain/model/weapon";
 
 describe('About field algorithms...', () => {
 
@@ -22,18 +23,23 @@ describe('About field algorithms...', () => {
         // arrange
         const field = new TileBasedField("Field", 3, 3, 3)
             .withId("fieldId")
-            .withTileTypes(new TileType(1, 1, ""))
+            .withTileTypes(new TileType(1, 10, ""))
             .withTiles(
                 [[1], [1], [1]],
-                [[1], [1,1], [1]],
+                [[1], [1, 1], [1]],
                 [[1], [1], [1]]);
+        const actionTypa = new ActionType("id", TargetType.UNIT, RangeType.FIXED, new Range(2, 4, 0, 1));
+        const unitState = UnitState.init(
+            new Unit()
+                .withStatistics(new Statistics())
+                .withWeapon(new Weapon(new Range(0, 4, 1, 1), new Damage(0, DamageType.BLUNT))),
+            new Position(0, 0, 0));
 
         // act
-        const positionsInRange = fieldAlgorithmService.getPositionsInRange(
-            field, new Position(0, 0, 0), 4, 0);
+        const positionsInRange = fieldAlgorithmService.getPositionsInRange(field, unitState, actionTypa);
 
         // assert
-        Assert.deepStrictEqual(positionsInRange.length, 8);
+        Assert.deepStrictEqual(positionsInRange.length, 5);
     });
 
     describe('Getting accessible positions...', () => {

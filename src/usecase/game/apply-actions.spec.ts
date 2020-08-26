@@ -6,9 +6,7 @@ import { Weapon, Damage, DamageType } from "../../tactical/domain/model/weapon";
 import UnitState from "../../tactical/domain/model/unit-state";
 import Position from "../../tactical/domain/model/position";
 import Statistics from "../../tactical/domain/model/statistics";
-import { ActionType } from "../../tactical/domain/model/action/action-type";
-import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
-import { CounterIdGenerator } from "../../infrastructure/generator/id-generator";
+import { Range } from "../../tactical/domain/model/action/action-type";
 import InMemoryActionTypeRepository from "../../infrastructure/adapter/repository/in-memory-action-type-repository";
 
 describe('About action we should be able to...', () => {
@@ -25,12 +23,13 @@ describe('About action we should be able to...', () => {
 
         it('valid case', () => {
             // arrange
-            srcUnit.withWeapon(new Weapon(1, 1, new Damage(10, DamageType.CUTTING)))
+            srcUnit.withWeapon(new Weapon(new Range(1, 1, 1, 1), new Damage(10, DamageType.CUTTING)))
             const srcUnitState = UnitState.init(srcUnit, new Position(0, 0, 0));
             const targetUnitState = UnitState.init(targetUnit, new Position(1, 0, 0));
+            const actionType = actionService.getActionType("attack");
 
             // act
-            const attackAction = actionService.generateActionOnTarget("attack", srcUnitState, targetUnitState);
+            const attackAction = actionService.generateActionOnTarget(actionType, srcUnitState, targetUnitState);
             const validation = attackAction.validate();
             const newStates = attackAction.apply();
 
@@ -42,12 +41,13 @@ describe('About action we should be able to...', () => {
 
         it('invalid range', () => {
             // arrange
-            srcUnit.withWeapon(new Weapon(1, 1, new Damage(10, DamageType.CUTTING)))
+            srcUnit.withWeapon(new Weapon(new Range(1, 1, 1, 1), new Damage(10, DamageType.CUTTING)))
             const srcUnitState = UnitState.init(srcUnit, new Position(0, 0, 0));
             const targetUnitState = UnitState.init(targetUnit, new Position(2, 0, 0));
+            const actionType = actionService.getActionType("attack");
 
             // act
-            const attackAction = actionService.generateActionOnTarget("attack", srcUnitState, targetUnitState);
+            const attackAction = actionService.generateActionOnTarget(actionType, srcUnitState, targetUnitState);
             const validation = attackAction.validate();
 
             // assert

@@ -142,10 +142,11 @@ describe('About playing we should be able to...', () => {
 
         const unit1 = game.getUnits(game.players[0])[0];
         const unit2 = game.getUnits(game.players[1])[0];
+        const unitState2 = game.getUnitState(unit2.id);
 
         // act
-        gameService.actOnTarget(game.id, unit1.id, unit2.id, "attack");
-        const actASecondTime = () => gameService.actOnTarget(game.id, unit1.id, unit2.id, "attack");
+        gameService.actOnPosition(game.id, unit1.id, unitState2.getPosition(), "attack");
+        const actASecondTime = () => gameService.actOnPosition(game.id, unit1.id, unitState2.getPosition(), "attack");
 
         // assert
         const unitState = game.getUnitState(unit2.id);
@@ -161,9 +162,10 @@ describe('About playing we should be able to...', () => {
 
         const unit1 = game.getUnits(game.players[0])[0];
         const unit2 = game.getUnits(game.players[1])[0];
+        const unitState2 = game.getUnitState(unit2.id);
 
         // act
-        gameService.actOnTarget(game.id, unit1.id, unit2.id, "attack");
+        gameService.actOnPosition(game.id, unit1.id, unitState2.getPosition(), "attack");
         gameService.rollbackLastAction(game.id);
         gameService.rollbackLastAction(game.id);
 
@@ -186,7 +188,7 @@ describe('About playing we should be able to...', () => {
 
         // assert
         const unitState = game.getUnitState(unit1.id);
-        Assert.deepStrictEqual(unitState?.getPosition(), new Position(0, 0, 0));
+        Assert.deepStrictEqual(unitState?.getPosition(), new Position(1, 0, 0));
     });
 
     function aGameWithTwoPlayers(validPositions: boolean = true) {
@@ -213,7 +215,7 @@ describe('About playing we should be able to...', () => {
         unit2.id = unitRepository.save(unit2);
         const unitsComposition: UnitsComposition = new Map();
         const player1UnitsPlacement: UnitsPlacement = new Map();
-        player1UnitsPlacement.set(unit1.id, new Position(0, 0, 0));
+        player1UnitsPlacement.set(unit1.id, new Position(1, 0, 0));
         const player2UnitsPlacement: UnitsPlacement = new Map();
         player2UnitsPlacement.set(unit2.id, new Position(0, 0, 0));
         unitsComposition.set(player1.id, player1UnitsPlacement);

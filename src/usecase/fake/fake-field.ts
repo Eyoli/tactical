@@ -22,10 +22,6 @@ export default class FakeField extends Field {
         return this.validPositions;
     }
 
-    isNeighbourAccessible(p1: Position, p2: Position, moves: number, jumps: number): boolean {
-        return true;
-    }
-
     getHeightDifference(p1: Position, p2: Position): number {
         return 0;
     }

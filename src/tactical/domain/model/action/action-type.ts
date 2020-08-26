@@ -8,22 +8,30 @@ export enum TargetType {
     AREA = "AREA"
 }
 
+export class Range {
+    readonly min: number;
+    readonly max: number;
+    readonly height: number;
+    readonly area: number;
+
+    constructor(min: number, max: number, height: number, area: number) {
+        this.min = min;
+        this.max = max;
+        this.height = height;
+        this.area = area;
+    }
+}
+
 export class ActionType {
     readonly id: string;
     readonly rangeType: RangeType;
-    readonly rangeMin?: number;
-    readonly rangeMax?: number;
+    readonly range?: Range;
     readonly targetType: TargetType;
-    readonly area?: number;
 
-    constructor(id: string, targetType: TargetType, rangeType: RangeType,
-        rangeMin?: number, rangeMax?: number, area?: number) {
+    constructor(id: string, targetType: TargetType, rangeType: RangeType, range?: Range) {
         this.id = id;
         this.rangeType = rangeType;
         this.targetType = targetType;
-        this.rangeMin = rangeMin;
-        this.rangeMax = rangeMax;
-        this.area = area;
+        this.range = range;
     }
-
 }

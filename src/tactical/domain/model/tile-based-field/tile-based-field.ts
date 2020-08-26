@@ -60,12 +60,7 @@ export default class TileBasedField extends Field {
             && p.y >= 0 && p.y < this.tiles[p.x].length
             && p.z === this.tiles[p.x][p.y].length - 1;
     }
-
-    isNeighbourAccessible(p1: Position, p2: Position, moves: number, jumps: number): boolean {
-        return this.getCost(p2) <= moves
-            && this.getHeightDifference(p1, p2) <= jumps;
-    }
-
+    
     getHeightDifference(p1: Position, p2: Position): number {
         return Math.abs(p1.z - p2.z);
     }

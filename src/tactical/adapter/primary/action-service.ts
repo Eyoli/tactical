@@ -24,9 +24,8 @@ export default class ActionService implements ActionServicePort {
         return actionType;
     }
 
-    generateActionOnTarget(actionTypeId: string, srcUnitState: UnitState, targetUnitState: UnitState): Action {
-        const actionType = this.getActionType(actionTypeId);
-        switch (actionTypeId) {
+    generateActionOnTarget(actionType: ActionType, srcUnitState: UnitState, targetUnitState: UnitState): Action {
+        switch (actionType.id) {
             case "attack":
                 return new AttackAction(actionType, srcUnitState, targetUnitState);
             default:

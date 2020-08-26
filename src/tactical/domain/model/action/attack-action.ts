@@ -15,8 +15,8 @@ export default class AttackAction implements Action {
 
     validate(): boolean {
         const distance = this.srcUnitState.getPosition().distanceTo(this.targetUnitState.getPosition());
-        return distance <= this.srcUnitState.getUnit().getWeapon().rangeMax
-            && distance >= this.srcUnitState.getUnit().getWeapon().rangeMin;
+        return distance <= this.srcUnitState.getUnit().getWeapon().range.max
+            && distance >= this.srcUnitState.getUnit().getWeapon().range.min;
     }
 
     apply(): UnitState[] {

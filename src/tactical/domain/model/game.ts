@@ -3,6 +3,7 @@ import Player from "./player";
 import Unit from "./unit";
 import UnitState from "./unit-state";
 import TurnManager from "./turn-manager";
+import Position from "./position";
 
 export const enum GameState {
     INITIATED = "INITIATED",
@@ -105,6 +106,11 @@ export default class Game {
                 && this.turnManager.getCurrentUnit().id === unit.id;
         }
         return false;
+    }
+
+    findUnitState(p: Position) {
+        return this.getUnitStates()
+            .find(unitState => unitState.getPosition().equals(p));
     }
 
     getUnitState(unitId: string): UnitState {

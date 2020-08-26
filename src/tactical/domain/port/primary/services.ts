@@ -14,6 +14,7 @@ export interface FieldServicePort<T extends Field> {
 }
 
 export interface GameServicePort {
+	getPositionsInRange(gameId: string, unitId: string, actionType: ActionType): Position[];
     finishTurn(gameId: string): Game;
     startGame(gameId: string, unitsComposition: Map<string, Map<string, Position>>): Game;
     createGame(game: Game, fieldId: string): string;
@@ -21,14 +22,14 @@ export interface GameServicePort {
     getGames(): Game[];
     addPlayers(gameId: string, playerIds: string[]): Game;
     getAccessiblePositions(gameId: string, unitId: string): Position[];
-    actOnTarget(gameId: string, srcUnitId: string, targetUnitId: string, actionTypeId: string): UnitState[];
+    actOnPosition(gameId: string, srcUnitId: string, position: Position, actionTypeId: string): UnitState[];
     moveUnit(gameId: string, unitId: string, p: Position): UnitState;
     rollbackLastAction(gameId: string): Game;
 }
 
 export interface ActionServicePort {
     getActionType(id: string): ActionType;
-    generateActionOnTarget(actionTypeId: string, srcUnitState: UnitState, targetUnitState: UnitState): Action;
+    generateActionOnTarget(actionType: ActionType, srcUnitState: UnitState, targetUnitState: UnitState): Action;
 }
 
 export interface PlayerServicePort {
@@ -46,5 +47,5 @@ export interface UnitServicePort {
 export interface FieldAlgorithmServicePort {
     isAccessible(field: Field | undefined, unitState: UnitState, p: Position): boolean;
     getAccessiblePositions(field: Field, unitState: UnitState): Position[];
-    getPositionsInRange(field: Field, start: Position, range: number, height: number): Position[];
+    getPositionsInRange(field: Field, unitState: UnitState, actionType: ActionType): Position[];
 }

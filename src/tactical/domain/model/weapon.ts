@@ -1,3 +1,5 @@
+import { Range } from "./action/action-type";
+
 export enum DamageType {
     CUTTING, PERCING, BLUNT, MAGIC
 }
@@ -25,13 +27,11 @@ export class Damage {
 }
 
 export class Weapon {
-    readonly rangeMin: number;
-    readonly rangeMax: number;
+    readonly range: Range;
     readonly damage: Damage;
 
-    constructor(rangeMin: number, rangeMax: number, damage: Damage) {
-        this.rangeMin = rangeMin;
-        this.rangeMax = rangeMax;
+    constructor(range: Range, damage: Damage) {
+        this.range = range;
         this.damage = damage;
     }
 }

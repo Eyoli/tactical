@@ -85,8 +85,17 @@ gameRouter.get('/:id/units/:unitId/actions/:actionTypeId/info', function (req, r
 	const unitId = req.params.unitId;
 	const actionTypeId = req.params.actionTypeId;
 	const actionType = actionService.getActionType(actionTypeId);
-	const positions = gameService.getAccessiblePositions(id, unitId);
+	const positions = gameService.getPositionsInRange(id, unitId, actionType);
 	res.json(new ActionInfoDTO(actionType, positions));
+});
+
+gameRouter.post('/:id/units/:unitId/actions/:actionTypeId', function (req, res) {
+	const id = req.params.id;
+	const unitId = req.params.unitId;
+	const actionTypeId = req.params.actionTypeId;
+	const position = req.body.position;
+	const newUnitStates = gameService.actOnPosition(id, unitId, position, actionTypeId);
+	res.json(newUnitStates);
 });
 
 export default gameRouter;

@@ -10,6 +10,7 @@ import UnitState from "../../domain/model/unit-state";
 import { UnitsComposition, UnitsPlacement } from "../../domain/model/aliases";
 import { GameError, GameErrorCode } from "../../domain/model/error/game-error";
 import Player from "../../domain/model/player";
+import { ActionType, RangeType } from "../../domain/model/action/action-type";
 
 @injectable()
 export default class GameService implements GameServicePort {
@@ -37,7 +38,7 @@ export default class GameService implements GameServicePort {
 
     createGame(game: Game, fieldId: string): string {
         const field = this.fieldRepository.load(fieldId);
-        if(!field) {
+        if (!field) {
             throw new ResourceNotFoundError("Field");
         }
         game.field = field;
@@ -55,29 +56,29 @@ export default class GameService implements GameServicePort {
 
     startGame(gameId: string, unitsComposition: UnitsComposition): Game {
         const game = this.getGame(gameId);
-        if(game.hasStarted()) {
+        if (game.hasStarted()) {
             throw new GameError(GameErrorCode.GAME_ALREADY_STARTED);
         }
-        if(game.players.length < 2) {
+        if (game.players.length < 2) {
             throw new GameError(GameErrorCode.NOT_ENOUGH_PLAYERS);
         }
 
         const hasInvalidPosition = Array.from(unitsComposition.values()).some(
             unitsPosition => Array.from(unitsPosition.values()).some(
                 position => !game.field?.isValidPosition(position)));
-        if(hasInvalidPosition) {
+        if (hasInvalidPosition) {
             throw new GameError(GameErrorCode.INVALID_POSITION);
         }
 
         game.players.forEach(
             player => this.initUnitsState(game, player, unitsComposition.get(player.id)!));
 
-        if(game.players
+        if (game.players
             .map(player => game.getUnits(player))
             .some(units => !units || units.length < 1)) {
             throw new GameError(GameErrorCode.NOT_ENOUGH_UNITS);
         }
-        
+
         game.start();
         this.gameRepository.update(game, gameId);
         return game;
@@ -85,7 +86,7 @@ export default class GameService implements GameServicePort {
 
     getGame(key: string): Game {
         const game = this.gameRepository.load(key);
-        if(!game) {
+        if (!game) {
             throw ResourceNotFoundError.fromClass(Game);
         }
         return game;
@@ -112,34 +113,52 @@ export default class GameService implements GameServicePort {
         game.setUnits(player, units);
         units.forEach(unit => {
             const position = unitsPositions.get(unit.id);
-            if(position) {
+            if (position) {
                 game.integrate(false, UnitState.init(unit, position));
             }
         });
     }
 
-    getAccessiblePositions(gameId: string, unitId: string): Position[] {
+    getPositionsInRange(gameId: string, unitId: string, actionType: ActionType): Position[] {
         const game = this.getGame(gameId);
         const unitState = game.getUnitState(unitId);
-        if(game.field && unitState) {
-            return this.fieldAlgorithmService.getAccessiblePositions(game?.field, unitState);
+        if (unitState) {
+            return this.fieldAlgorithmService.getPositionsInRange(
+                game.field!, unitState, actionType);
         }
         return [];
     }
 
-    actOnTarget(gameId: string, srcUnitId: string, targetUnitId: string, actionTypeId: string): UnitState[] {
+    getAccessiblePositions(gameId: string, unitId: string): Position[] {
         const game = this.getGame(gameId);
-        if(!game.hasStarted()) {
+        const unitState = game.getUnitState(unitId);
+        if (unitState) {
+            return this.fieldAlgorithmService.getAccessiblePositions(game.field!, unitState);
+        }
+        return [];
+    }
+
+    actOnPosition(gameId: string, srcUnitId: string, position: Position, actionTypeId: string): UnitState[] {
+        const game = this.getGame(gameId);
+        if (!game.hasStarted()) {
             throw new GameError(GameErrorCode.GAME_NOT_STARTED);
         }
 
         const srcUnit = game.getUnit(srcUnitId);
         if (game.canAct(srcUnit)) {
+            const actionType = this.actionService.getActionType(actionTypeId);
             const srcUnitState = game.getUnitState(srcUnitId).acting();
-                game.integrate(false, srcUnitState);
-            const targetUnitState = game.getUnitState(targetUnitId);
-            
-            const action = this.actionService.generateActionOnTarget(actionTypeId, srcUnitState!, targetUnitState!);
+
+            const targetUnitState = game.findUnitState(position);
+            if(!targetUnitState) {
+                // Not an error, but this action will not do anything
+                game.integrate(true, srcUnitState);
+                this.gameRepository.update(game, gameId);
+                return [];
+            }
+
+            game.integrate(false, srcUnitState);
+            const action = this.actionService.generateActionOnTarget(actionType, srcUnitState!, targetUnitState);
             if (action.validate() === true) {
                 const newStates = action.apply();
                 game.integrate(true, ...newStates);
@@ -152,25 +171,25 @@ export default class GameService implements GameServicePort {
 
     moveUnit(gameId: string, unitId: string, p: Position): UnitState {
         const game = this.getGame(gameId);
-        if(!game.hasStarted()) {
+        if (!game.hasStarted()) {
             throw new GameError(GameErrorCode.GAME_NOT_STARTED);
         }
-        
+
         const unit = game.getUnit(unitId);
         const unitState = game.getUnitState(unitId);
 
         if (!game.canMove(unit)) {
             throw new GameError(GameErrorCode.IMPOSSIBLE_TO_MOVE_UNIT);
         }
-        
+
         if (!this.fieldAlgorithmService.isAccessible(game.field, unitState!, p)) {
             throw new GameError(GameErrorCode.UNREACHABLE_POSITION);
         }
-        
+
         const newUnitState = unitState!.movingTo(p);
-            game.integrate(true, newUnitState);
-            this.gameRepository.update(game, gameId);
-            return newUnitState;
+        game.integrate(true, newUnitState);
+        this.gameRepository.update(game, gameId);
+        return newUnitState;
     }
 
     rollbackLastAction(gameId: string): Game {
