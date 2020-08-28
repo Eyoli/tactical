@@ -6,8 +6,8 @@ export default class GameDTO {
     private readonly players: any;
     private readonly id: string;
     private readonly fieldId: string | undefined;
-    private readonly unitStates: UnitState[];
-    private readonly currentUnitId?: string;
+    private readonly unitStates?: UnitState[];
+    private readonly currentUnitState?: UnitState;
 
     constructor(game: Game) {
         this.id = game.id;
@@ -17,7 +17,11 @@ export default class GameDTO {
         for(let player of this.players) {
             player.units = game.getUnits(player);
         }
-        this.unitStates = game.getUnitStates();
-        this.currentUnitId = game.getCurrentUnit()?.id;
+        
+        const currentUnitId = game.getCurrentUnit()?.id;
+        if (currentUnitId) {
+            this.unitStates = game.getUnitStates();
+            this.currentUnitState = game.getUnitState(currentUnitId);
+        }
     }
 }

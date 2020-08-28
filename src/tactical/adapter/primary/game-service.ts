@@ -154,7 +154,7 @@ export default class GameService implements GameServicePort {
                 // Not an error, but this action will not do anything
                 game.integrate(true, srcUnitState);
                 this.gameRepository.update(game, gameId);
-                return [];
+                return [srcUnitState];
             }
 
             game.integrate(false, srcUnitState);

@@ -191,6 +191,24 @@ describe('About playing we should be able to...', () => {
         Assert.deepStrictEqual(unitState?.getPosition(), new Position(1, 0, 0));
     });
 
+    it('prevent rollback a move performed during last turn', () => {
+        // arrange
+        const game = aGameWithTwoPlayers();
+        const unitsComposition = aUnitComposition(game.players[0], game.players[1]);
+        gameService.startGame(game.id, unitsComposition);
+
+        const unit1 = game.getUnits(game.players[0])[0];
+
+        // act
+        gameService.moveUnit(game.id, unit1.id, new Position(1, 2, 0));
+        gameService.finishTurn(game.id);
+        gameService.rollbackLastAction(game.id);
+
+        // assert
+        const unitState = game.getUnitState(unit1.id);
+        Assert.deepStrictEqual(unitState?.getPosition(), new Position(1, 2, 0));
+    });
+
     function aGameWithTwoPlayers(validPositions: boolean = true) {
         const player1 = new Player("Player 1");
         const player2 = new Player("Player 2");

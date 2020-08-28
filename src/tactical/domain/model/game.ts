@@ -83,10 +83,14 @@ export default class Game {
         if (this.hasStarted()) {
             this.turnManager.next();
 
+            // keep only the last state of the turn for each unit
             const unitStates = this.currentTurnStates.get(this.getCurrentUnit()!.id)!
             const lastState = unitStates.shift()!;
             unitStates.splice(0);
             unitStates.unshift(lastState.toNextTurn());
+
+            // clean turn changes
+            this.currentTurnChanges = [];
         }
     }
 

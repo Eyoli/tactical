@@ -16,13 +16,13 @@ export default class CreateUnitRequest {
 
     validate(): string[] {
         const warnings = [];
-        if(!this.name) {
+        if (!this.name) {
             warnings.push("name is required")
         }
-        if(!this.moves) {
+        if (!this.moves) {
             warnings.push("moves is required")
         }
-        if(!this.jumps) {
+        if (!this.jumps) {
             warnings.push("jumps is required")
         }
         return warnings;
@@ -32,11 +32,12 @@ export default class CreateUnitRequest {
         const unit = new Unit()
             .withName(this.name)
             .withStatistics(new Statistics()
+                .withHealth(100)
                 .withJumps(this.jumps)
                 .withMoves(this.moves))
             .withWeapon(
-                new Weapon(new Range(1, 4, 1, 1), 
-                new Damage(10, DamageType.CUTTING)));
+                new Weapon(new Range(1, 4, 1, 1),
+                    new Damage(10, DamageType.CUTTING)));
         return unit;
     }
 }

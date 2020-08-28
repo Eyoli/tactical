@@ -21,6 +21,7 @@ export default class AttackAction implements Action {
 
     apply(): UnitState[] {
         return [
+            this.srcUnitState,
             this.targetUnitState.damaged(this.srcUnitState.computeWeaponDamage())
         ];
     }
