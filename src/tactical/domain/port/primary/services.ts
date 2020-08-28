@@ -9,6 +9,7 @@ import { ActionType } from "../../model/action/action-type";
 
 export interface FieldServicePort<T extends Field> {
     createField(field: T): string;
+    updateField(field: T, id: string): void;
     getField(id: string): T;
     getFields(): T[];
 }

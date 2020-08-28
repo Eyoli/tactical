@@ -32,6 +32,20 @@ fieldRouter.post('/', function (req, res) {
 	});
 });
 
+fieldRouter.put('/:id', function (req, res) {
+	const data = new CreateFieldRequest(req.body);
+	const id = req.params.id;
+	const errors = data.validate();	
+	if (errors.length > 0) { 
+        throw new BadRequestError(errors.toString());
+	}
+
+	const field = data.toField();
+	fieldService.updateField(field, id);
+
+	res.send();
+});
+
 fieldRouter.get('/:id', function (req, res) {
 	const id = req.params.id;
 	const field = fieldService.getField(id);

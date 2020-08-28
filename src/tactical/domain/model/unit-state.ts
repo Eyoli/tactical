@@ -5,10 +5,25 @@ import { Damage } from "./weapon";
 /**
  * Represent a given state of a unit 
  */
+class HistorizedValue {
+    current: number;
+    last: number;
+
+    constructor(value: number) {
+        this.current = value;
+        this.last = value;
+    }
+
+    update(value: number) {
+        this.last = this.current;
+        this.current = value;
+    }
+}
+
 export default class UnitState {
     private unit!: Unit;
     private position!: Position;
-    private health!: number;
+    private health!: HistorizedValue;
     private spirit!: number;
     private moved!: boolean;
     private acted!: boolean;
@@ -31,7 +46,7 @@ export default class UnitState {
         return this.position;
     }
 
-    getHealth(): number {
+    getHealth(): HistorizedValue {
         return this.health;
     }
 
@@ -53,7 +68,7 @@ export default class UnitState {
         unitState.moved = this.moved;
         unitState.acted = this.acted;
         unitState.position = this.position;
-        unitState.health = this.health;
+        unitState.health = new HistorizedValue(this.health.current);
         unitState.spirit = this.spirit;
         return unitState;
     }
@@ -74,7 +89,7 @@ export default class UnitState {
 
     damaged(damage: Damage): UnitState {
         const unitState = this.copy();
-        unitState.health -= damage.amount;
+        unitState.health.update(unitState.health.current - damage.amount);
         return unitState;
     }
 
@@ -88,7 +103,7 @@ export default class UnitState {
         const unitState = new UnitState();
         unitState.unit = unit;
         unitState.position = p;
-        unitState.health = unit.getStatistics().health;
+        unitState.health = new HistorizedValue(unit.getStatistics().health);
         unitState.spirit = unit.getStatistics().spirit;
         unitState.moved = false;
         unitState.acted = false;

@@ -35,8 +35,8 @@ describe('About action we should be able to...', () => {
 
             // assert
             Assert.deepStrictEqual(validation, true);
-            Assert.deepStrictEqual(newStates.length, 1);
-            Assert.deepStrictEqual(newStates[0].getHealth(), 10);
+            Assert.deepStrictEqual(newStates.length, 2);
+            Assert.deepStrictEqual(newStates[1].getHealth().current, 10);
         });
 
         it('invalid range', () => {

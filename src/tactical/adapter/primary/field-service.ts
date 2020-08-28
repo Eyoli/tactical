@@ -23,8 +23,12 @@ export default class FieldService<T extends Field> implements FieldServicePort<T
         return field.id;
     }
 
-    getField(fieldId: string): T {
-        const field = this.fieldRepository.load(fieldId);
+    updateField(field: T, id: string): void {
+        this.fieldRepository.update(field, id);
+    }
+
+    getField(id: string): T {
+        const field = this.fieldRepository.load(id);
         if(!field) {
             throw new ResourceNotFoundError("Field");
         }
