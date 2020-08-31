@@ -10,7 +10,7 @@ import UnitState from "../../domain/model/unit-state";
 import { UnitsComposition, UnitsPlacement } from "../../domain/model/aliases";
 import { GameError, GameErrorCode } from "../../domain/model/error/game-error";
 import Player from "../../domain/model/player";
-import { ActionType, RangeType } from "../../domain/model/action/action-type";
+import { ActionType } from "../../domain/model/action/action-type";
 
 @injectable()
 export default class GameService implements GameServicePort {
@@ -123,8 +123,9 @@ export default class GameService implements GameServicePort {
         const game = this.getGame(gameId);
         const unitState = game.getUnitState(unitId);
         if (unitState) {
+            const range = actionType.range || unitState.getUnit().getWeapon().range;
             return this.fieldAlgorithmService.getPositionsInRange(
-                game.field!, unitState, actionType);
+                game.field!, unitState.getPosition(), range);
         }
         return [];
     }
@@ -149,8 +150,23 @@ export default class GameService implements GameServicePort {
             const actionType = this.actionService.getActionType(actionTypeId);
             const srcUnitState = game.getUnitState(srcUnitId).acting();
 
-            const targetUnitState = game.findUnitState(position);
-            if(!targetUnitState) {
+            const positions: Position[] = [];
+            if (actionType.area) {
+                positions.push(...this.fieldAlgorithmService.getPositionsInRange(
+                    game.field!, position, actionType.area!));
+            } else {
+                positions.push(position);
+            }
+
+            const targetUnitStates: UnitState[] = [];
+            positions.map(p => game.findUnitState(p))
+                .forEach(unitState => {
+                    if (unitState) {
+                        targetUnitStates.push(unitState);
+                    }
+                });
+
+            if (targetUnitStates.length < 1) {
                 // Not an error, but this action will not do anything
                 game.integrate(true, srcUnitState);
                 this.gameRepository.update(game, gameId);
@@ -158,13 +174,18 @@ export default class GameService implements GameServicePort {
             }
 
             game.integrate(false, srcUnitState);
-            const action = this.actionService.generateActionOnTarget(actionType, srcUnitState!, targetUnitState);
-            if (action.validate() === true) {
-                const newStates = action.apply();
-                game.integrate(true, ...newStates);
-                this.gameRepository.update(game, gameId);
-                return newStates;
-            }
+            const newStates: UnitState[] = [];
+            targetUnitStates.forEach(targetUnitState => {
+                const action = this.actionService.generateAction(actionType, srcUnitState!, targetUnitState);
+                if (action.validate() === true) {
+                    const actionResult = action.apply();
+                    game.integrate(true, ...actionResult);
+                    this.gameRepository.update(game, gameId);
+                    newStates.push(...actionResult);
+                }
+            })
+            return newStates;
+
         }
         throw new GameError(GameErrorCode.IMPOSSIBLE_TO_ACT);
     }

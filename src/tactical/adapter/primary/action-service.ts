@@ -24,9 +24,10 @@ export default class ActionService implements ActionServicePort {
         return actionType;
     }
 
-    generateActionOnTarget(actionType: ActionType, srcUnitState: UnitState, targetUnitState: UnitState): Action {
+    generateAction(actionType: ActionType, srcUnitState: UnitState, targetUnitState: UnitState): Action {
         switch (actionType.id) {
             case "attack":
+            case "fireball":
                 return new AttackAction(actionType, srcUnitState, targetUnitState);
             default:
                 throw new Error("Action found but not managed");

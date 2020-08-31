@@ -40,7 +40,7 @@ fieldRouter.put('/:id', function (req, res) {
         throw new BadRequestError(errors.toString());
 	}
 
-	const field = data.toField();
+	const field = data.toField().withId(id);
 	fieldService.updateField(field, id);
 
 	res.send();

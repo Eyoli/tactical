@@ -4,7 +4,7 @@ import Position from "../../domain/model/position";
 import { Set } from "immutable";
 import { injectable } from "inversify";
 import UnitState from "../../domain/model/unit-state";
-import { ActionType, RangeType } from "../../domain/model/action/action-type";
+import { Range } from "../../domain/model/action/action-type";
 
 type PositionSearch = [Position, number];
 type CostFunction = (p: Position) => number;
@@ -12,11 +12,10 @@ type CostFunction = (p: Position) => number;
 @injectable()
 export default class FieldAlgorithmService implements FieldAlgorithmServicePort {
 
-    getPositionsInRange(field: Field, unitState: UnitState, actionType: ActionType): Position[] {
-        const range = actionType.range || unitState.getUnit().getWeapon().range;
+    getPositionsInRange(field: Field, position: Position, range: Range): Position[] {
         return this.getAccessiblePositionsAsSet(
-            field, unitState.getPosition(), range.max, range.height, p => 1)
-            .filter(p => unitState.getPosition().distanceTo(p) >= range.min)
+            field, position, range.max, range.height, p => 1)
+            .filter(p => position.distanceTo(p) >= range.min)
             .toArray();
     }
 

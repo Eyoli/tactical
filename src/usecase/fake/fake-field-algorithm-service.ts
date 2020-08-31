@@ -2,12 +2,17 @@ import { FieldAlgorithmServicePort } from "../../tactical/domain/port/primary/se
 import Field from "../../tactical/domain/model/field";
 import Position from "../../tactical/domain/model/position";
 import UnitState from "../../tactical/domain/model/unit-state";
-import { ActionType } from "../../tactical/domain/model/action/action-type";
+import { ActionType, Range } from "../../tactical/domain/model/action/action-type";
 
 export class FakeFieldAlgorithmService implements FieldAlgorithmServicePort {
+    private positions?: Position[];
 
-    getPositionsInRange(field: Field, unitState: UnitState, actionType: ActionType): Position[] {
-        return [];
+    withPositionsInRange(positions: Position[]) {
+        this.positions = positions;
+    }
+    
+    getPositionsInRange(field: Field, position: Position, range: Range): Position[] {
+        return this.positions || [];
     }
 
     getAccessiblePositions(field: Field, unitState: UnitState): Position[] {

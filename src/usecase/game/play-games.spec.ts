@@ -10,16 +10,18 @@ import * as mocha from "mocha";
 import RepositoryPort from "../../tactical/domain/port/secondary/repository-port";
 import PlayerService from "../../tactical/adapter/primary/player-service";
 import UnitService from "../../tactical/adapter/primary/unit-service";
-import { FakeFieldAlgorithmService } from "../fake/services";
+import { FakeFieldAlgorithmService } from "../fake/fake-field-algorithm-service";
 import Position from "../../tactical/domain/model/position";
 import { UnitsComposition, UnitsPlacement } from "../../tactical/domain/model/aliases";
 import { GameError, GameErrorCode } from "../../tactical/domain/model/error/game-error";
 import FakeField from "../fake/fake-field";
 import FakeActionService from "../fake/fake-action-service";
-import { ActionType } from "../../tactical/domain/model/action/action-type";
+import { ActionType, TargetType, Range } from "../../tactical/domain/model/action/action-type";
 import Statistics from "../../tactical/domain/model/statistics";
-import { GameServicePort } from "../../tactical/domain/port/primary/services";
+import { GameServicePort, ActionServicePort } from "../../tactical/domain/port/primary/services";
 import { CounterIdGenerator } from "../../infrastructure/generator/id-generator";
+import FakeAction from "../fake/fake-action";
+import { Damage, DamageType } from "../../tactical/domain/model/weapon";
 
 describe('About playing we should be able to...', () => {
 
@@ -30,20 +32,24 @@ describe('About playing we should be able to...', () => {
     let gameRepository: RepositoryPort<Game>;
     let unitRepository: RepositoryPort<Unit>;
     let fieldRepository: RepositoryPort<Field>;
+    let actionService: FakeActionService;
+    let fieldAlgorithmService: FakeFieldAlgorithmService;
 
     beforeEach(() => {
         playerRepository = new InMemoryRepository<Player>(new CounterIdGenerator("player"));
         gameRepository = new InMemoryRepository<Game>(new CounterIdGenerator("game"));
         unitRepository = new InMemoryRepository<Unit>(new CounterIdGenerator("unit"));
         fieldRepository = new InMemoryRepository<Field>(new CounterIdGenerator("field"));
+        actionService = new FakeActionService();
+        fieldAlgorithmService = new FakeFieldAlgorithmService();
 
         gameService = new GameService(
             gameRepository,
             new PlayerService(playerRepository),
             new UnitService(unitRepository),
             fieldRepository,
-            new FakeFieldAlgorithmService(),
-            new FakeActionService()
+            fieldAlgorithmService,
+            actionService
         );
     });
 
@@ -134,7 +140,7 @@ describe('About playing we should be able to...', () => {
         });
     });
 
-    it('act on a target', () => {
+    it('act on a position', () => {
         // arrange
         const game = aGameWithTwoPlayers();
         const unitsComposition = aUnitComposition(game.players[0], game.players[1]);
@@ -144,14 +150,40 @@ describe('About playing we should be able to...', () => {
         const unit2 = game.getUnits(game.players[1])[0];
         const unitState2 = game.getUnitState(unit2.id);
 
+        actionService
+            .withActionType(new ActionType("attack", TargetType.UNIT));
+
         // act
         gameService.actOnPosition(game.id, unit1.id, unitState2.getPosition(), "attack");
         const actASecondTime = () => gameService.actOnPosition(game.id, unit1.id, unitState2.getPosition(), "attack");
 
         // assert
         const unitState = game.getUnitState(unit2.id);
-        Assert.deepStrictEqual(unitState?.getPosition(), new Position(1, 1, 0));
+        Assert.deepStrictEqual(unitState?.getHealth().current, 190);
         Assert.throws(actASecondTime, new GameError(GameErrorCode.IMPOSSIBLE_TO_ACT));
+    });
+
+    it('act on a position with area', () => {
+        // arrange
+        const game = aGameWithTwoPlayers();
+        const unitsComposition = aUnitComposition(game.players[0], game.players[1]);
+        gameService.startGame(game.id, unitsComposition);
+
+        const unit1 = game.getUnits(game.players[0])[0];
+        const unit2 = game.getUnits(game.players[1])[0];
+        const unitState2 = game.getUnitState(unit2.id);
+
+        actionService
+            .withActionType(new ActionType("fireball", TargetType.AREA,
+                new Range(1, 1, 1), new Damage(10, DamageType.CUTTING), new Range(0, 2, 1)));
+        fieldAlgorithmService.withPositionsInRange([new Position(0,0,0)]);
+
+        // act
+        gameService.actOnPosition(game.id, unit1.id, unitState2.getPosition(), "fireball");
+
+        // assert
+        const unitState = game.getUnitState(unit2.id);
+        Assert.deepStrictEqual(unitState?.getHealth().current, 190);
     });
 
     it('rollback an action performed during a turn', () => {
@@ -164,6 +196,9 @@ describe('About playing we should be able to...', () => {
         const unit2 = game.getUnits(game.players[1])[0];
         const unitState2 = game.getUnitState(unit2.id);
 
+        actionService
+            .withActionType(new ActionType("attack", TargetType.UNIT));
+
         // act
         gameService.actOnPosition(game.id, unit1.id, unitState2.getPosition(), "attack");
         gameService.rollbackLastAction(game.id);
@@ -171,7 +206,7 @@ describe('About playing we should be able to...', () => {
 
         // assert
         const unitState = game.getUnitState(unit2.id);
-        Assert.deepStrictEqual(unitState?.getPosition(), new Position(0, 0, 0));
+        Assert.deepStrictEqual(unitState?.getHealth().current, 200);
     });
 
     it('rollback a move performed during a turn', () => {
@@ -227,8 +262,8 @@ describe('About playing we should be able to...', () => {
     }
 
     function aUnitComposition(player1: Player, player2: Player) {
-        const unit1 = new Unit().withStatistics(new Statistics());
-        const unit2 = new Unit().withStatistics(new Statistics());
+        const unit1 = new Unit().withStatistics(new Statistics().withHealth(100));
+        const unit2 = new Unit().withStatistics(new Statistics().withHealth(200));
         unit1.id = unitRepository.save(unit1);
         unit2.id = unitRepository.save(unit2);
         const unitsComposition: UnitsComposition = new Map();

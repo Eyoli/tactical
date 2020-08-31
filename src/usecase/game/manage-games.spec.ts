@@ -12,7 +12,7 @@ import { GameServicePort } from "../../tactical/domain/port/primary/services";
 import ResourceNotFoundError from "../../tactical/domain/model/error/resource-not-found-error";
 import PlayerService from "../../tactical/adapter/primary/player-service";
 import UnitService from "../../tactical/adapter/primary/unit-service";
-import { FakeFieldAlgorithmService } from "../fake/services";
+import { FakeFieldAlgorithmService } from "../fake/fake-field-algorithm-service";
 import FakeField from "../fake/fake-field";
 import FakeActionService from "../fake/fake-action-service";
 import { CounterIdGenerator } from "../../infrastructure/generator/id-generator";

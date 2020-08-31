@@ -36,7 +36,7 @@ export default class CreateUnitRequest {
                 .withJumps(this.jumps)
                 .withMoves(this.moves))
             .withWeapon(
-                new Weapon(new Range(1, 4, 1, 1),
+                new Weapon(new Range(1, 4, 1),
                     new Damage(10, DamageType.CUTTING)));
         return unit;
     }

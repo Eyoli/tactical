@@ -1,6 +1,7 @@
 import Action from "../../tactical/domain/model/action/action";
 import UnitState from "../../tactical/domain/model/unit-state";
 import Position from "../../tactical/domain/model/position";
+import { Damage, DamageType } from "../../tactical/domain/model/weapon";
 
 export default class FakeAction implements Action {
     private unitState!: UnitState;
@@ -16,7 +17,7 @@ export default class FakeAction implements Action {
 
     apply(): UnitState[] {
         return [
-            this.unitState.movingTo(new Position(1, 1, 0))
+            this.unitState.damaged(new Damage(10, DamageType.CUTTING))
         ];
     }
 

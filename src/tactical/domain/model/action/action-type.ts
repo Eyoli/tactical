@@ -1,7 +1,4 @@
-export enum RangeType {
-    FIXED = "FIXED",
-    WEAPON = "WEAPON"
-}
+import { Damage } from "../weapon";
 
 export enum TargetType {
     UNIT = "UNIT",
@@ -12,26 +9,26 @@ export class Range {
     readonly min: number;
     readonly max: number;
     readonly height: number;
-    readonly area: number;
 
-    constructor(min: number, max: number, height: number, area: number) {
+    constructor(min: number, max: number, height: number) {
         this.min = min;
         this.max = max;
         this.height = height;
-        this.area = area;
     }
 }
 
 export class ActionType {
     readonly id: string;
-    readonly rangeType: RangeType;
-    readonly range?: Range;
     readonly targetType: TargetType;
+    readonly range?: Range;
+    readonly damage?: Damage;
+    readonly area?: Range;
 
-    constructor(id: string, targetType: TargetType, rangeType: RangeType, range?: Range) {
+    constructor(id: string, targetType: TargetType, range?: Range, damage?: Damage, area?: Range) {
         this.id = id;
-        this.rangeType = rangeType;
         this.targetType = targetType;
         this.range = range;
+        this.damage = damage;
+        this.area = area;
     }
 }

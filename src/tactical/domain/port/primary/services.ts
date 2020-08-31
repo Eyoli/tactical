@@ -5,7 +5,7 @@ import Unit from "../../model/unit";
 import Position from "../../model/position";
 import UnitState from "../../model/unit-state";
 import Action from "../../model/action/action";
-import { ActionType } from "../../model/action/action-type";
+import { ActionType, Range } from "../../model/action/action-type";
 
 export interface FieldServicePort<T extends Field> {
     createField(field: T): string;
@@ -30,7 +30,7 @@ export interface GameServicePort {
 
 export interface ActionServicePort {
     getActionType(id: string): ActionType;
-    generateActionOnTarget(actionType: ActionType, srcUnitState: UnitState, targetUnitState: UnitState): Action;
+    generateAction(actionType: ActionType, srcUnitState: UnitState, targetUnitState: UnitState): Action;
 }
 
 export interface PlayerServicePort {
@@ -48,5 +48,5 @@ export interface UnitServicePort {
 export interface FieldAlgorithmServicePort {
     isAccessible(field: Field | undefined, unitState: UnitState, p: Position): boolean;
     getAccessiblePositions(field: Field, unitState: UnitState): Position[];
-    getPositionsInRange(field: Field, unitState: UnitState, actionType: ActionType): Position[];
+    getPositionsInRange(field: Field, position: Position, range: Range): Position[];
 }
