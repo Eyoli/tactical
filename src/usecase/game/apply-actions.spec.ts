@@ -7,7 +7,7 @@ import UnitState from "../../tactical/domain/model/unit-state";
 import Position from "../../tactical/domain/model/position";
 import Statistics from "../../tactical/domain/model/statistics";
 import { Range } from "../../tactical/domain/model/action/action-type";
-import InMemoryActionTypeRepository from "../../infrastructure/adapter/repository/in-memory-action-type-repository";
+import InMemoryActionTypeRepository from "../../in-memory-repository/adapter/in-memory-action-type-repository";
 
 describe('Actions should work correctly...', () => {
 

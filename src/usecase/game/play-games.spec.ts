@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
+import InMemoryRepository from "../../in-memory-repository/adapter/in-memory-repository";
 import GameService from "../../tactical/adapter/primary/game-service";
 import Game from "../../tactical/domain/model/game";
 import Field from "../../tactical/domain/model/field";
@@ -18,10 +18,9 @@ import FakeField from "../fake/fake-field";
 import FakeActionService from "../fake/fake-action-service";
 import { ActionType, TargetType, Range } from "../../tactical/domain/model/action/action-type";
 import Statistics from "../../tactical/domain/model/statistics";
-import { GameServicePort, ActionServicePort } from "../../tactical/domain/port/primary/services";
-import { CounterIdGenerator } from "../../infrastructure/generator/id-generator";
-import FakeAction from "../fake/fake-action";
+import { GameServicePort } from "../../tactical/domain/port/primary/services";
 import { Damage, DamageType } from "../../tactical/domain/model/weapon";
+import CounterIdGenerator from "../../in-memory-repository/adapter/counter-id-generator";
 
 describe('About playing we should be able to...', () => {
 

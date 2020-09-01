@@ -1,6 +1,6 @@
-import RepositoryPort from "../../../tactical/domain/port/secondary/repository-port";
-import Logger from "../../../tactical/domain/logger/logger";
-import { IdGenerator } from "../../generator/id-generator";
+import RepositoryPort from "../../tactical/domain/port/secondary/repository-port";
+import Logger from "../../tactical/domain/logger/logger";
+import IdGenerator from "../port/id-generator";
 
 export default class InMemoryRepository<T extends Object> implements RepositoryPort<T> {
     private idGenerator: IdGenerator<T, string>;

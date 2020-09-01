@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import * as Assert from "assert";
 import FieldService from "../../tactical/adapter/primary/field-service";
-import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
+import InMemoryRepository from "../../in-memory-repository/adapter/in-memory-repository";
 import { FieldServicePort } from "../../tactical/domain/port/primary/services";
 import RepositoryPort from "../../tactical/domain/port/secondary/repository-port";
 import FakeField from "../fake/fake-field";
-import { CounterIdGenerator } from "../../infrastructure/generator/id-generator";
+import CounterIdGenerator from "../../in-memory-repository/adapter/counter-id-generator";
 
 describe('About fields we should be able to...', () => {
 

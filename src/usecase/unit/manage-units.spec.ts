@@ -1,12 +1,12 @@
 import "reflect-metadata";
 import * as Assert from "assert";
-import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
+import InMemoryRepository from "../../in-memory-repository/adapter/in-memory-repository";
 import { UnitServicePort } from "../../tactical/domain/port/primary/services";
 import RepositoryPort from "../../tactical/domain/port/secondary/repository-port";
 import UnitService from "../../tactical/adapter/primary/unit-service";
 import Unit from "../../tactical/domain/model/unit";
 import Statistics from "../../tactical/domain/model/statistics";
-import { CounterIdGenerator } from "../../infrastructure/generator/id-generator";
+import CounterIdGenerator from "../../in-memory-repository/adapter/counter-id-generator";
 
 describe('About units we should be able to...', () => {
 

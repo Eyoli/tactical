@@ -16,21 +16,15 @@ import UnitService from "./tactical/adapter/primary/unit-service";
 import FieldAlgorithmService from "./tactical/adapter/primary/field-algorithm-service";
 import { GameJsonMapper } from "./json-repository/adapter/mapper/game-json-mapper";
 import config from "config";
-import InMemoryRepository from "./infrastructure/adapter/repository/in-memory-repository";
+import InMemoryRepository from "./in-memory-repository/adapter/in-memory-repository";
 import TileBasedField from "./tactical/domain/model/tile-based-field/tile-based-field";
 import ActionService from "./tactical/adapter/primary/action-service";
 import Logger from "./tactical/domain/logger/logger";
 import ConsoleLoggerService from "./infrastructure/adapter/console-logger-service";
-import { CounterIdGenerator } from "./infrastructure/generator/id-generator";
-import InMemoryActionTypeRepository from "./infrastructure/adapter/repository/in-memory-action-type-repository";
+import InMemoryActionTypeRepository from "./in-memory-repository/adapter/in-memory-action-type-repository";
+import CounterIdGenerator from "./in-memory-repository/adapter/counter-id-generator";
 
 const iocContainer = new Container();
-
-// JSON repository mappers
-iocContainer.bind(TYPES.PLAYER_JSON_MAPPER).to(PlayerJsonMapper);
-iocContainer.bind(TYPES.GAME_JSON_MAPPER).to(GameJsonMapper);
-iocContainer.bind(TYPES.FIELD_JSON_MAPPER).to(FieldJsonMapper);
-iocContainer.bind(TYPES.UNIT_JSON_MAPPER).to(UnitJsonMapper);
 
 // Repositories
 const persistenceType = config.get("persistence.type");
@@ -45,6 +39,12 @@ if (persistenceType === "in-memory") {
         .toConstantValue(new InMemoryRepository<Unit>(new CounterIdGenerator("unit")));
 } else if (persistenceType === "json") {
     const basePath = config.get("persistence.json.base-path");
+
+    // JSON repository mappers
+    iocContainer.bind(TYPES.PLAYER_JSON_MAPPER).to(PlayerJsonMapper);
+    iocContainer.bind(TYPES.GAME_JSON_MAPPER).to(GameJsonMapper);
+    iocContainer.bind(TYPES.FIELD_JSON_MAPPER).to(FieldJsonMapper);
+    iocContainer.bind(TYPES.UNIT_JSON_MAPPER).to(UnitJsonMapper);
 
     iocContainer.bind(TYPES.FIELD_REPOSITORY).toDynamicValue(
         ({ container }) => new InJsonFileRepository<Field>(container.get(TYPES.FIELD_JSON_MAPPER))

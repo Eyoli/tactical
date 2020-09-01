@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import * as Assert from "assert";
-import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
+import InMemoryRepository from "../../in-memory-repository/adapter/in-memory-repository";
 import { PlayerServicePort } from "../../tactical/domain/port/primary/services";
 import RepositoryPort from "../../tactical/domain/port/secondary/repository-port";
 import Player from "../../tactical/domain/model/player";
 import PlayerService from "../../tactical/adapter/primary/player-service";
-import { CounterIdGenerator } from "../../infrastructure/generator/id-generator";
+import CounterIdGenerator from "../../in-memory-repository/adapter/counter-id-generator";
 
 describe('About players we should be able to...', () => {
 

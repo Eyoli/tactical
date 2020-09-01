@@ -1,7 +1,7 @@
 import InMemoryRepository from "./in-memory-repository"
-import { ActionType, TargetType, Range } from "../../../tactical/domain/model/action/action-type"
-import { IdGenerator } from "../../generator/id-generator";
-import { Damage, DamageType, Element } from "../../../tactical/domain/model/weapon";
+import { ActionType, TargetType, Range } from "../../tactical/domain/model/action/action-type"
+import IdGenerator from "../port/id-generator";
+import { Damage, DamageType, Element } from "../../tactical/domain/model/weapon";
 
 class ActionTypeIdGenerator implements IdGenerator<ActionType, string> {
 
