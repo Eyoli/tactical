@@ -1,99 +1,129 @@
 import "reflect-metadata";
-import Unit from "../../domain/model/unit";
+import Unit from "../../tactical/domain/model/unit";
 import * as Assert from "assert";
 import * as mocha from "mocha";
-import { MovementServicePort } from "../../domain/port/primary/services";
-import Tile from "../../domain/model/tile-based-field/tile";
-import Position from "../../domain/model/position";
-import MovementService from "../../domain/service/movement-service";
-import UnitState from "../../domain/model/unit-state";
-import TileBasedField from "../../domain/model/tile-based-field/tile-based-field";
-import Statistics from "../../domain/model/statistics";
+import { FieldAlgorithmServicePort as FieldAlgorithmServicePort } from "../../tactical/domain/port/primary/services";
+import Position from "../../tactical/domain/model/position";
+import FieldAlgorithmService from "../../tactical/adapter/primary/field-algorithm-service";
+import UnitState from "../../tactical/domain/model/unit-state";
+import TileBasedField from "../../tactical/domain/model/tile-based-field/tile-based-field";
+import Statistics from "../../tactical/domain/model/statistics";
+import TileType from "../../tactical/domain/model/tile-based-field/tile-type";
+import { Range } from "../../tactical/domain/model/action/action-type";
 
-describe('About moving a unit in a field...', () => {
+describe('About field algorithms...', () => {
 
-    const movementService: MovementServicePort = new MovementService();
+    const fieldAlgorithmService: FieldAlgorithmServicePort = new FieldAlgorithmService();
 
     beforeEach(() => {
     });
 
-    it('flat and homogeneous field', () => {
+    it('Getting positions in range...', () => {
         // arrange
         const field = new TileBasedField("Field", 3, 3, 3)
             .withId("fieldId")
+            .withTileTypes(new TileType(1, 10, ""))
             .withTiles(
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
-        const unit = new Unit().withStatistics(new Statistics()
-            .withMoves(2).withJumps(1));
-        const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
+                [[1], [1], [1]],
+                [[1], [1, 1], [1]],
+                [[1], [1], [1]]);
+        const range = new Range(2, 4, 0);
+        const position = new Position(0, 0, 0);
 
         // act
-        const accessiblePositions = movementService.getAccessiblePositions(field, unitState);
+        const positionsInRange = fieldAlgorithmService.getPositionsInRange(field, position, range);
 
         // assert
-        Assert.deepStrictEqual(accessiblePositions.length, 6);
+        Assert.deepStrictEqual(positionsInRange.length, 5);
     });
 
-    it('heterogeneous field', () => {
-        // arrange
-        const field = new TileBasedField("Field", 3, 3, 3)
-            .withId("fieldId")
-            .withTiles(
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 2)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
-                const unit = new Unit().withStatistics(new Statistics()
+    describe('Getting accessible positions...', () => {
+
+        it('flat and homogeneous field', () => {
+            // arrange
+            const field = new TileBasedField("Field", 3, 3, 3)
+                .withId("fieldId")
+                .withTileTypes(new TileType(1, 1, ""))
+                .withTiles(
+                    [[1], [1], [1]],
+                    [[1], [1], [1]],
+                    [[1], [1], [1]]);
+            const unit = new Unit().withStatistics(new Statistics()
                 .withMoves(2).withJumps(1));
-        const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
+            const unitState = UnitState.init(unit, new Position(0, 0, 0));
 
-        // act
-        const accessiblePositions = movementService.getAccessiblePositions(field, unitState);
+            // act
+            const accessiblePositions = fieldAlgorithmService.getAccessiblePositions(field, unitState);
 
-        // assert
-        Assert.deepStrictEqual(accessiblePositions.length, 5);
-    });
+            // assert
+            Assert.deepStrictEqual(accessiblePositions.length, 6);
+        });
 
-    it('unlevel field', () => {
-        // arrange
-        const field = new TileBasedField("Field", 3, 3, 3)
-            .withId("fieldId")
-            .withTiles(
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 1), new Tile(1, 1)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
-                const unit = new Unit().withStatistics(new Statistics()
+        it('heterogeneous field', () => {
+            // arrange
+            const field = new TileBasedField("Field", 3, 3, 3)
+                .withId("fieldId")
+                .withTileTypes(new TileType(1, 1, ""), new TileType(2, 2, ""))
+                .withTiles(
+                    [[1], [1], [1]],
+                    [[1], [2], [1]],
+                    [[1], [1], [1]]);
+            const unit = new Unit().withStatistics(new Statistics()
+                .withMoves(2).withJumps(1));
+            const unitState = UnitState.init(unit, new Position(0, 0, 0));
+
+            // act
+            const accessiblePositions = fieldAlgorithmService.getAccessiblePositions(field, unitState);
+
+            // assert
+            Assert.deepStrictEqual(accessiblePositions.length, 5);
+        });
+
+        it('unlevel field', () => {
+            // arrange
+            const field = new TileBasedField("Field", 3, 3, 3)
+                .withId("fieldId")
+                .withTileTypes(new TileType(1, 1, ""))
+                .withTiles(
+                    [[1], [1], [1]],
+                    [[1], [1, 1], [1]],
+                    [[1], [1], [1]]);
+            const unit = new Unit().withStatistics(new Statistics()
                 .withMoves(2).withJumps(0));
-        const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
+            const unitState = UnitState.init(unit, new Position(0, 0, 0));
 
-        // act
-        const accessiblePositions = movementService.getAccessiblePositions(field, unitState);
+            // act
+            const accessiblePositions = fieldAlgorithmService.getAccessiblePositions(field, unitState);
 
-        // assert
-        Assert.deepStrictEqual(accessiblePositions.length, 5);
-    });
+            // assert
+            Assert.deepStrictEqual(accessiblePositions.length, 5);
+        });
 
-    it('check position accessibility', () => {
-        // arrange
-        const field = new TileBasedField("Field", 3, 3, 3)
-            .withId("fieldId")
-            .withTiles(
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 1), new Tile(1, 1)], [new Tile(1, 1)]],
-                [[new Tile(1, 1)], [new Tile(1, 1)], [new Tile(1, 1)]]);
-                const unit = new Unit().withStatistics(new Statistics()
+        it('check position accessibility', () => {
+            // arrange
+            const field = new TileBasedField("Field", 3, 3, 3)
+                .withId("fieldId")
+                .withTileTypes(new TileType(1, 1, ""))
+                .withTiles(
+                    [[1], [1], [1]],
+                    [[1], [1, 1], [1]],
+                    [[1], [1], [1]]);
+            const unit = new Unit().withStatistics(new Statistics()
                 .withMoves(2).withJumps(0));
-        const unitState = new UnitState.Builder().init(unit, new Position(0, 0)).build();
+            const unitState = UnitState.init(unit, new Position(0, 0, 0));
 
-        // act
-        const inaccessiblePosition = movementService.isAccessible(field, unitState, new Position(1, 1));
-        const samePosition = movementService.isAccessible(field, unitState, new Position(0, 0));
-        const accessiblePosition = movementService.isAccessible(field, unitState, new Position(1, 0));
+            // act
+            const unreachablePosition = fieldAlgorithmService.isAccessible(field, unitState, new Position(1, 1, 1));
+            const invalidHeight = fieldAlgorithmService.isAccessible(field, unitState, new Position(1, 0, 1));
+            const samePosition = fieldAlgorithmService.isAccessible(field, unitState, new Position(0, 0, 0));
+            const accessiblePosition = fieldAlgorithmService.isAccessible(field, unitState, new Position(1, 0, 0));
 
-        // assert
-        Assert.deepStrictEqual(inaccessiblePosition, false);
-        Assert.deepStrictEqual(samePosition, false);
-        Assert.deepStrictEqual(accessiblePosition, true);
+            // assert
+            Assert.deepStrictEqual(unreachablePosition, false);
+            Assert.deepStrictEqual(invalidHeight, false);
+            Assert.deepStrictEqual(samePosition, false);
+            Assert.deepStrictEqual(accessiblePosition, true);
+        });
     });
+
 });

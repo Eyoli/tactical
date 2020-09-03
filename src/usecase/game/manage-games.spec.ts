@@ -1,20 +1,21 @@
 import "reflect-metadata";
-import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
-import GameService from "../../domain/service/game-service";
-import Game from "../../domain/model/game";
-import Field from "../../domain/model/field";
-import Player from "../../domain/model/player";
-import Unit from "../../domain/model/unit";
+import InMemoryRepository from "../../in-memory-repository/adapter/in-memory-repository";
+import GameService from "../../tactical/adapter/primary/game-service";
+import Game from "../../tactical/domain/model/game";
+import Field from "../../tactical/domain/model/field";
+import Player from "../../tactical/domain/model/player";
+import Unit from "../../tactical/domain/model/unit";
 import * as Assert from "assert";
 import * as mocha from "mocha";
-import RepositoryPort from "../../domain/port/secondary/repository";
-import { GameServicePort } from "../../domain/port/primary/services";
-import ResourceNotFoundError from "../../domain/error/resource-not-found-error";
-import PlayerService from "../../domain/service/player-service";
-import UnitService from "../../domain/service/unit-service";
-import { FakeMovementService } from "../fake/services";
+import RepositoryPort from "../../tactical/domain/port/secondary/repository-port";
+import { GameServicePort } from "../../tactical/domain/port/primary/services";
+import ResourceNotFoundError from "../../tactical/domain/model/error/resource-not-found-error";
+import PlayerService from "../../tactical/adapter/primary/player-service";
+import UnitService from "../../tactical/adapter/primary/unit-service";
+import { FakeFieldAlgorithmService } from "../fake/fake-field-algorithm-service";
 import FakeField from "../fake/fake-field";
 import FakeActionService from "../fake/fake-action-service";
+import CounterIdGenerator from "../../in-memory-repository/adapter/counter-id-generator";
 
 describe('About games we should be able to...', () => {
 
@@ -25,17 +26,17 @@ describe('About games we should be able to...', () => {
     let fieldRepository: RepositoryPort<Field>;
 
     beforeEach(() => {
-        playerRepository = new InMemoryRepository<Player>();
-        gameRepository = new InMemoryRepository<Game>();
-        unitRepository = new InMemoryRepository<Unit>();
-        fieldRepository = new InMemoryRepository<Field>();
+        playerRepository = new InMemoryRepository<Player>(new CounterIdGenerator("player"));
+        gameRepository = new InMemoryRepository<Game>(new CounterIdGenerator("game"));
+        unitRepository = new InMemoryRepository<Unit>(new CounterIdGenerator("unit"));
+        fieldRepository = new InMemoryRepository<Field>(new CounterIdGenerator("field"));
 
         gameService = new GameService(
             gameRepository, 
             new PlayerService(playerRepository),
             new UnitService(unitRepository), 
             fieldRepository, 
-            new FakeMovementService(),
+            new FakeFieldAlgorithmService(),
             new FakeActionService());
     });
 

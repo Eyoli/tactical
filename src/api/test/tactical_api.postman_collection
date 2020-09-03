@@ -29,7 +29,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"My field\",\r\n    \"tileTypes\": [{\r\n        \"type\": 1,\r\n        \"src\": \"src\"\r\n    }],\r\n    \"tiles\": [\r\n        [[{\"type\": 1, \"cost\": 1}], [{\"type\": 1, \"cost\": 1}]],\r\n        [[{\"type\": 1, \"cost\": 1}], [{\"type\": 1, \"cost\": 1}]]\r\n    ]\r\n}",
+					"raw": "{\r\n    \"name\": \"My field\",\r\n    \"tileTypes\": [{\r\n        \"type\": 1,\r\n        \"cost\": 1,\r\n        \"src\": \"grass/grass_00.png\"\r\n    },\r\n    {\r\n        \"type\": 2,\r\n        \"cost\": 2,\r\n        \"src\": \"blocks_39.png\"\r\n    },\r\n    {\r\n        \"type\": 3,\r\n        \"cost\": 2,\r\n        \"liquid\": true,\r\n        \"src\": \"blocks_69.png\"\r\n    }],\r\n    \"tiles\": [\r\n        [[1],[1],[1],[1,2],[1,2]],\r\n        [[1],[1],[1],[1],[1],[1],[1]],\r\n        [[1],[1],[1],[1],[1],[1],[1]],\r\n        [[1],[1],[1],[1],[1],[1],[1]],\r\n        [[1],[1],[1],[1],[1],[1],[1]],\r\n        [[1],[1],[1],[1],[1],[1],[1]],\r\n        [[1,1,1,1,1,2],[1,1,1,1,1,2],[1],[1],[3],[3],[3],[1]],\r\n        [[1,1,1,1,1,3],[3,3,3,3,3,3],[3],[3],[3],[3],[3],[1]],\r\n        [[1,1,1,1,1,3],[3,3,3,3,3,3],[3],[3],[3],[3],[3],[1]],\r\n        [[1,1,1,1,1,2],[1,1,1,1,1,2],[1],[1],[3],[3],[3],[1]],\r\n        [[1],[1],[1],[1],[1],[1],[1],[1]]\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -43,6 +43,53 @@
 					],
 					"path": [
 						"fields"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateField",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c27532f9-05da-474e-8502-eb0dd88ed6b6",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"My field\",\r\n    \"tileTypes\": [{\r\n        \"type\": 1,\r\n        \"cost\": 1,\r\n        \"src\": \"grass/grass_00.png\"\r\n    },\r\n    {\r\n        \"type\": 2,\r\n        \"cost\": 2,\r\n        \"src\": \"blocks_39.png\"\r\n    },\r\n    {\r\n        \"type\": 3,\r\n        \"cost\": 2,\r\n        \"liquid\": true,\r\n        \"src\": \"blocks_69.png\"\r\n    }],\r\n    \"tiles\": [\r\n        [[1],[1],[1],[1,2],[1,2]],\r\n        [[1],[1],[1],[1],[1],[1],[1],[1]],\r\n        [[1],[1],[1],[1],[1],[1],[1],[1]],\r\n        [[1],[1],[1],[1],[1],[1],[1],[1]],\r\n        [[1],[1],[1],[1],[1],[1],[1],[1]],\r\n        [[1],[1],[1],[1],[1],[1],[1],[1]],\r\n        [[1,1,1,1,1,2],[1,1,1,1,1,2],[1],[1],[3],[3],[3],[1]],\r\n        [[1,1,1,1,1,3],[3,3,3,3,3,3],[3],[3],[3],[3],[3],[1]],\r\n        [[1,1,1,1,1,3],[3,3,3,3,3,3],[3],[3],[3],[3],[3],[1]],\r\n        [[1,1,1,1,1,2],[1,1,1,1,1,2],[1],[1],[3],[3],[3],[1]],\r\n        [[1],[1],[1],[1],[1],[1],[1],[1]]\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/fields/:id",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"fields",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{FIELD_ID}}"
+						}
 					]
 				}
 			},
@@ -488,6 +535,10 @@
 					"script": {
 						"id": "ea4c2008-82ae-434b-8552-928a9c239c42",
 						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"if (jsonData.error) {\r",
+							"    console.log(jsonData.error);\r",
+							"}\r",
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
 							"});"
@@ -602,7 +653,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"composition\": [\r\n        {\r\n            \"playerId\": \"{{PLAYER_1_ID}}\",\r\n            \"units\": [\r\n                {\r\n                    \"unitId\": \"{{UNIT_1_ID}}\",\r\n                    \"position\": {\"x\": 0, \"y\": 0}\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"playerId\": \"{{PLAYER_2_ID}}\",\r\n            \"units\": [\r\n                {\r\n                    \"unitId\": \"{{UNIT_2_ID}}\",\r\n                    \"position\": {\"x\": 0, \"y\": 0}\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"composition\": [\r\n        {\r\n            \"playerId\": \"{{PLAYER_1_ID}}\",\r\n            \"units\": [\r\n                {\r\n                    \"unitId\": \"{{UNIT_1_ID}}\",\r\n                    \"position\": {\"x\": 5, \"y\": 5, \"z\": 0}\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"playerId\": \"{{PLAYER_2_ID}}\",\r\n            \"units\": [\r\n                {\r\n                    \"unitId\": \"{{UNIT_2_ID}}\",\r\n                    \"position\": {\"x\": 6, \"y\": 6, \"z\": 0}\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -655,7 +706,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"position\": {\r\n        \"x\": 1,\r\n        \"y\": 1\r\n    }\r\n}",
+					"raw": "{\r\n    \"position\": {\r\n        \"x\": 6,\r\n        \"y\": 5,\r\n        \"z\": 0\r\n    }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -682,6 +733,126 @@
 						{
 							"key": "unitId",
 							"value": "{{UNIT_1_ID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getActionInfo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e833f8b3-0eb2-41b2-8454-4f968a0c59a0",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"if (jsonData.error) {\r",
+							"    console.log(jsonData.error);\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/games/:id/units/:unitId/actions/:actionTypeId/info",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"games",
+						":id",
+						"units",
+						":unitId",
+						"actions",
+						":actionTypeId",
+						"info"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{GAME_ID}}"
+						},
+						{
+							"key": "unitId",
+							"value": "{{UNIT_1_ID}}"
+						},
+						{
+							"key": "actionTypeId",
+							"value": "attack"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "attackUnit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "aecb288d-f42d-4a6f-8fd7-23f3d5e5eed7",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"if (jsonData.error) {\r",
+							"    console.log(jsonData.error);\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"position\": {\r\n        \"x\": 6,\r\n        \"y\": 6,\r\n        \"z\": 0\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/games/:id/units/:unitId/actions/:actionTypeId",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"games",
+						":id",
+						"units",
+						":unitId",
+						"actions",
+						":actionTypeId"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{GAME_ID}}"
+						},
+						{
+							"key": "unitId",
+							"value": "{{UNIT_1_ID}}"
+						},
+						{
+							"key": "actionTypeId",
+							"value": "attack"
 						}
 					]
 				}
@@ -757,37 +928,37 @@
 	],
 	"variable": [
 		{
-			"id": "8da1d7ec-c145-4abd-8c72-00f03875e386",
+			"id": "a2b8d101-ce30-4b87-9ff9-9cbbc34795ca",
 			"key": "BASE_URL",
 			"value": "http://localhost:3000"
 		},
 		{
-			"id": "146f3df5-c3a7-462e-aa7f-67dc9a3f8cd1",
+			"id": "d2b9a463-90dc-44d8-adae-a4efc38295fb",
 			"key": "FIELD_ID",
 			"value": ""
 		},
 		{
-			"id": "15a4f618-1dab-4d02-8eaf-2bf88c465c19",
+			"id": "b908c544-d802-4662-8242-a2ef1912a331",
 			"key": "UNIT_1_ID",
 			"value": ""
 		},
 		{
-			"id": "4992b4ce-9c05-4d60-889c-b4c1f66f2de0",
+			"id": "e8e71eba-3e3a-4972-bb5b-3396cbb72aa4",
 			"key": "UNIT_2_ID",
 			"value": ""
 		},
 		{
-			"id": "8842aaee-d58e-4a8a-8702-3aa21c0028d5",
+			"id": "e4dead17-e983-464d-8e74-e55336d9f6a1",
 			"key": "PLAYER_1_ID",
 			"value": ""
 		},
 		{
-			"id": "674d02cd-801e-4dae-a1a8-60596e114d24",
+			"id": "444dac34-3ce2-425c-bd3a-af7ca35c64e6",
 			"key": "PLAYER_2_ID",
 			"value": ""
 		},
 		{
-			"id": "f71b154b-d5d5-40bd-83a3-59ffc889205b",
+			"id": "eb5caff9-6573-41bb-a1db-2b1dc69e3e6c",
 			"key": "GAME_ID",
 			"value": ""
 		}

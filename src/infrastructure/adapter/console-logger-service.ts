@@ -1,4 +1,4 @@
-import LoggerServicePort from "../../domain/port/primary/logger-service-port";
+import LoggerServicePort from "../../tactical/domain/port/primary/logger-service-port";
 
 export default class ConsoleLoggerService implements LoggerServicePort {
 

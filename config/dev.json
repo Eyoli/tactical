@@ -1,8 +1,12 @@
 {
     "env": "dev",
     "logger": true,
-    "app": {
+    "api": {
         "port": 3000
+    },
+    "front": {
+        "port": 3001,
+        "api-host": "http://localhost:3000"
     },
     "process": {
         "title": "tactical"

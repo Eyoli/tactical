@@ -1,5 +1,6 @@
-import Field from "../../domain/model/field";
-import Position from "../../domain/model/position";
+import Field from "../../tactical/domain/model/field";
+import Position from "../../tactical/domain/model/position";
+import UnitState from "../../tactical/domain/model/unit-state";
 
 export default class FakeField extends Field {
     private validPositions: boolean;
@@ -19,10 +20,6 @@ export default class FakeField extends Field {
 
     isValidPosition(p: Position): boolean {
         return this.validPositions;
-    }
-
-    isNeighbourAccessible(p1: Position, p2: Position, moves: number, jumps: number): boolean {
-        return true;
     }
 
     getHeightDifference(p1: Position, p2: Position): number {

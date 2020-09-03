@@ -1,47 +1,54 @@
 import "reflect-metadata";
-import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
-import GameService from "../../domain/service/game-service";
-import Game from "../../domain/model/game";
-import Field from "../../domain/model/field";
-import Player from "../../domain/model/player";
-import Unit from "../../domain/model/unit";
+import InMemoryRepository from "../../in-memory-repository/adapter/in-memory-repository";
+import GameService from "../../tactical/adapter/primary/game-service";
+import Game from "../../tactical/domain/model/game";
+import Field from "../../tactical/domain/model/field";
+import Player from "../../tactical/domain/model/player";
+import Unit from "../../tactical/domain/model/unit";
 import * as Assert from "assert";
 import * as mocha from "mocha";
-import RepositoryPort from "../../domain/port/secondary/repository";
-import { GameServicePort } from "../../domain/port/primary/services";
-import PlayerService from "../../domain/service/player-service";
-import UnitService from "../../domain/service/unit-service";
-import { FakeMovementService } from "../fake/services";
-import Position from "../../domain/model/position";
-import { UnitsComposition, UnitsPlacement } from "../../domain/model/aliases";
-import { GameError, GameErrorCode } from "../../domain/error/game-error";
+import RepositoryPort from "../../tactical/domain/port/secondary/repository-port";
+import PlayerService from "../../tactical/adapter/primary/player-service";
+import UnitService from "../../tactical/adapter/primary/unit-service";
+import { FakeFieldAlgorithmService } from "../fake/fake-field-algorithm-service";
+import Position from "../../tactical/domain/model/position";
+import { UnitsComposition, UnitsPlacement } from "../../tactical/domain/model/aliases";
+import { GameError, GameErrorCode } from "../../tactical/domain/model/error/game-error";
 import FakeField from "../fake/fake-field";
-import FakeAction from "../fake/fake-action";
 import FakeActionService from "../fake/fake-action-service";
-import { ActionType } from "../../domain/model/action/action-type";
-import Statistics from "../../domain/model/statistics";
+import { ActionType, TargetType, Range } from "../../tactical/domain/model/action/action-type";
+import Statistics from "../../tactical/domain/model/statistics";
+import { GameServicePort } from "../../tactical/domain/port/primary/services";
+import { Damage, DamageType } from "../../tactical/domain/model/weapon";
+import CounterIdGenerator from "../../in-memory-repository/adapter/counter-id-generator";
 
 describe('About playing we should be able to...', () => {
+
+    // Logger.setLogger(new ConsoleLoggerService());
 
     let gameService: GameServicePort;
     let playerRepository: RepositoryPort<Player>;
     let gameRepository: RepositoryPort<Game>;
     let unitRepository: RepositoryPort<Unit>;
     let fieldRepository: RepositoryPort<Field>;
+    let actionService: FakeActionService;
+    let fieldAlgorithmService: FakeFieldAlgorithmService;
 
     beforeEach(() => {
-        playerRepository = new InMemoryRepository<Player>();
-        gameRepository = new InMemoryRepository<Game>();
-        unitRepository = new InMemoryRepository<Unit>();
-        fieldRepository = new InMemoryRepository<Field>();
+        playerRepository = new InMemoryRepository<Player>(new CounterIdGenerator("player"));
+        gameRepository = new InMemoryRepository<Game>(new CounterIdGenerator("game"));
+        unitRepository = new InMemoryRepository<Unit>(new CounterIdGenerator("unit"));
+        fieldRepository = new InMemoryRepository<Field>(new CounterIdGenerator("field"));
+        actionService = new FakeActionService();
+        fieldAlgorithmService = new FakeFieldAlgorithmService();
 
         gameService = new GameService(
             gameRepository,
             new PlayerService(playerRepository),
             new UnitService(unitRepository),
             fieldRepository,
-            new FakeMovementService(),
-            new FakeActionService()
+            fieldAlgorithmService,
+            actionService
         );
     });
 
@@ -76,19 +83,23 @@ describe('About playing we should be able to...', () => {
         let game = aGameWithTwoPlayers();
         const unitsComposition = aUnitComposition(game.players[0], game.players[1]);
         gameService.startGame(game.id, unitsComposition);
+        const player1 = game.players[0];
+        const unit1 = game.getUnits(player1)[0];
+        const player2 = game.players[1];
+        const unit2 = game.getUnits(player2)[0];
 
         // act
-        const playerPerTurn = [];
-        playerPerTurn.push(game.getCurrentPlayer());
+        const unitPerTurn = [];
+        unitPerTurn.push(game.getCurrentUnit());
         game = gameService.finishTurn(game.id);
-        playerPerTurn.push(game.getCurrentPlayer());
+        unitPerTurn.push(game.getCurrentUnit());
         game = gameService.finishTurn(game.id);
-        playerPerTurn.push(game.getCurrentPlayer());
+        unitPerTurn.push(game.getCurrentUnit());
 
         // assert
-        Assert.deepStrictEqual(playerPerTurn[0]?.name, "Player 1");
-        Assert.deepStrictEqual(playerPerTurn[1]?.name, "Player 2");
-        Assert.deepStrictEqual(playerPerTurn[2]?.name, "Player 1");
+        Assert.deepStrictEqual(unitPerTurn[0]?.id, unit1.id);
+        Assert.deepStrictEqual(unitPerTurn[1]?.id, unit2.id);
+        Assert.deepStrictEqual(unitPerTurn[2]?.id, unit1.id);
     });
 
     describe('move a unit...', () => {
@@ -103,11 +114,11 @@ describe('About playing we should be able to...', () => {
             const unit1 = game.getUnits(player1)[0];
 
             // act
-            const newUnitState = gameService.moveUnit(game.id, unit1.id, new Position(1, 1));
-            const moveASecondTime = () => gameService.moveUnit(game.id, unit1.id, new Position(1, 2));
+            const newUnitState = gameService.moveUnit(game.id, unit1.id, new Position(1, 1, 0));
+            const moveASecondTime = () => gameService.moveUnit(game.id, unit1.id, new Position(1, 2, 0));
 
             // assert
-            Assert.deepStrictEqual(newUnitState.getPosition().equals(new Position(1, 1)), true);
+            Assert.deepStrictEqual(newUnitState.getPosition().equals(new Position(1, 1, 0)), true);
             Assert.throws(moveASecondTime, new GameError(GameErrorCode.IMPOSSIBLE_TO_MOVE_UNIT));
         });
 
@@ -121,14 +132,14 @@ describe('About playing we should be able to...', () => {
             const unit2 = game.getUnits(player2)[0];
 
             // act
-            const moveAFirstTime = () => gameService.moveUnit(game.id, unit2.id, new Position(1, 2));
+            const moveAFirstTime = () => gameService.moveUnit(game.id, unit2.id, new Position(1, 2, 0));
 
             // assert
             Assert.throws(moveAFirstTime, new GameError(GameErrorCode.IMPOSSIBLE_TO_MOVE_UNIT));
         });
     });
 
-    it('act on a target', () => {
+    it('act on a position', () => {
         // arrange
         const game = aGameWithTwoPlayers();
         const unitsComposition = aUnitComposition(game.players[0], game.players[1]);
@@ -136,15 +147,42 @@ describe('About playing we should be able to...', () => {
 
         const unit1 = game.getUnits(game.players[0])[0];
         const unit2 = game.getUnits(game.players[1])[0];
+        const unitState2 = game.getUnitState(unit2.id);
+
+        actionService
+            .withActionType(new ActionType("attack", TargetType.UNIT));
 
         // act
-        gameService.actOnTarget(game.id, unit1.id, unit2.id, ActionType.ATTACK);
-        const actASecondTime = () => gameService.actOnTarget(game.id, unit1.id, unit2.id, ActionType.ATTACK);
+        gameService.actOnPosition(game.id, unit1.id, unitState2.getPosition(), "attack");
+        const actASecondTime = () => gameService.actOnPosition(game.id, unit1.id, unitState2.getPosition(), "attack");
 
         // assert
         const unitState = game.getUnitState(unit2.id);
-        Assert.deepStrictEqual(unitState?.getPosition(), new Position(1, 1));
+        Assert.deepStrictEqual(unitState?.getHealth().current, 190);
         Assert.throws(actASecondTime, new GameError(GameErrorCode.IMPOSSIBLE_TO_ACT));
+    });
+
+    it('act on a position with area', () => {
+        // arrange
+        const game = aGameWithTwoPlayers();
+        const unitsComposition = aUnitComposition(game.players[0], game.players[1]);
+        gameService.startGame(game.id, unitsComposition);
+
+        const unit1 = game.getUnits(game.players[0])[0];
+        const unit2 = game.getUnits(game.players[1])[0];
+        const unitState2 = game.getUnitState(unit2.id);
+
+        actionService
+            .withActionType(new ActionType("fireball", TargetType.AREA,
+                new Range(1, 1, 1), new Damage(10, DamageType.CUTTING), new Range(0, 2, 1)));
+        fieldAlgorithmService.withPositionsInRange([new Position(0,0,0)]);
+
+        // act
+        gameService.actOnPosition(game.id, unit1.id, unitState2.getPosition(), "fireball");
+
+        // assert
+        const unitState = game.getUnitState(unit2.id);
+        Assert.deepStrictEqual(unitState?.getHealth().current, 190);
     });
 
     it('rollback an action performed during a turn', () => {
@@ -155,15 +193,19 @@ describe('About playing we should be able to...', () => {
 
         const unit1 = game.getUnits(game.players[0])[0];
         const unit2 = game.getUnits(game.players[1])[0];
+        const unitState2 = game.getUnitState(unit2.id);
+
+        actionService
+            .withActionType(new ActionType("attack", TargetType.UNIT));
 
         // act
-        gameService.actOnTarget(game.id, unit1.id, unit2.id, ActionType.ATTACK);
+        gameService.actOnPosition(game.id, unit1.id, unitState2.getPosition(), "attack");
         gameService.rollbackLastAction(game.id);
         gameService.rollbackLastAction(game.id);
 
         // assert
         const unitState = game.getUnitState(unit2.id);
-        Assert.deepStrictEqual(unitState?.getPosition(), new Position(0, 0));
+        Assert.deepStrictEqual(unitState?.getHealth().current, 200);
     });
 
     it('rollback a move performed during a turn', () => {
@@ -175,12 +217,30 @@ describe('About playing we should be able to...', () => {
         const unit1 = game.getUnits(game.players[0])[0];
 
         // act
-        gameService.moveUnit(game.id, unit1.id, new Position(1, 2));
+        gameService.moveUnit(game.id, unit1.id, new Position(1, 2, 0));
         gameService.rollbackLastAction(game.id);
 
         // assert
         const unitState = game.getUnitState(unit1.id);
-        Assert.deepStrictEqual(unitState?.getPosition(), new Position(0, 0));
+        Assert.deepStrictEqual(unitState?.getPosition(), new Position(1, 0, 0));
+    });
+
+    it('prevent rollback a move performed during last turn', () => {
+        // arrange
+        const game = aGameWithTwoPlayers();
+        const unitsComposition = aUnitComposition(game.players[0], game.players[1]);
+        gameService.startGame(game.id, unitsComposition);
+
+        const unit1 = game.getUnits(game.players[0])[0];
+
+        // act
+        gameService.moveUnit(game.id, unit1.id, new Position(1, 2, 0));
+        gameService.finishTurn(game.id);
+        gameService.rollbackLastAction(game.id);
+
+        // assert
+        const unitState = game.getUnitState(unit1.id);
+        Assert.deepStrictEqual(unitState?.getPosition(), new Position(1, 2, 0));
     });
 
     function aGameWithTwoPlayers(validPositions: boolean = true) {
@@ -201,15 +261,15 @@ describe('About playing we should be able to...', () => {
     }
 
     function aUnitComposition(player1: Player, player2: Player) {
-        const unit1 = new Unit().withStatistics(new Statistics());
-        const unit2 = new Unit().withStatistics(new Statistics());
+        const unit1 = new Unit().withStatistics(new Statistics().withHealth(100));
+        const unit2 = new Unit().withStatistics(new Statistics().withHealth(200));
         unit1.id = unitRepository.save(unit1);
         unit2.id = unitRepository.save(unit2);
         const unitsComposition: UnitsComposition = new Map();
         const player1UnitsPlacement: UnitsPlacement = new Map();
-        player1UnitsPlacement.set(unit1.id, new Position(0, 0));
+        player1UnitsPlacement.set(unit1.id, new Position(1, 0, 0));
         const player2UnitsPlacement: UnitsPlacement = new Map();
-        player2UnitsPlacement.set(unit2.id, new Position(0, 0));
+        player2UnitsPlacement.set(unit2.id, new Position(0, 0, 0));
         unitsComposition.set(player1.id, player1UnitsPlacement);
         unitsComposition.set(player2.id, player2UnitsPlacement);
 

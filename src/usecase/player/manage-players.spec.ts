@@ -1,10 +1,11 @@
 import "reflect-metadata";
 import * as Assert from "assert";
-import InMemoryRepository from "../../infrastructure/adapter/repository/in-memory-repository";
-import { PlayerServicePort } from "../../domain/port/primary/services";
-import RepositoryPort from "../../domain/port/secondary/repository";
-import Player from "../../domain/model/player";
-import PlayerService from "../../domain/service/player-service";
+import InMemoryRepository from "../../in-memory-repository/adapter/in-memory-repository";
+import { PlayerServicePort } from "../../tactical/domain/port/primary/services";
+import RepositoryPort from "../../tactical/domain/port/secondary/repository-port";
+import Player from "../../tactical/domain/model/player";
+import PlayerService from "../../tactical/adapter/primary/player-service";
+import CounterIdGenerator from "../../in-memory-repository/adapter/counter-id-generator";
 
 describe('About players we should be able to...', () => {
 
@@ -12,7 +13,7 @@ describe('About players we should be able to...', () => {
     let playerRepository: RepositoryPort<Player>;
 
     beforeEach(() => {
-        playerRepository = new InMemoryRepository<Player>(); 
+        playerRepository = new InMemoryRepository<Player>(new CounterIdGenerator("player")); 
         playerService = new PlayerService(playerRepository);
     });
 
