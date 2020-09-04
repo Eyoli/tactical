@@ -1,16 +1,5 @@
 import { Range } from "./action/action-type";
-
-export enum DamageType {
-    CUTTING, PERCING, BLUNT, MAGIC
-}
-
-export enum Element {
-    FIRE, ICE, THUNDER
-}
-
-export enum Ailment {
-    BURNING, FREEZING, PARALYZED
-}
+import {Ailment, DamageType, Element} from "./enums";
 
 export class Damage {
     readonly amount: number;

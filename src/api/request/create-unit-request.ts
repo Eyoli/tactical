@@ -1,7 +1,8 @@
 import Unit from "../../tactical/domain/model/unit";
 import Statistics from "../../tactical/domain/model/statistics";
-import { Weapon, Damage, DamageType } from "../../tactical/domain/model/weapon";
+import { Weapon, Damage } from "../../tactical/domain/model/weapon";
 import { Range } from "../../tactical/domain/model/action/action-type";
+import {DamageType} from "../../tactical/domain/model/enums";
 
 export default class CreateUnitRequest {
     name!: string;

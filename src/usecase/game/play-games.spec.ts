@@ -19,8 +19,9 @@ import FakeActionService from "../fake/fake-action-service";
 import { ActionType, TargetType, Range } from "../../tactical/domain/model/action/action-type";
 import Statistics from "../../tactical/domain/model/statistics";
 import { GameServicePort } from "../../tactical/domain/port/primary/services";
-import { Damage, DamageType } from "../../tactical/domain/model/weapon";
+import { Damage } from "../../tactical/domain/model/weapon";
 import CounterIdGenerator from "../../in-memory-repository/adapter/counter-id-generator";
+import {DamageType} from "../../tactical/domain/model/enums";
 
 describe('About playing we should be able to...', () => {
 

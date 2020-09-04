@@ -2,12 +2,13 @@ import * as Assert from "assert";
 import ActionService from "../../tactical/adapter/primary/action-service";
 import { ActionServicePort } from "../../tactical/domain/port/primary/services";
 import Unit from "../../tactical/domain/model/unit";
-import { Weapon, Damage, DamageType } from "../../tactical/domain/model/weapon";
+import { Weapon, Damage } from "../../tactical/domain/model/weapon";
 import UnitState from "../../tactical/domain/model/unit-state";
 import Position from "../../tactical/domain/model/position";
 import Statistics from "../../tactical/domain/model/statistics";
 import { Range } from "../../tactical/domain/model/action/action-type";
 import InMemoryActionTypeRepository from "../../in-memory-repository/adapter/in-memory-action-type-repository";
+import {DamageType} from "../../tactical/domain/model/enums";
 
 describe('Actions should work correctly...', () => {
 

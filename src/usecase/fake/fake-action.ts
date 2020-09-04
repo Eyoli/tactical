@@ -1,7 +1,7 @@
 import Action from "../../tactical/domain/model/action/action";
 import UnitState from "../../tactical/domain/model/unit-state";
-import Position from "../../tactical/domain/model/position";
-import { Damage, DamageType } from "../../tactical/domain/model/weapon";
+import {DamageType} from "../../tactical/domain/model/enums";
+import {Damage} from "../../tactical/domain/model/weapon";
 
 export default class FakeAction implements Action {
     private unitState!: UnitState;
