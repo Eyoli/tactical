@@ -1,4 +1,4 @@
-import { UnitsComposition, UnitsPlacement } from "../../tactical/domain/model/aliases";
+import { UnitsComposition, UnitsPlacement } from "../../tactical/domain/model/types";
 import Player from "../../tactical/domain/model/player";
 import Game from "../../tactical/domain/model/game";
 import Position from "../../tactical/domain/model/position";

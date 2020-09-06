@@ -11,7 +11,7 @@ export default class Position implements ValueObject {
         this.z = z;
     }
 
-    distanceTo(p: Position): number {
+    flatDistanceTo(p: Position): number {
         return Math.sqrt((p.x - this.x) * (p.x - this.x) + (p.y - this.y) * (p.y - this.y));
     }
 

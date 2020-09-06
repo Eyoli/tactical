@@ -12,12 +12,12 @@ export default class AttackAction implements Action {
         this.actionType = actionType;
         this.srcUnitState = srcUnitState;
         this.targetUnitState = targetUnitState;
-        this.range = this.actionType.range || this.srcUnitState.getUnit().getWeapon().range;
+        this.range = this.actionType.range || this.srcUnitState.unit.getWeapon().range;
     }
 
     validate(): boolean {
         
-        const distance = this.srcUnitState.getPosition().distanceTo(this.targetUnitState.getPosition());
+        const distance = this.srcUnitState.position.flatDistanceTo(this.targetUnitState.position);
         return distance <= this.range.max
             && distance >= this.range.min;
     }

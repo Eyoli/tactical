@@ -7,10 +7,11 @@ import Field from "../../domain/model/field";
 import ResourceNotFoundError from "../../domain/model/error/resource-not-found-error";
 import Position from "../../domain/model/position";
 import UnitState from "../../domain/model/unit-state";
-import { UnitsComposition, UnitsPlacement } from "../../domain/model/aliases";
+import { UnitsComposition, UnitsPlacement } from "../../domain/model/types";
 import { GameError, GameErrorCode } from "../../domain/model/error/game-error";
 import Player from "../../domain/model/player";
 import { ActionType } from "../../domain/model/action/action-type";
+import { Direction } from "../../domain/model/enums";
 
 @injectable()
 export default class GameService implements GameServicePort {
@@ -114,7 +115,7 @@ export default class GameService implements GameServicePort {
         units.forEach(unit => {
             const position = unitsPositions.get(unit.id);
             if (position) {
-                game.integrate(false, UnitState.init(unit, position));
+                game.integrate(false, UnitState.init(unit, position, Direction.DOWN));
             }
         });
     }
@@ -123,9 +124,9 @@ export default class GameService implements GameServicePort {
         const game = this.getGame(gameId);
         const unitState = game.getUnitState(unitId);
         if (unitState) {
-            const range = actionType.range || unitState.getUnit().getWeapon().range;
+            const range = actionType.range || unitState.unit.getWeapon().range;
             return this.fieldAlgorithmService.getPositionsInRange(
-                game.field!, unitState.getPosition(), range);
+                game.field!, unitState.position, range);
         }
         return [];
     }

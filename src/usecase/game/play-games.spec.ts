@@ -12,7 +12,7 @@ import PlayerService from "../../tactical/adapter/primary/player-service";
 import UnitService from "../../tactical/adapter/primary/unit-service";
 import { FakeFieldAlgorithmService } from "../fake/fake-field-algorithm-service";
 import Position from "../../tactical/domain/model/position";
-import { UnitsComposition, UnitsPlacement } from "../../tactical/domain/model/aliases";
+import { UnitsComposition, UnitsPlacement } from "../../tactical/domain/model/types";
 import { GameError, GameErrorCode } from "../../tactical/domain/model/error/game-error";
 import FakeField from "../fake/fake-field";
 import FakeActionService from "../fake/fake-action-service";
@@ -119,7 +119,7 @@ describe('About playing we should be able to...', () => {
             const moveASecondTime = () => gameService.moveUnit(game.id, unit1.id, new Position(1, 2, 0));
 
             // assert
-            Assert.deepStrictEqual(newUnitState.getPosition().equals(new Position(1, 1, 0)), true);
+            Assert.deepStrictEqual(newUnitState.position.equals(new Position(1, 1, 0)), true);
             Assert.throws(moveASecondTime, new GameError(GameErrorCode.IMPOSSIBLE_TO_MOVE_UNIT));
         });
 
@@ -154,12 +154,12 @@ describe('About playing we should be able to...', () => {
             .withActionType(new ActionType("attack", TargetType.UNIT));
 
         // act
-        gameService.actOnPosition(game.id, unit1.id, unitState2.getPosition(), "attack");
-        const actASecondTime = () => gameService.actOnPosition(game.id, unit1.id, unitState2.getPosition(), "attack");
+        gameService.actOnPosition(game.id, unit1.id, unitState2.position, "attack");
+        const actASecondTime = () => gameService.actOnPosition(game.id, unit1.id, unitState2.position, "attack");
 
         // assert
         const unitState = game.getUnitState(unit2.id);
-        Assert.deepStrictEqual(unitState?.getHealth().current, 190);
+        Assert.deepStrictEqual(unitState?.health.current, 190);
         Assert.throws(actASecondTime, new GameError(GameErrorCode.IMPOSSIBLE_TO_ACT));
     });
 
@@ -179,11 +179,11 @@ describe('About playing we should be able to...', () => {
         fieldAlgorithmService.withPositionsInRange([new Position(0,0,0)]);
 
         // act
-        gameService.actOnPosition(game.id, unit1.id, unitState2.getPosition(), "fireball");
+        gameService.actOnPosition(game.id, unit1.id, unitState2.position, "fireball");
 
         // assert
         const unitState = game.getUnitState(unit2.id);
-        Assert.deepStrictEqual(unitState?.getHealth().current, 190);
+        Assert.deepStrictEqual(unitState?.health.current, 190);
     });
 
     it('rollback an action performed during a turn', () => {
@@ -200,13 +200,13 @@ describe('About playing we should be able to...', () => {
             .withActionType(new ActionType("attack", TargetType.UNIT));
 
         // act
-        gameService.actOnPosition(game.id, unit1.id, unitState2.getPosition(), "attack");
+        gameService.actOnPosition(game.id, unit1.id, unitState2.position, "attack");
         gameService.rollbackLastAction(game.id);
         gameService.rollbackLastAction(game.id);
 
         // assert
         const unitState = game.getUnitState(unit2.id);
-        Assert.deepStrictEqual(unitState?.getHealth().current, 200);
+        Assert.deepStrictEqual(unitState?.health.current, 200);
     });
 
     it('rollback a move performed during a turn', () => {
@@ -223,7 +223,7 @@ describe('About playing we should be able to...', () => {
 
         // assert
         const unitState = game.getUnitState(unit1.id);
-        Assert.deepStrictEqual(unitState?.getPosition(), new Position(1, 0, 0));
+        Assert.deepStrictEqual(unitState?.position, new Position(1, 0, 0));
     });
 
     it('prevent rollback a move performed during last turn', () => {
@@ -241,7 +241,7 @@ describe('About playing we should be able to...', () => {
 
         // assert
         const unitState = game.getUnitState(unit1.id);
-        Assert.deepStrictEqual(unitState?.getPosition(), new Position(1, 2, 0));
+        Assert.deepStrictEqual(unitState?.position, new Position(1, 2, 0));
     });
 
     function aGameWithTwoPlayers(validPositions: boolean = true) {

@@ -1,6 +1,4 @@
-import Tile from "./tile-based-field/tile";
 import Position from "./position";
-import UnitState from "./unit-state";
 
 export default abstract class Field {
     id!: string;

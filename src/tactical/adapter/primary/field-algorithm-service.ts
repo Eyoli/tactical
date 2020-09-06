@@ -15,14 +15,14 @@ export default class FieldAlgorithmService implements FieldAlgorithmServicePort 
     getPositionsInRange(field: Field, position: Position, range: Range): Position[] {
         return this.getAccessiblePositionsAsSet(
             field, position, range.max, range.height, p => 1)
-            .filter(p => position.distanceTo(p) >= range.min)
+            .filter(p => position.flatDistanceTo(p) >= range.min)
             .toArray();
     }
 
     getAccessiblePositions(field: Field, unitState: UnitState): Position[] {
         return this.getAccessiblePositionsAsSet(
             field,
-            unitState.getPosition(),
+            unitState.position,
             unitState.getMoves(),
             unitState.getJumps(),
             p => field.getCost(p))
@@ -51,13 +51,13 @@ export default class FieldAlgorithmService implements FieldAlgorithmServicePort 
     }
 
     isAccessible(field: Field, unitState: UnitState, p: Position): boolean {
-        if (unitState.getPosition().equals(p)) {
+        if (unitState.position.equals(p)) {
             return false;
         }
 
         const accessiblePositions = this.getAccessiblePositionsAsSet(
             field,
-            unitState.getPosition(),
+            unitState.position,
             unitState.getMoves(),
             unitState.getJumps(),
             p => field.getCost(p));

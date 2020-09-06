@@ -10,6 +10,7 @@ import TileBasedField from "../../tactical/domain/model/tile-based-field/tile-ba
 import Statistics from "../../tactical/domain/model/statistics";
 import TileType from "../../tactical/domain/model/tile-based-field/tile-type";
 import { Range } from "../../tactical/domain/model/action/action-type";
+import { Direction } from "../../tactical/domain/model/enums";
 
 describe('About field algorithms...', () => {
 
@@ -50,7 +51,7 @@ describe('About field algorithms...', () => {
                     [[1], [1], [1]]);
             const unit = new Unit().withStatistics(new Statistics()
                 .withMoves(2).withJumps(1));
-            const unitState = UnitState.init(unit, new Position(0, 0, 0));
+            const unitState = UnitState.init(unit, new Position(0, 0, 0), Direction.DOWN);
 
             // act
             const accessiblePositions = fieldAlgorithmService.getAccessiblePositions(field, unitState);
@@ -70,7 +71,7 @@ describe('About field algorithms...', () => {
                     [[1], [1], [1]]);
             const unit = new Unit().withStatistics(new Statistics()
                 .withMoves(2).withJumps(1));
-            const unitState = UnitState.init(unit, new Position(0, 0, 0));
+            const unitState = UnitState.init(unit, new Position(0, 0, 0), Direction.DOWN);
 
             // act
             const accessiblePositions = fieldAlgorithmService.getAccessiblePositions(field, unitState);
@@ -90,7 +91,7 @@ describe('About field algorithms...', () => {
                     [[1], [1], [1]]);
             const unit = new Unit().withStatistics(new Statistics()
                 .withMoves(2).withJumps(0));
-            const unitState = UnitState.init(unit, new Position(0, 0, 0));
+            const unitState = UnitState.init(unit, new Position(0, 0, 0), Direction.DOWN);
 
             // act
             const accessiblePositions = fieldAlgorithmService.getAccessiblePositions(field, unitState);
@@ -110,7 +111,7 @@ describe('About field algorithms...', () => {
                     [[1], [1], [1]]);
             const unit = new Unit().withStatistics(new Statistics()
                 .withMoves(2).withJumps(0));
-            const unitState = UnitState.init(unit, new Position(0, 0, 0));
+            const unitState = UnitState.init(unit, new Position(0, 0, 0), Direction.DOWN);
 
             // act
             const unreachablePosition = fieldAlgorithmService.isAccessible(field, unitState, new Position(1, 1, 1));

@@ -4,12 +4,7 @@ import Unit from "./unit";
 import UnitState from "./unit-state";
 import TurnManager from "./turn-manager";
 import Position from "./position";
-
-export const enum GameState {
-    INITIATED = "INITIATED",
-    STARTED = "STARTED",
-    FINISHED = "FINISHED"
-}
+import { GameState } from "./enums";
 
 export default class Game {
     id!: string;
@@ -97,7 +92,7 @@ export default class Game {
     canMove(unit: Unit): boolean {
         if (this.hasStarted()) {
             const unitState = this.getUnitState(unit.id);
-            return unitState.hasMoved() === false
+            return unitState.moved === false
                 && this.turnManager.getCurrentUnit().id === unit.id;
         }
         return false;
@@ -106,7 +101,7 @@ export default class Game {
     canAct(unit: Unit): boolean {
         if (this.hasStarted()) {
             const unitState = this.getUnitState(unit.id);
-            return unitState.hasActed() === false
+            return unitState.acted === false
                 && this.turnManager.getCurrentUnit().id === unit.id;
         }
         return false;
@@ -114,7 +109,7 @@ export default class Game {
 
     findUnitState(p: Position) {
         return this.getUnitStates()
-            .find(unitState => unitState.getPosition().equals(p));
+            .find(unitState => unitState.position.equals(p));
     }
 
     getUnitState(unitId: string): UnitState {
@@ -129,11 +124,11 @@ export default class Game {
 
     integrate(saveStateChanges: boolean, ...newStates: UnitState[]): void {
         if (saveStateChanges) {
-            this.currentTurnChanges.unshift(newStates.map(state => state.getUnit().id));
+            this.currentTurnChanges.unshift(newStates.map(state => state.unit.id));
         }
 
         newStates.forEach(newState => {
-            const states = this.currentTurnStates.get(newState.getUnit().id);
+            const states = this.currentTurnStates.get(newState.unit.id);
             if (states) {
                 states.unshift(newState);
             }

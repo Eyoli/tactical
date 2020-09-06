@@ -1,37 +1,39 @@
 import Unit from "./unit";
 import Position from "./position";
 import { Damage } from "./weapon";
+import { Direction } from './enums';
 
 /**
  * Represent a given state of a unit 
  */
 class HistorizedValue {
-    current: number;
-    last: number;
+    readonly current: number;
+    readonly last: number;
 
-    constructor(value: number) {
-        this.current = value;
-        this.last = value;
-    }
-
-    update(value: number) {
-        this.last = this.current;
-        this.current = value;
+    constructor(current: number, last?: number) {
+        this.current = current;
+        this.last = last || current;
     }
 }
 
 export default class UnitState {
-    private unit!: Unit;
-    private position!: Position;
-    private health!: HistorizedValue;
-    private spirit!: number;
-    private moved!: boolean;
-    private acted!: boolean;
+    readonly unit: Unit;
+    readonly position: Position;
+    readonly direction: Direction;
+    readonly health: HistorizedValue;
+    readonly spirit: number;
+    readonly moved: boolean;
+    readonly acted: boolean;
 
-    private constructor() {}
-
-    getUnit(): Unit {
-        return this.unit;
+    private constructor(unit: Unit, position: Position, direction: Direction, health: HistorizedValue, spirit: number,
+        moved: boolean = false, acted: boolean = false) {
+        this.unit = unit;
+        this.position = position;
+        this.direction = direction;
+        this.health = health;
+        this.spirit = spirit;
+        this.moved = moved;
+        this.acted = acted;
     }
 
     getJumps(): number {
@@ -42,71 +44,77 @@ export default class UnitState {
         return this.unit.getStatistics().moves;
     }
 
-    getPosition(): Position {
-        return this.position;
-    }
-
-    getHealth(): HistorizedValue {
-        return this.health;
-    }
-
-    hasMoved(): boolean {
-        return this.moved;
-    }
-
-    hasActed(): boolean {
-        return this.acted;
-    }
-
     computeWeaponDamage(): Damage {
-        return this.getUnit().getWeapon().damage;
-    }
-
-    copy(): UnitState {
-        const unitState = new UnitState();
-        unitState.unit = this.unit;
-        unitState.moved = this.moved;
-        unitState.acted = this.acted;
-        unitState.position = this.position;
-        unitState.health = new HistorizedValue(this.health.current);
-        unitState.spirit = this.spirit;
-        return unitState;
+        return this.unit.getWeapon().damage;
     }
 
     toNextTurn(): UnitState {
-        const unitState = this.copy();
-        unitState.moved = false;
-        unitState.acted = false;
-        return unitState;
+        return new UnitState(
+            this.unit,
+            this.position,
+            this.direction,
+            new HistorizedValue(this.health.current),
+            this.spirit);
     }
 
     movingTo(p: Position): UnitState {
-        const unitState = this.copy();
-        unitState.position = p;
-        unitState.moved = true;
-        return unitState;
-    }
-
-    damaged(damage: Damage): UnitState {
-        const unitState = this.copy();
-        unitState.health.update(unitState.health.current - damage.amount);
-        return unitState;
+        return new UnitState(
+            this.unit,
+            p,
+            this.computeDirection(this.position, p),
+            new HistorizedValue(this.health.current),
+            this.spirit,
+            true,
+            this.acted
+        );
     }
 
     acting(): UnitState {
-        const unitState = this.copy();
-        unitState.acted = true;
-        return unitState;
+        return new UnitState(
+            this.unit,
+            this.position,
+            this.direction,
+            new HistorizedValue(this.health.current),
+            this.spirit,
+            this.moved,
+            true
+        );
     }
 
-    static init(unit: Unit, p: Position): UnitState {
-        const unitState = new UnitState();
-        unitState.unit = unit;
-        unitState.position = p;
-        unitState.health = new HistorizedValue(unit.getStatistics().health);
-        unitState.spirit = unit.getStatistics().spirit;
-        unitState.moved = false;
-        unitState.acted = false;
-        return unitState;
+    damaged(damage: Damage): UnitState {
+        return new UnitState(
+            this.unit,
+            this.position,
+            this.direction,
+            new HistorizedValue(this.health.current - damage.amount, this.health.current),
+            this.spirit,
+            this.moved,
+            this.acted
+        );
+    }
+
+    private computeDirection(start: Position, end: Position): Direction {
+        const dx = end.x - start.x;
+        const dy = end.y - start.y;
+        if (Math.abs(dx) >= Math.abs(dy)) {
+            if (dx >= 0) {
+                return Direction.DOWN;
+            }
+            return Direction.UP;
+        }
+        if (dy >= 0) {
+            return Direction.RIGHT;
+        }
+        return Direction.LEFT;
+    }
+
+    static init(unit: Unit, p: Position, direction: Direction): UnitState {
+        return new UnitState(
+            unit,
+            p,
+            direction,
+            new HistorizedValue(unit.getStatistics().health),
+            unit.getStatistics().spirit
+        );
     }
 }

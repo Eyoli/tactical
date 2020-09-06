@@ -8,7 +8,7 @@ import Position from "../../tactical/domain/model/position";
 import Statistics from "../../tactical/domain/model/statistics";
 import { Range } from "../../tactical/domain/model/action/action-type";
 import InMemoryActionTypeRepository from "../../in-memory-repository/adapter/in-memory-action-type-repository";
-import {DamageType} from "../../tactical/domain/model/enums";
+import {DamageType, Direction} from "../../tactical/domain/model/enums";
 
 describe('Actions should work correctly...', () => {
 
@@ -25,8 +25,8 @@ describe('Actions should work correctly...', () => {
         it('valid case', () => {
             // arrange
             srcUnit.withWeapon(new Weapon(new Range(1, 1, 1), new Damage(10, DamageType.CUTTING)))
-            const srcUnitState = UnitState.init(srcUnit, new Position(0, 0, 0));
-            const targetUnitState = UnitState.init(targetUnit, new Position(1, 0, 0));
+            const srcUnitState = UnitState.init(srcUnit, new Position(0, 0, 0), Direction.DOWN);
+            const targetUnitState = UnitState.init(targetUnit, new Position(1, 0, 0), Direction.DOWN);
             const actionType = actionService.getActionType("attack");
 
             // act
@@ -37,14 +37,14 @@ describe('Actions should work correctly...', () => {
             // assert
             Assert.deepStrictEqual(validation, true);
             Assert.deepStrictEqual(newStates.length, 2);
-            Assert.deepStrictEqual(newStates[1].getHealth().current, 10);
+            Assert.deepStrictEqual(newStates[1].health.current, 10);
         });
 
         it('invalid range', () => {
             // arrange
             srcUnit.withWeapon(new Weapon(new Range(1, 1, 1), new Damage(10, DamageType.CUTTING)))
-            const srcUnitState = UnitState.init(srcUnit, new Position(0, 0, 0));
-            const targetUnitState = UnitState.init(targetUnit, new Position(2, 0, 0));
+            const srcUnitState = UnitState.init(srcUnit, new Position(0, 0, 0), Direction.DOWN);
+            const targetUnitState = UnitState.init(targetUnit, new Position(2, 0, 0), Direction.DOWN);
             const actionType = actionService.getActionType("attack");
 
             // act
@@ -62,8 +62,8 @@ describe('Actions should work correctly...', () => {
 
         it('valid case', () => {
             // arrange
-            const srcUnitState = UnitState.init(srcUnit, new Position(0, 0, 0));
-            const targetUnitState = UnitState.init(targetUnit, new Position(2, 0, 0));
+            const srcUnitState = UnitState.init(srcUnit, new Position(0, 0, 0), Direction.DOWN);
+            const targetUnitState = UnitState.init(targetUnit, new Position(2, 0, 0), Direction.DOWN);
             const actionType = actionService.getActionType("fireball");
 
             // act
@@ -74,13 +74,13 @@ describe('Actions should work correctly...', () => {
             // assert
             Assert.deepStrictEqual(validation, true);
             Assert.deepStrictEqual(newStates.length, 2);
-            Assert.deepStrictEqual(newStates[1].getHealth().current, 0);
+            Assert.deepStrictEqual(newStates[1].health.current, 0);
         });
 
         it('invalid range', () => {
             // arrange
-            const srcUnitState = UnitState.init(srcUnit, new Position(0, 0, 0));
-            const targetUnitState = UnitState.init(targetUnit, new Position(6, 0, 0));
+            const srcUnitState = UnitState.init(srcUnit, new Position(0, 0, 0), Direction.DOWN);
+            const targetUnitState = UnitState.init(targetUnit, new Position(6, 0, 0), Direction.DOWN);
             const actionType = actionService.getActionType("fireball");
 
             // act
