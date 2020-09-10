@@ -24,9 +24,10 @@ export default class UnitState {
     readonly spirit: number;
     readonly moved: boolean;
     readonly acted: boolean;
+    readonly path?: Position[];
 
     private constructor(unit: Unit, position: Position, direction: Direction, health: HistorizedValue, spirit: number,
-        moved: boolean = false, acted: boolean = false) {
+        moved: boolean = false, acted: boolean = false, path?: Position[]) {
         this.unit = unit;
         this.position = position;
         this.direction = direction;
@@ -34,6 +35,7 @@ export default class UnitState {
         this.spirit = spirit;
         this.moved = moved;
         this.acted = acted;
+        this.path = path;
     }
 
     getJumps(): number {
@@ -57,7 +59,7 @@ export default class UnitState {
             this.spirit);
     }
 
-    movingTo(p: Position): UnitState {
+    movingTo(p: Position, path: Position[]): UnitState {
         return new UnitState(
             this.unit,
             p,
@@ -65,7 +67,8 @@ export default class UnitState {
             new HistorizedValue(this.health.current),
             this.spirit,
             true,
-            this.acted
+            this.acted,
+            path
         );
     }
 

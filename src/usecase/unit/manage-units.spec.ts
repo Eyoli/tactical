@@ -3,9 +3,9 @@ import * as Assert from "assert";
 import InMemoryRepository from "../../in-memory-repository/adapter/in-memory-repository";
 import { UnitServicePort } from "../../tactical/domain/port/primary/services";
 import RepositoryPort from "../../tactical/domain/port/secondary/repository-port";
-import UnitService from "../../tactical/adapter/primary/unit-service";
 import Unit from "../../tactical/domain/model/unit";
 import CounterIdGenerator from "../../in-memory-repository/adapter/counter-id-generator";
+import UnitService from "../../tactical/domain/service/unit-service";
 
 describe('About units we should be able to...', () => {
 

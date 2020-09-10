@@ -14,7 +14,7 @@ export default class FakeField extends Field {
         return [];
     }
 
-    getCost(p: Position): number {
+    costBetween(p: Position, neighbour: Position): number {
         return 1;
     }
 

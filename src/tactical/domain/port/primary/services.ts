@@ -46,7 +46,8 @@ export interface UnitServicePort {
 }
 
 export interface FieldAlgorithmServicePort {
-    isAccessible(field: Field | undefined, unitState: UnitState, p: Position): boolean;
+    getShortestPath(field: Field, position: Position, p: Position, jumps: number): Position[];
+    isAccessible(field: Field, unitState: UnitState, p: Position): boolean;
     getAccessiblePositions(field: Field, unitState: UnitState): Position[];
     getPositionsInRange(field: Field, position: Position, range: Range): Position[];
 }

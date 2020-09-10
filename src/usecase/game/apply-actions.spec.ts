@@ -1,5 +1,5 @@
 import * as Assert from "assert";
-import ActionService from "../../tactical/adapter/primary/action-service";
+import ActionService from "../../tactical/domain/service/action-service";
 import { ActionServicePort } from "../../tactical/domain/port/primary/services";
 import Unit from "../../tactical/domain/model/unit";
 import { Weapon, Damage } from "../../tactical/domain/model/weapon";

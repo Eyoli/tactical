@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import InMemoryRepository from "../../in-memory-repository/adapter/in-memory-repository";
-import GameService from "../../tactical/adapter/primary/game-service";
 import Game from "../../tactical/domain/model/game";
 import Field from "../../tactical/domain/model/field";
 import Player from "../../tactical/domain/model/player";
@@ -8,8 +7,6 @@ import Unit from "../../tactical/domain/model/unit";
 import * as Assert from "assert";
 import * as mocha from "mocha";
 import RepositoryPort from "../../tactical/domain/port/secondary/repository-port";
-import PlayerService from "../../tactical/adapter/primary/player-service";
-import UnitService from "../../tactical/adapter/primary/unit-service";
 import { FakeFieldAlgorithmService } from "../fake/fake-field-algorithm-service";
 import Position from "../../tactical/domain/model/position";
 import { UnitsComposition, UnitsPlacement } from "../../tactical/domain/model/types";
@@ -22,6 +19,9 @@ import { GameServicePort } from "../../tactical/domain/port/primary/services";
 import { Damage } from "../../tactical/domain/model/weapon";
 import CounterIdGenerator from "../../in-memory-repository/adapter/counter-id-generator";
 import {DamageType} from "../../tactical/domain/model/enums";
+import GameService from "../../tactical/domain/service/game-service";
+import PlayerService from "../../tactical/domain/service/player-service";
+import UnitService from "../../tactical/domain/service/unit-service";
 
 describe('About playing we should be able to...', () => {
 

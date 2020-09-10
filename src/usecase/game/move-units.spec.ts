@@ -4,13 +4,13 @@ import * as Assert from "assert";
 import * as mocha from "mocha";
 import { FieldAlgorithmServicePort as FieldAlgorithmServicePort } from "../../tactical/domain/port/primary/services";
 import Position from "../../tactical/domain/model/position";
-import FieldAlgorithmService from "../../tactical/adapter/primary/field-algorithm-service";
 import UnitState from "../../tactical/domain/model/unit-state";
 import TileBasedField from "../../tactical/domain/model/tile-based-field/tile-based-field";
 import Statistics from "../../tactical/domain/model/statistics";
 import TileType from "../../tactical/domain/model/tile-based-field/tile-type";
 import { Range } from "../../tactical/domain/model/action/action-type";
 import { Direction } from "../../tactical/domain/model/enums";
+import FieldAlgorithmService from "../../tactical/domain/service/field-algorithm-service";
 
 describe('About field algorithms...', () => {
 
@@ -124,6 +124,29 @@ describe('About field algorithms...', () => {
             Assert.deepStrictEqual(invalidHeight, false);
             Assert.deepStrictEqual(samePosition, false);
             Assert.deepStrictEqual(accessiblePosition, true);
+        });
+
+        it('get the shortest path to a position', () => {
+            // arrange
+            const field = new TileBasedField("Field", 3, 3, 3)
+                .withId("fieldId")
+                .withTileTypes(new TileType(1, 1, ""))
+                .withTiles(
+                    [[1], [1], [1]],
+                    [[1], [1, 1], [1]],
+                    [[1], [1], [1]]);
+
+            // act
+            const shortestPath = fieldAlgorithmService.getShortestPath(
+                field, new Position(0, 0, 0), new Position(2, 2, 0), 1);
+
+            // assert
+            Assert.deepStrictEqual(shortestPath.length, 5);
+            Assert.deepStrictEqual(shortestPath[0].equals(new Position(0,0,0)), true);
+            Assert.deepStrictEqual(shortestPath[1].equals(new Position(1,0,0)), true);
+            Assert.deepStrictEqual(shortestPath[2].equals(new Position(2,0,0)), true);
+            Assert.deepStrictEqual(shortestPath[3].equals(new Position(2,1,0)), true);
+            Assert.deepStrictEqual(shortestPath[4].equals(new Position(2,2,0)), true);
         });
     });
 

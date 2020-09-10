@@ -5,12 +5,25 @@ import { Set } from "immutable";
 import { injectable } from "inversify";
 import UnitState from "../../domain/model/unit-state";
 import { Range } from "../../domain/model/action/action-type";
+import { PathFinderManager } from "./path-finder";
 
 type PositionSearch = [Position, number];
-type CostFunction = (p: Position) => number;
+type CostFunction = (p1: Position, p2: Position) => number;
 
 @injectable()
 export default class FieldAlgorithmService implements FieldAlgorithmServicePort {
+    private pathFinderManager: PathFinderManager<Position>;
+
+    constructor() {
+        this.pathFinderManager = new PathFinderManager<Position>();
+    }
+
+    getShortestPath(field: Field, start: Position, end: Position, jumps: number): Position[] {
+        return this.pathFinderManager.getShortestPath(field, start, end)
+            .withNeighbourFilter((p1: Position, p2: Position) => Math.abs(p2.z - p1.z) < jumps)
+            .find()
+            .path;
+    }
 
     getPositionsInRange(field: Field, position: Position, range: Range): Position[] {
         return this.getAccessiblePositionsAsSet(
@@ -25,7 +38,7 @@ export default class FieldAlgorithmService implements FieldAlgorithmServicePort 
             unitState.position,
             unitState.getMoves(),
             unitState.getJumps(),
-            p => field.getCost(p))
+            (p1, p2) => field.costBetween(p1, p2))
             .toArray();
     }
 
@@ -38,12 +51,12 @@ export default class FieldAlgorithmService implements FieldAlgorithmServicePort 
             const currentSearch = searches.shift();
             if (currentSearch) {
                 accessiblePositions.add(currentSearch[0]);
-                searches.push(...field.getNeighbours(currentSearch[0])
+                searches.push(...Array.from(field.getNeighbours(currentSearch[0]))
                     .map(p => {
-                        const search: PositionSearch = [p, currentSearch[1] - costFunction(p)];
+                        const search: PositionSearch = [p, currentSearch[1] - costFunction(currentSearch[0], p)];
                         return search;
                     })
-                    .filter(search => costFunction(search[0]) <= currentSearch[1]
+                    .filter(search => costFunction(currentSearch[0], search[0]) <= currentSearch[1]
                         && field.getHeightDifference(currentSearch[0], search[0]) <= jumps));
             }
         }
@@ -60,7 +73,7 @@ export default class FieldAlgorithmService implements FieldAlgorithmServicePort 
             unitState.position,
             unitState.getMoves(),
             unitState.getJumps(),
-            p => field.getCost(p));
+            (p1, p2) => field.costBetween(p1, p2));
         return accessiblePositions.has(p);
     }
 }

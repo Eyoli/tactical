@@ -3,7 +3,7 @@ import { CreateGameRequest, StartGameRequest } from '../request/requests';
 import iocContainer from '../../inversify.config';
 import { TYPES } from '../../types';
 import BadRequestError from '../error/bad-request-error';
-import { GameServicePort, ActionServicePort } from '../../tactical/domain/port/primary/services';
+import { GameServicePort, ActionServicePort, FieldAlgorithmServicePort } from '../../tactical/domain/port/primary/services';
 import GameDTO from '../dto/game-dto';
 import Position from '../../tactical/domain/model/position';
 import ActionInfoDTO from '../dto/action-info-dto';

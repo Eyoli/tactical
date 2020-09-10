@@ -1,7 +1,6 @@
 import Field from "../field";
 import Position from "../position";
 import TileType from "./tile-type";
-import UnitState from "../unit-state";
 
 export default class TileBasedField extends Field {
     private tileTypes: Map<number, TileType>;
@@ -51,8 +50,8 @@ export default class TileBasedField extends Field {
         return neighbours;
     }
 
-    getCost(p: Position): number {
-        return this.tileTypes.get(this.tiles[p.x][p.y][p.z])!.cost;
+    costBetween(p: Position, neighbour: Position): number {
+        return this.tileTypes.get(this.tiles[neighbour.x][neighbour.y][neighbour.z])!.cost;
     }
 
     isValidPosition(p: Position): boolean {

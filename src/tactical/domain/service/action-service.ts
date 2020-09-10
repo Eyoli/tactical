@@ -1,12 +1,12 @@
-import { ActionServicePort } from "../../domain/port/primary/services";
-import UnitState from "../../domain/model/unit-state";
-import Action from "../../domain/model/action/action";
-import { ActionType } from "../../domain/model/action/action-type";
+import { ActionServicePort } from "../port/primary/services";
+import UnitState from "../model/unit-state";
+import Action from "../model/action/action";
+import { ActionType } from "../model/action/action-type";
 import { injectable, inject } from "inversify";
-import AttackAction from "../../domain/model/action/attack-action";
-import RepositoryPort from "../../domain/port/secondary/repository-port";
+import AttackAction from "../model/action/attack-action";
+import RepositoryPort from "../port/secondary/repository-port";
 import { TYPES } from "../../../types";
-import ResourceNotFoundError from "../../domain/model/error/resource-not-found-error";
+import ResourceNotFoundError from "../model/error/resource-not-found-error";
 
 @injectable()
 export default class ActionService implements ActionServicePort {

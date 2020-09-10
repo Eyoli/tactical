@@ -4,8 +4,8 @@ import InMemoryRepository from "../../in-memory-repository/adapter/in-memory-rep
 import { PlayerServicePort } from "../../tactical/domain/port/primary/services";
 import RepositoryPort from "../../tactical/domain/port/secondary/repository-port";
 import Player from "../../tactical/domain/model/player";
-import PlayerService from "../../tactical/adapter/primary/player-service";
 import CounterIdGenerator from "../../in-memory-repository/adapter/counter-id-generator";
+import PlayerService from "../../tactical/domain/service/player-service";
 
 describe('About players we should be able to...', () => {
 

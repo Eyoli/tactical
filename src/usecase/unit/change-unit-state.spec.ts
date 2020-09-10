@@ -15,10 +15,10 @@ describe('Changing unit state...', () => {
             Direction.DOWN);
 
         // act
-        const newStateDown = state.movingTo(new Position(2, 1, 0));
-        const newStateUp = state.movingTo(new Position(0, 1, 0));
-        const newStateRight = state.movingTo(new Position(1, 2, 0));
-        const newStateLeft = state.movingTo(new Position(1, 0, 0));
+        const newStateDown = state.movingTo(new Position(2, 1, 0), []);
+        const newStateUp = state.movingTo(new Position(0, 1, 0), []);
+        const newStateRight = state.movingTo(new Position(1, 2, 0), []);
+        const newStateLeft = state.movingTo(new Position(1, 0, 0), []);
 
         // assert
         Assert.deepStrictEqual(newStateDown.direction, Direction.DOWN);

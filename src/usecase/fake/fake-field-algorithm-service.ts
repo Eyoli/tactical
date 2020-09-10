@@ -5,6 +5,10 @@ import UnitState from "../../tactical/domain/model/unit-state";
 import { ActionType, Range } from "../../tactical/domain/model/action/action-type";
 
 export class FakeFieldAlgorithmService implements FieldAlgorithmServicePort {
+
+    getShortestPath(field: Field, position: Position, p: Position, jumps: number): Position[] {
+        return [];
+    }
     private positions?: Position[];
 
     withPositionsInRange(positions: Position[]) {

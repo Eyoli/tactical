@@ -204,11 +204,13 @@ export default class GameService implements GameServicePort {
             throw new GameError(GameErrorCode.IMPOSSIBLE_TO_MOVE_UNIT);
         }
 
-        if (!this.fieldAlgorithmService.isAccessible(game.field, unitState!, p)) {
+        if (!this.fieldAlgorithmService.isAccessible(game.field!, unitState!, p)) {
             throw new GameError(GameErrorCode.UNREACHABLE_POSITION);
         }
 
-        const newUnitState = unitState!.movingTo(p);
+        const path = this.fieldAlgorithmService.getShortestPath(
+            game.field!, unitState.position, p, unitState.getJumps());
+        const newUnitState = unitState!.movingTo(p, path);
         game.integrate(true, newUnitState);
         this.gameRepository.update(game, gameId);
         return newUnitState;
