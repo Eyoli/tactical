@@ -3,17 +3,20 @@ import Position from "../position";
 import TileType from "./tile-type";
 
 export default class TileBasedField extends Field {
-    private tileTypes: Map<number, TileType>;
+    private readonly tileTypes: Map<number, TileType>;
     readonly tiles: number[][][] = [];
     readonly width: number;
     readonly length: number;
     readonly height: number;
+    readonly offset: Position;
 
-    constructor(name: string, width: number, length: number, height: number) {
+    constructor(name: string, width: number, length: number, height: number,
+        offset: Position = new Position(0, 0, 0)) {
         super(name);
         this.width = width;
         this.length = length;
         this.height = height;
+        this.offset = offset;
         this.tileTypes = new Map();
     }
 
@@ -59,7 +62,7 @@ export default class TileBasedField extends Field {
             && p.y >= 0 && p.y < this.tiles[p.x].length
             && p.z === this.tiles[p.x][p.y].length - 1;
     }
-    
+
     getHeightDifference(p1: Position, p2: Position): number {
         return Math.abs(p1.z - p2.z);
     }

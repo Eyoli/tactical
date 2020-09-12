@@ -1,6 +1,7 @@
 import TileBasedField from "../../tactical/domain/model/tile-based-field/tile-based-field";
 import Tile from "../../tactical/domain/model/tile-based-field/tile";
 import TileType from "../../tactical/domain/model/tile-based-field/tile-type";
+import Position from "../../tactical/domain/model/position";
 
 export default class FieldDTO {
     name: string;
@@ -9,6 +10,7 @@ export default class FieldDTO {
     height: number;
     tiles: any;
     tileTypes: TileType[];
+    offset: Position;
 
     constructor(field: TileBasedField) {
         this.name = field.name;
@@ -16,6 +18,7 @@ export default class FieldDTO {
         this.length = field.length;
         this.height = field.height;
         this.tiles = field.tiles;
+        this.offset = field.offset;
         this.tileTypes = field.getTileTypes()
     }
 }

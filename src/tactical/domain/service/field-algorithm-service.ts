@@ -20,7 +20,7 @@ export default class FieldAlgorithmService implements FieldAlgorithmServicePort 
 
     getShortestPath(field: Field, start: Position, end: Position, jumps: number): Position[] {
         return this.pathFinderManager.getShortestPath(field, start, end)
-            .withNeighbourFilter((p1: Position, p2: Position) => Math.abs(p2.z - p1.z) < jumps)
+            .withNeighbourFilter((p1: Position, p2: Position) => Math.abs(p2.z - p1.z) <= jumps)
             .find()
             .path;
     }

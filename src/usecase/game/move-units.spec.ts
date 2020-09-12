@@ -130,23 +130,25 @@ describe('About field algorithms...', () => {
             // arrange
             const field = new TileBasedField("Field", 3, 3, 3)
                 .withId("fieldId")
-                .withTileTypes(new TileType(1, 1, ""))
+                .withTileTypes(
+                    new TileType(1, 1, ""),
+                    new TileType(2, 2, ""))
                 .withTiles(
                     [[1], [1], [1]],
-                    [[1], [1, 1], [1]],
+                    [[2], [1, 1], [1]],
                     [[1], [1], [1]]);
 
             // act
             const shortestPath = fieldAlgorithmService.getShortestPath(
-                field, new Position(0, 0, 0), new Position(2, 2, 0), 1);
+                field, new Position(0, 0, 0), new Position(2, 2, 0), 0);
 
             // assert
             Assert.deepStrictEqual(shortestPath.length, 5);
-            Assert.deepStrictEqual(shortestPath[0].equals(new Position(0,0,0)), true);
-            Assert.deepStrictEqual(shortestPath[1].equals(new Position(1,0,0)), true);
-            Assert.deepStrictEqual(shortestPath[2].equals(new Position(2,0,0)), true);
-            Assert.deepStrictEqual(shortestPath[3].equals(new Position(2,1,0)), true);
-            Assert.deepStrictEqual(shortestPath[4].equals(new Position(2,2,0)), true);
+            Assert.deepStrictEqual(shortestPath[0], new Position(0, 0, 0));
+            Assert.deepStrictEqual(shortestPath[1], new Position(0, 1, 0));
+            Assert.deepStrictEqual(shortestPath[2], new Position(0, 2, 0));
+            Assert.deepStrictEqual(shortestPath[3], new Position(1, 2, 0));
+            Assert.deepStrictEqual(shortestPath[4], new Position(2, 2, 0));
         });
     });
 
