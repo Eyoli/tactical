@@ -4,7 +4,7 @@ export default class TileType {
     readonly cost: number;
     readonly liquid: boolean;
 
-    constructor(type: number, cost: number, src: string, liquid: boolean = false) {
+    constructor(type: number, cost: number, src: string, liquid = false) {
         this.type = type;
         this.cost = cost;
         this.src = src;

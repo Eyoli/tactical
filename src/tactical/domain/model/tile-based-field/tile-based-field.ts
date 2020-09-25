@@ -26,7 +26,7 @@ export default class TileBasedField extends Field {
     }
 
     withTileTypes(...tileTypes: TileType[]) {
-        for (let tileType of tileTypes) {
+        for (const tileType of tileTypes) {
             this.tileTypes.set(tileType.type, tileType);
         }
         return this;

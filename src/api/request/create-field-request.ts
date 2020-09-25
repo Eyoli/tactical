@@ -15,7 +15,7 @@ export default class CreateFieldRequest {
 
     constructor(input: any) {
         this.name = input.name;
-        for (let tileType of input.tileTypes) {
+        for (const tileType of input.tileTypes) {
             this.tileTypes.push(new TileType(tileType.type, tileType.cost, tileType.src, tileType.liquid));
         }
         this.width = input.tiles.length;

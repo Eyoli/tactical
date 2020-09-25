@@ -1,5 +1,4 @@
 import TileBasedField from "../../tactical/domain/model/tile-based-field/tile-based-field";
-import Tile from "../../tactical/domain/model/tile-based-field/tile";
 import TileType from "../../tactical/domain/model/tile-based-field/tile-type";
 import Position from "../../tactical/domain/model/position";
 

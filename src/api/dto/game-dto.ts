@@ -14,7 +14,7 @@ export default class GameDTO {
         this.fieldId = game.field?.id;
         this.state = game.getState();
         this.players = game.players;
-        for(let player of this.players) {
+        for(const player of this.players) {
             player.units = game.getUnits(player);
         }
         

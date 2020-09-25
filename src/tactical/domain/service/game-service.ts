@@ -71,8 +71,12 @@ export default class GameService implements GameServicePort {
             throw new GameError(GameErrorCode.INVALID_POSITION);
         }
 
-        game.players.forEach(
-            player => this.initUnitsState(game, player, unitsComposition.get(player.id)!));
+        for (const player of game.players) {
+            const playerComposition = unitsComposition.get(player.id);
+            if (playerComposition) {
+                this.initUnitsState(game, player, playerComposition);
+            }
+        }
 
         if (game.players
             .map(player => game.getUnits(player))

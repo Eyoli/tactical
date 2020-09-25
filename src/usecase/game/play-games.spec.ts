@@ -244,13 +244,13 @@ describe('About playing we should be able to...', () => {
         Assert.deepStrictEqual(unitState?.position, new Position(1, 2, 0));
     });
 
-    function aGameWithTwoPlayers(validPositions: boolean = true) {
+    function aGameWithTwoPlayers(validPositions = true) {
         const player1 = new Player("Player 1");
         const player2 = new Player("Player 2");
         player1.id = playerRepository.save(player1);
         player2.id = playerRepository.save(player2);
 
-        let game = new Game();
+        const game = new Game();
         game.addPlayers(player1, player2);
         game.id = gameRepository.save(game);
 

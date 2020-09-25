@@ -27,7 +27,7 @@ export default class UnitState {
     readonly path?: Position[];
 
     private constructor(unit: Unit, position: Position, direction: Direction, health: HistorizedValue, spirit: number,
-        moved: boolean = false, acted: boolean = false, path?: Position[]) {
+        moved = false, acted = false, path?: Position[]) {
         this.unit = unit;
         this.position = position;
         this.direction = direction;

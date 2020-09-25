@@ -17,6 +17,7 @@ describe('About field algorithms...', () => {
     const fieldAlgorithmService: FieldAlgorithmServicePort = new FieldAlgorithmService();
 
     beforeEach(() => {
+        //
     });
 
     it('Getting positions in range...', () => {

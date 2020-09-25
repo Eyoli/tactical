@@ -5,7 +5,7 @@ import UnitState from "../../tactical/domain/model/unit-state";
 export default class FakeField extends Field {
     private validPositions: boolean;
 
-    constructor(name: string, validPositions: boolean = true) {
+    constructor(name: string, validPositions = true) {
         super(name);
         this.validPositions = validPositions;
     }

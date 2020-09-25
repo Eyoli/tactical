@@ -1,15 +1,15 @@
 export default class Statistics {
-    health: number = 0;
-    spirit: number = 0;
+    health = 0;
+    spirit = 0;
 
-    strength: number = 0;
-    defense: number = 0;
-    mind: number = 0;
-    resistance: number = 0;
-    speed: number = 0;
+    strength = 0;
+    defense = 0;
+    mind = 0;
+    resistance = 0;
+    speed = 0;
 
-    jumps: number = 0;
-    moves: number = 0;
+    jumps = 0;
+    moves = 0;
 
     withMoves(moves: number): Statistics {
         this.moves = moves;

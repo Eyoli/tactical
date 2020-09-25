@@ -27,7 +27,7 @@ export default class FieldAlgorithmService implements FieldAlgorithmServicePort 
 
     getPositionsInRange(field: Field, position: Position, range: Range): Position[] {
         return this.getAccessiblePositionsAsSet(
-            field, position, range.max, range.height, p => 1)
+            field, position, range.max, range.height, () => 1)
             .filter(p => position.flatDistanceTo(p) >= range.min)
             .toArray();
     }

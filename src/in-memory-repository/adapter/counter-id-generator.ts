@@ -1,7 +1,7 @@
 import IdGenerator from "../port/id-generator";
 
 export default class CounterIdGenerator<T> implements IdGenerator<T, string> {
-    private counter: number = 1;
+    private counter = 1;
     private prefix: string;
 
     constructor(prefix: string) {
