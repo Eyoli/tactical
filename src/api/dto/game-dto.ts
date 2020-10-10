@@ -20,7 +20,7 @@ export default class GameDTO {
         
         const currentUnitId = game.getCurrentUnit()?.id;
         if (currentUnitId) {
-            this.unitStates = game.getUnitStates();
+            this.unitStates = game.getAllStates();
             this.currentUnitState = game.getUnitState(currentUnitId);
         }
     }

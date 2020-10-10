@@ -1,7 +1,7 @@
 import Player from "../../../tactical/domain/model/player";
 import Unit from "../../../tactical/domain/model/unit";
 import { injectable } from "inversify";
-import TileBasedField from "../../../tactical/domain/model/tile-based-field/tile-based-field";
+import TileBasedField from "../../../tactical/domain/model/field/tile-based-field";
 import JsonMapperPort from "../../port/json-mapper-port";
 
 @injectable()
@@ -50,8 +50,7 @@ export class UnitJsonMapper implements JsonMapperPort<Unit> {
 export class PlayerJsonMapper implements JsonMapperPort<Player> {
 
     fromJson(json: any): Player {
-        const player = new Player(json.name);
-        player.id = json.id;
+        const player = new Player(json.id, json.name);
         return player;
     }
 

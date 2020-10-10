@@ -1,36 +1,37 @@
 import { injectable, inject } from "inversify";
 import { FieldServicePort as FieldServicePort } from "../../domain/port/primary/services";
-import Field from "../../domain/model/field";
+import Field from "../model/field/field";
 import RepositoryPort from "../../domain/port/secondary/repository-port";
 import { TYPES } from "../../../types";
 import ResourceNotFoundError from "../../domain/model/error/resource-not-found-error";
+import { ValueObject } from "immutable";
 
 @injectable()
-export default class FieldService<T extends Field> implements FieldServicePort<T> {
-    private fieldRepository: RepositoryPort<T>;
+export default class FieldService<T extends ValueObject> implements FieldServicePort<T> {
+    private fieldRepository: RepositoryPort<Field<T>>;
 
     public constructor(
-        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: RepositoryPort<T>) {
+        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: RepositoryPort<Field<T>>) {
         this.fieldRepository = fieldRepository;
     }
 
-    getFields(): T[] {
+    getFields(): Field<T>[] {
         return this.fieldRepository.loadAll();
     }
 
-    createField(field: T): string {
+    createField(field: Field<T>): string {
         field.withId(this.fieldRepository.save(field));
         return field.id;
     }
 
-    updateField(field: T, id: string): void {
+    updateField(field: Field<T>, id: string): void {
         this.fieldRepository.update(field, id);
     }
 
-    getField(id: string): T {
+    getField(id: string): Field<T> {
         const field = this.fieldRepository.load(id);
         if(!field) {
-            throw new ResourceNotFoundError("Field");
+            throw ResourceNotFoundError.fromClass(Field);
         }
         return field;
     }

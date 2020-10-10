@@ -1,8 +1,8 @@
-import Field from "../field";
+import Field from "./field";
 import Position from "../position";
 import TileType from "./tile-type";
 
-export default class TileBasedField extends Field {
+export default class TileBasedField extends Field<Position> {
     private readonly tileTypes: Map<number, TileType>;
     readonly tiles: number[][][] = [];
     readonly width: number;
@@ -20,16 +20,22 @@ export default class TileBasedField extends Field {
         this.tileTypes = new Map();
     }
 
-    withTiles(...lines: number[][][]) {
+    withTiles(...lines: number[][][]): TileBasedField {
         this.tiles.push(...lines);
         return this;
     }
 
-    withTileTypes(...tileTypes: TileType[]) {
+    withTileTypes(...tileTypes: TileType[]): TileBasedField {
         for (const tileType of tileTypes) {
             this.tileTypes.set(tileType.type, tileType);
         }
         return this;
+    }
+
+    distanceBetween(p1: Position, p2: Position): number {
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        return dx*dx + dy*dy;
     }
 
     getTileTypes(): TileType[] {
@@ -54,7 +60,7 @@ export default class TileBasedField extends Field {
     }
 
     costBetween(p: Position, neighbour: Position): number {
-        return this.tileTypes.get(this.tiles[neighbour.x][neighbour.y][neighbour.z])!.cost;
+        return this.tileTypes.get(this.tiles[neighbour.x][neighbour.y][neighbour.z])?.cost || Infinity;
     }
 
     isValidPosition(p: Position): boolean {

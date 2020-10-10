@@ -6,15 +6,16 @@ import RepositoryPort from "../../tactical/domain/port/secondary/repository-port
 import FakeField from "../fake/fake-field";
 import CounterIdGenerator from "../../in-memory-repository/adapter/counter-id-generator";
 import FieldService from "../../tactical/domain/service/field-service";
+import Position from "../../tactical/domain/model/position";
 
 describe('About fields we should be able to...', () => {
 
-    let fieldService: FieldServicePort<FakeField>;
+    let fieldService: FieldServicePort<Position>;
     let fieldRepository: RepositoryPort<FakeField>;
 
     beforeEach(() => {
         fieldRepository = new InMemoryRepository<FakeField>(new CounterIdGenerator("field"));
-        fieldService = new FieldService<FakeField>(fieldRepository);
+        fieldService = new FieldService<Position>(fieldRepository);
     });
 
     it('save a field', () => {

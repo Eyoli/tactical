@@ -3,7 +3,7 @@ import Game from "../../domain/model/game";
 import { inject, injectable } from "inversify";
 import RepositoryPort from "../../domain/port/secondary/repository-port";
 import { TYPES } from "../../../types";
-import Field from "../../domain/model/field";
+import Field from "../model/field/field";
 import ResourceNotFoundError from "../../domain/model/error/resource-not-found-error";
 import Position from "../../domain/model/position";
 import UnitState from "../../domain/model/unit-state";
@@ -18,7 +18,7 @@ export default class GameService implements GameServicePort {
     private gameRepository: RepositoryPort<Game>;
     private playerService: PlayerServicePort;
     private unitService: UnitServicePort;
-    private fieldRepository: RepositoryPort<Field>;
+    private fieldRepository: RepositoryPort<Field<Position>>;
     private fieldAlgorithmService: FieldAlgorithmServicePort;
     private actionService: ActionServicePort;
 
@@ -26,7 +26,7 @@ export default class GameService implements GameServicePort {
         @inject(TYPES.GAME_REPOSITORY) gameRepository: RepositoryPort<Game>,
         @inject(TYPES.PLAYER_SERVICE) playerService: PlayerServicePort,
         @inject(TYPES.UNIT_SERVICE) unitService: UnitServicePort,
-        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: RepositoryPort<Field>,
+        @inject(TYPES.FIELD_REPOSITORY) fieldRepository: RepositoryPort<Field<Position>>,
         @inject(TYPES.FIELD_ALGORITHM_SERVICE) fieldAlgorithmService: FieldAlgorithmServicePort,
         @inject(TYPES.ACTION_SERVICE) actionService: ActionServicePort) {
         this.gameRepository = gameRepository;
@@ -130,7 +130,7 @@ export default class GameService implements GameServicePort {
         if (unitState) {
             const range = actionType.range || unitState.unit.getWeapon().range;
             return this.fieldAlgorithmService.getPositionsInRange(
-                game.field!, unitState.position, range);
+                game.field, unitState.position, range);
         }
         return [];
     }
@@ -139,7 +139,7 @@ export default class GameService implements GameServicePort {
         const game = this.getGame(gameId);
         const unitState = game.getUnitState(unitId);
         if (unitState) {
-            return this.fieldAlgorithmService.getAccessiblePositions(game.field!, unitState);
+            return this.fieldAlgorithmService.getAccessiblePositions(game.field, unitState);
         }
         return [];
     }
@@ -158,7 +158,7 @@ export default class GameService implements GameServicePort {
             const positions: Position[] = [];
             if (actionType.area) {
                 positions.push(...this.fieldAlgorithmService.getPositionsInRange(
-                    game.field!, position, actionType.area!));
+                    game.field, position, actionType.area!));
             } else {
                 positions.push(position);
             }
@@ -208,12 +208,12 @@ export default class GameService implements GameServicePort {
             throw new GameError(GameErrorCode.IMPOSSIBLE_TO_MOVE_UNIT);
         }
 
-        if (!this.fieldAlgorithmService.isAccessible(game.field!, unitState!, p)) {
+        if (!this.fieldAlgorithmService.isAccessible(game.field, unitState!, p)) {
             throw new GameError(GameErrorCode.UNREACHABLE_POSITION);
         }
 
         const path = this.fieldAlgorithmService.getShortestPath(
-            game.field!, unitState.position, p, unitState.getJumps());
+            game.field, unitState.position, p, unitState.getJumps());
         const newUnitState = unitState!.movingTo(p, path);
         game.integrate(true, newUnitState);
         this.gameRepository.update(game, gameId);

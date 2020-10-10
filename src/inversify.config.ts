@@ -3,7 +3,7 @@ import "reflect-metadata";
 import { TYPES } from "./types";
 import { FieldServicePort, GameServicePort, PlayerServicePort, UnitServicePort, FieldAlgorithmServicePort, ActionServicePort } from "./tactical/domain/port/primary/services";
 import RepositoryPort from "./tactical/domain/port/secondary/repository-port";
-import Field from "./tactical/domain/model/field";
+import Field from "./tactical/domain/model/field/field";
 import { InJsonFileRepository } from "./json-repository/adapter/in-json-file-repository";
 import { FieldJsonMapper, UnitJsonMapper, PlayerJsonMapper } from "./json-repository/adapter/mapper/json-mappers";
 import Unit from "./tactical/domain/model/unit";
@@ -12,7 +12,6 @@ import Game from "./tactical/domain/model/game";
 import { GameJsonMapper } from "./json-repository/adapter/mapper/game-json-mapper";
 import config from "config";
 import InMemoryRepository from "./in-memory-repository/adapter/in-memory-repository";
-import TileBasedField from "./tactical/domain/model/tile-based-field/tile-based-field";
 import ActionService from "./tactical/domain/service/action-service";
 import Logger from "./tactical/domain/logger/logger";
 import ConsoleLoggerService from "./infrastructure/adapter/console-logger-service";
@@ -23,6 +22,7 @@ import GameService from "./tactical/domain/service/game-service";
 import PlayerService from "./tactical/domain/service/player-service";
 import UnitService from "./tactical/domain/service/unit-service";
 import FieldAlgorithmService from "./tactical/domain/service/field-algorithm-service";
+import Position from "./tactical/domain/model/position";
 
 const iocContainer = new Container();
 
@@ -30,7 +30,7 @@ const iocContainer = new Container();
 const persistenceType = config.get("persistence.type");
 if (persistenceType === "in-memory") {
     iocContainer.bind(TYPES.FIELD_REPOSITORY)
-        .toConstantValue(new InMemoryRepository<Field>(new CounterIdGenerator("field")));
+        .toConstantValue(new InMemoryRepository<Field<Position>>(new CounterIdGenerator("field")));
     iocContainer.bind(TYPES.GAME_REPOSITORY)
         .toConstantValue(new InMemoryRepository<Game>(new CounterIdGenerator("game")));
     iocContainer.bind(TYPES.PLAYER_REPOSITORY)
@@ -47,7 +47,7 @@ if (persistenceType === "in-memory") {
     iocContainer.bind(TYPES.UNIT_JSON_MAPPER).to(UnitJsonMapper);
 
     iocContainer.bind(TYPES.FIELD_REPOSITORY).toDynamicValue(
-        ({ container }) => new InJsonFileRepository<Field>(container.get(TYPES.FIELD_JSON_MAPPER))
+        ({ container }) => new InJsonFileRepository<Field<Position>>(container.get(TYPES.FIELD_JSON_MAPPER))
             .withBaseUrl(basePath + "/fields"))
     iocContainer.bind(TYPES.GAME_REPOSITORY).toDynamicValue(
         ({ container }) => new InJsonFileRepository<Game>(container.get(TYPES.GAME_JSON_MAPPER))
@@ -62,7 +62,7 @@ if (persistenceType === "in-memory") {
 iocContainer.bind(TYPES.ACTION_TYPE_REPOSITORY).toConstantValue(new InMemoryActionTypeRepository());
 
 // Services
-iocContainer.bind<FieldServicePort<TileBasedField>>(TYPES.FIELD_SERVICE).to(FieldService);
+iocContainer.bind<FieldServicePort<Position>>(TYPES.FIELD_SERVICE).to(FieldService);
 iocContainer.bind<GameServicePort>(TYPES.GAME_SERVICE).to(GameService);
 iocContainer.bind<PlayerServicePort>(TYPES.PLAYER_SERVICE).to(PlayerService);
 iocContainer.bind<UnitServicePort>(TYPES.UNIT_SERVICE).to(UnitService);

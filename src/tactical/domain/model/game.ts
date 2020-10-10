@@ -1,4 +1,4 @@
-import Field from "./field";
+import Field from "./field/field";
 import Player from "./player";
 import Unit from "./unit";
 import UnitState from "./unit-state";
@@ -6,38 +6,71 @@ import TurnManager from "./turn-manager";
 import Position from "./position";
 import { GameState } from "./enums";
 
+class Turn {
+    readonly states: Map<string, UnitState[]>;
+    readonly changes: string[][];
+
+    constructor(states?: Map<string, UnitState[]>) {
+        this.states = states || new Map();
+        this.changes = [];
+    }
+
+    getUnitState(unitId: string): UnitState {
+        const unitStates = this.states.get(unitId)!;
+        return unitStates[0];
+    }
+
+    integrate(saveStateChanges: boolean, newStates: UnitState[]): void {
+        if (saveStateChanges) {
+            this.changes.unshift(newStates.map(state => state.unit.id));
+        }
+
+        newStates.forEach(newState => {
+            const unitStates = this.states.get(newState.unit.id);
+            if (unitStates) {
+                unitStates.unshift(newState);
+            }
+        });
+    }
+
+    rollbackLastAction(): void {
+        const lastActionChanges = this.changes.shift();
+        if (lastActionChanges) {
+            lastActionChanges
+                .map(unitId => this.states.get(unitId))
+                .forEach(currentTurnUnitStates => currentTurnUnitStates?.shift());
+        }
+    }
+}
+
 export default class Game {
     id!: string;
-    field?: Field;
+    field!: Field<Position>;
     players: Player[];
     private units: Map<string, Unit>;
     private unitsPerPlayer: Map<string, string[]>;
     private state: GameState;
     private turnManager!: TurnManager;
-
-    private currentTurnStates: Map<string, UnitState[]>;
-    private currentTurnChanges: string[][];
+    private currentTurn: Turn;
 
     constructor() {
         this.state = GameState.INITIATED;
         this.players = [];
         this.units = new Map();
         this.unitsPerPlayer = new Map();
-
-        this.currentTurnStates = new Map();
-        this.currentTurnChanges = [];
+        this.currentTurn = new Turn();
     }
 
-    addPlayers(...players: Player[]) {
+    addPlayers(...players: Player[]): void {
         this.players.push(...players);
     }
 
-    setUnits(player: Player, units: Unit[]) {
+    setUnits(player: Player, units: Unit[]): void {
         if (player.id) {
             this.unitsPerPlayer.set(player.id, units.map(unit => unit.id));
             units.forEach(unit => {
                 this.units.set(unit.id, unit);
-                this.currentTurnStates.set(unit.id, []);
+                this.currentTurn.states.set(unit.id, []);
             });
         }
     }
@@ -55,7 +88,7 @@ export default class Game {
         return this.units.get(unitId)!;
     }
 
-    getCurrentUnit() {
+    getCurrentUnit(): Unit | undefined {
         if (this.hasStarted()) {
             return this.turnManager.getCurrentUnit();
         }
@@ -79,13 +112,15 @@ export default class Game {
             this.turnManager.next();
 
             // keep only the last state of the turn for each unit
-            const unitStates = this.currentTurnStates.get(this.getCurrentUnit()!.id)!
-            const lastState = unitStates.shift()!;
-            unitStates.splice(0);
-            unitStates.unshift(lastState.toNextTurn());
+            const unitStates = this.currentTurn.states.get(this.getCurrentUnit()!.id);
+            const lastState = unitStates?.shift();
+            if (lastState) {
+                unitStates?.splice(0);
+                unitStates?.unshift(lastState.toNextTurn());
+            }
 
             // clean turn changes
-            this.currentTurnChanges = [];
+            this.currentTurn = new Turn(this.currentTurn.states);
         }
     }
 
@@ -107,40 +142,25 @@ export default class Game {
         return false;
     }
 
-    findUnitState(p: Position) {
-        return this.getUnitStates()
+    findUnitState(p: Position): UnitState | undefined {
+        return this.getAllStates()
             .find(unitState => unitState.position.equals(p));
     }
 
     getUnitState(unitId: string): UnitState {
-        const states = this.currentTurnStates.get(unitId)!;
-        return states[0];
+        return this.currentTurn.getUnitState(unitId);
     }
 
-    getUnitStates(): UnitState[] {
-        return Array.from(this.currentTurnStates.values())
-            .map(unitStates => unitStates[0]);
+    getAllStates(): UnitState[] {
+        return Array.from(this.units.keys())
+            .map(unitId => this.currentTurn.getUnitState(unitId));
     }
 
     integrate(saveStateChanges: boolean, ...newStates: UnitState[]): void {
-        if (saveStateChanges) {
-            this.currentTurnChanges.unshift(newStates.map(state => state.unit.id));
-        }
-
-        newStates.forEach(newState => {
-            const states = this.currentTurnStates.get(newState.unit.id);
-            if (states) {
-                states.unshift(newState);
-            }
-        });
+        this.currentTurn.integrate(saveStateChanges, newStates);
     }
 
     rollbackLastAction(): void {
-        const lastActionChanges = this.currentTurnChanges.shift();
-        if (lastActionChanges) {
-            lastActionChanges
-                .map(unitId => this.currentTurnStates.get(unitId)!)
-                .forEach(currentTurnUnitStates => currentTurnUnitStates.shift());
-        }
+        this.currentTurn.rollbackLastAction();
     }
 }

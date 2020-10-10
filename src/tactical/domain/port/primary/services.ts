@@ -1,4 +1,4 @@
-import Field from "../../model/field";
+import Field from "../../model/field/field";
 import Player from "../../model/player";
 import Game from "../../model/game";
 import Unit from "../../model/unit";
@@ -6,12 +6,13 @@ import Position from "../../model/position";
 import UnitState from "../../model/unit-state";
 import Action from "../../model/action/action";
 import { ActionType, Range } from "../../model/action/action-type";
+import { ValueObject } from "immutable";
 
-export interface FieldServicePort<T extends Field> {
-    createField(field: T): string;
-    updateField(field: T, id: string): void;
-    getField(id: string): T;
-    getFields(): T[];
+export interface FieldServicePort<T extends ValueObject> {
+    createField(field: Field<T>): string;
+    updateField(field: Field<T>, id: string): void;
+    getField(id: string): Field<T>;
+    getFields(): Field<T>[];
 }
 
 export interface GameServicePort {
@@ -46,8 +47,8 @@ export interface UnitServicePort {
 }
 
 export interface FieldAlgorithmServicePort {
-    getShortestPath(field: Field, position: Position, p: Position, jumps: number): Position[];
-    isAccessible(field: Field, unitState: UnitState, p: Position): boolean;
-    getAccessiblePositions(field: Field, unitState: UnitState): Position[];
-    getPositionsInRange(field: Field, position: Position, range: Range): Position[];
+    getShortestPath(field: Field<Position>, position: Position, p: Position, jumps: number): Position[];
+    isAccessible(field: Field<Position>, unitState: UnitState, p: Position): boolean;
+    getAccessiblePositions(field: Field<Position>, unitState: UnitState): Position[];
+    getPositionsInRange(field: Field<Position>, position: Position, range: Range): Position[];
 }

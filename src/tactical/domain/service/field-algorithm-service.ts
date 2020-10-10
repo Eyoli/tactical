@@ -1,11 +1,11 @@
 import { FieldAlgorithmServicePort } from "../../domain/port/primary/services";
-import Field from "../../domain/model/field";
 import Position from "../../domain/model/position";
 import { Set } from "immutable";
 import { injectable } from "inversify";
 import UnitState from "../../domain/model/unit-state";
 import { Range } from "../../domain/model/action/action-type";
 import { PathFinderManager } from "./path-finder";
+import Field from "../model/field/field";
 
 type PositionSearch = [Position, number];
 type CostFunction = (p1: Position, p2: Position) => number;
@@ -18,21 +18,21 @@ export default class FieldAlgorithmService implements FieldAlgorithmServicePort 
         this.pathFinderManager = new PathFinderManager<Position>();
     }
 
-    getShortestPath(field: Field, start: Position, end: Position, jumps: number): Position[] {
+    getShortestPath(field: Field<Position>, start: Position, end: Position, jumps: number): Position[] {
         return this.pathFinderManager.getShortestPath(field, start, end)
             .withNeighbourFilter((p1: Position, p2: Position) => Math.abs(p2.z - p1.z) <= jumps)
             .find()
             .path;
     }
 
-    getPositionsInRange(field: Field, position: Position, range: Range): Position[] {
+    getPositionsInRange(field: Field<Position>, position: Position, range: Range): Position[] {
         return this.getAccessiblePositionsAsSet(
             field, position, range.max, range.height, () => 1)
             .filter(p => position.flatDistanceTo(p) >= range.min)
             .toArray();
     }
 
-    getAccessiblePositions(field: Field, unitState: UnitState): Position[] {
+    getAccessiblePositions(field: Field<Position>, unitState: UnitState): Position[] {
         return this.getAccessiblePositionsAsSet(
             field,
             unitState.position,
@@ -42,7 +42,7 @@ export default class FieldAlgorithmService implements FieldAlgorithmServicePort 
             .toArray();
     }
 
-    private getAccessiblePositionsAsSet(field: Field, start: Position, moves: number, jumps: number,
+    private getAccessiblePositionsAsSet(field: Field<Position>, start: Position, moves: number, jumps: number,
         costFunction: CostFunction): Set<Position> {
         const accessiblePositions = Set<Position>().asMutable();
         const searches: PositionSearch[] = [[start, moves]];
@@ -63,7 +63,7 @@ export default class FieldAlgorithmService implements FieldAlgorithmServicePort 
         return accessiblePositions;
     }
 
-    isAccessible(field: Field, unitState: UnitState, p: Position): boolean {
+    isAccessible(field: Field<Position>, unitState: UnitState, p: Position): boolean {
         if (unitState.position.equals(p)) {
             return false;
         }

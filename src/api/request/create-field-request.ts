@@ -1,7 +1,5 @@
-import TileType from "../../tactical/domain/model/tile-based-field/tile-type";
-import Tile from "../../tactical/domain/model/tile-based-field/tile";
-import TileBasedField from "../../tactical/domain/model/tile-based-field/tile-based-field";
-import Field from "../../tactical/domain/model/field";
+import TileType from "../../tactical/domain/model/field/tile-type";
+import TileBasedField from "../../tactical/domain/model/field/tile-based-field";
 import Position from "../../tactical/domain/model/position";
 
 export default class CreateFieldRequest {
@@ -40,7 +38,7 @@ export default class CreateFieldRequest {
         this.offset = input.offset;
     }
 
-    validate() {
+    validate(): string[] {
         const warnings = [];
         if (!this.name) {
             warnings.push("name is required");

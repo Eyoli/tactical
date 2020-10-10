@@ -1,5 +1,5 @@
-import TileBasedField from "../../tactical/domain/model/tile-based-field/tile-based-field";
-import TileType from "../../tactical/domain/model/tile-based-field/tile-type";
+import TileBasedField from "../../tactical/domain/model/field/tile-based-field";
+import TileType from "../../tactical/domain/model/field/tile-type";
 import Position from "../../tactical/domain/model/position";
 
 export default class FieldDTO {

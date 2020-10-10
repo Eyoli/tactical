@@ -1,9 +1,15 @@
-export default class ResourceNotFoundError<T> extends Error {
+interface Newable<T> {
+    new (...args: any[]): T;
+}
+interface Abstract<T> {
+    prototype: T;
+}
+type ClassIdentifier<T> = Newable<T> | Abstract<T>;
 
-    static fromClass<T>(constructor: {
-        new (...args: any[]): T;
-    }) {
-        return new ResourceNotFoundError<T>(constructor.name);
+export default class ResourceNotFoundError extends Error {
+
+    static fromClass<T>(identifier: ClassIdentifier<T>): ResourceNotFoundError {
+        return new ResourceNotFoundError(identifier.constructor.name);
     }
 
     constructor(name: string) {

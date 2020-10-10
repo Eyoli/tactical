@@ -15,6 +15,7 @@ export default class Position implements ValueObject {
         return Math.sqrt((p.x - this.x) * (p.x - this.x) + (p.y - this.y) * (p.y - this.y));
     }
 
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
     equals(other: any): boolean {
         return this.x === other.x && this.y === other.y && this.z === other.z;
     }

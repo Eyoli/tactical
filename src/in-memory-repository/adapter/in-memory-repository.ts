@@ -2,6 +2,7 @@ import RepositoryPort from "../../tactical/domain/port/secondary/repository-port
 import Logger from "../../tactical/domain/logger/logger";
 import IdGenerator from "../port/id-generator";
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export default class InMemoryRepository<T extends Object> implements RepositoryPort<T> {
     private idGenerator: IdGenerator<T, string>;
     private content: Map<string, T>;
@@ -10,7 +11,7 @@ export default class InMemoryRepository<T extends Object> implements RepositoryP
         this.idGenerator = idGenerator;
         this.content = new Map();
     }
-    
+
     update(object: T, id: string): void {
         this.content.set(id, object);
     }

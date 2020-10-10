@@ -7,23 +7,24 @@ import ResourceNotFoundError from "../../domain/model/error/resource-not-found-e
 
 @injectable()
 export default class PlayerService implements PlayerServicePort {
-    private playerService: RepositoryPort<Player>;
+    private playerRepository: RepositoryPort<Player>;
 
-    public constructor(@inject(TYPES.PLAYER_REPOSITORY) playerService: RepositoryPort<Player>) {
-        this.playerService = playerService;
+    public constructor(@inject(TYPES.PLAYER_REPOSITORY) playerRepository: RepositoryPort<Player>) {
+        this.playerRepository = playerRepository;
     }
 
     getPlayers(): Player[] {
-        return this.playerService.loadAll();
+        return this.playerRepository.loadAll();
     }
 
     createPlayer(player: Player): string {
-        player.id = this.playerService.save(player);
-        return player.id;
+        const id = this.playerRepository.save(player);
+        this.playerRepository.update(player.withId(id), id);
+        return id;
     }
 
     getPlayer(key: string): Player {
-        const player = this.playerService.load(key);
+        const player = this.playerRepository.load(key);
         if(!player) {
             throw ResourceNotFoundError.fromClass(Player);
         }

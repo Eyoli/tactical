@@ -1,12 +1,12 @@
 import { FieldAlgorithmServicePort } from "../../tactical/domain/port/primary/services";
-import Field from "../../tactical/domain/model/field";
+import Field from "../../tactical/domain/model/field/field";
 import Position from "../../tactical/domain/model/position";
 import UnitState from "../../tactical/domain/model/unit-state";
-import { ActionType, Range } from "../../tactical/domain/model/action/action-type";
+import { Range } from "../../tactical/domain/model/action/action-type";
 
 export class FakeFieldAlgorithmService implements FieldAlgorithmServicePort {
 
-    getShortestPath(field: Field, position: Position, p: Position, jumps: number): Position[] {
+    getShortestPath(field: Field<Position>, position: Position, p: Position, jumps: number): Position[] {
         return [];
     }
     private positions?: Position[];
@@ -15,15 +15,15 @@ export class FakeFieldAlgorithmService implements FieldAlgorithmServicePort {
         this.positions = positions;
     }
     
-    getPositionsInRange(field: Field, position: Position, range: Range): Position[] {
+    getPositionsInRange(field: Field<Position>, position: Position, range: Range): Position[] {
         return this.positions || [];
     }
 
-    getAccessiblePositions(field: Field, unitState: UnitState): Position[] {
+    getAccessiblePositions(field: Field<Position>, unitState: UnitState): Position[] {
         return [];
     }
 
-    isAccessible(field: Field | undefined, unit: UnitState, p: Position): boolean {
+    isAccessible(field: Field<Position> | undefined, unit: UnitState, p: Position): boolean {
         return true;
     }
 }

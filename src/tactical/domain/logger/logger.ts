@@ -4,9 +4,11 @@ export default class Logger {
 
     private static loggerServicePort: LoggerServicePort;
 
-    private constructor() {}
+    private constructor() {
+        // Private constructor
+    }
 
-    static setLogger(logger: LoggerServicePort) {
+    static setLogger(logger: LoggerServicePort): void {
         Logger.loggerServicePort = logger;
     }
 

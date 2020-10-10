@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import InMemoryRepository from "../../in-memory-repository/adapter/in-memory-repository";
 import Game from "../../tactical/domain/model/game";
-import Field from "../../tactical/domain/model/field";
+import Field from "../../tactical/domain/model/field/field";
 import Player from "../../tactical/domain/model/player";
 import Unit from "../../tactical/domain/model/unit";
 import * as Assert from "assert";
@@ -31,7 +31,7 @@ describe('About playing we should be able to...', () => {
     let playerRepository: RepositoryPort<Player>;
     let gameRepository: RepositoryPort<Game>;
     let unitRepository: RepositoryPort<Unit>;
-    let fieldRepository: RepositoryPort<Field>;
+    let fieldRepository: RepositoryPort<Field<Position>>;
     let actionService: FakeActionService;
     let fieldAlgorithmService: FakeFieldAlgorithmService;
 
@@ -39,7 +39,7 @@ describe('About playing we should be able to...', () => {
         playerRepository = new InMemoryRepository<Player>(new CounterIdGenerator("player"));
         gameRepository = new InMemoryRepository<Game>(new CounterIdGenerator("game"));
         unitRepository = new InMemoryRepository<Unit>(new CounterIdGenerator("unit"));
-        fieldRepository = new InMemoryRepository<Field>(new CounterIdGenerator("field"));
+        fieldRepository = new InMemoryRepository<Field<Position>>(new CounterIdGenerator("field"));
         actionService = new FakeActionService();
         fieldAlgorithmService = new FakeFieldAlgorithmService();
 
@@ -245,10 +245,10 @@ describe('About playing we should be able to...', () => {
     });
 
     function aGameWithTwoPlayers(validPositions = true) {
-        const player1 = new Player("Player 1");
-        const player2 = new Player("Player 2");
-        player1.id = playerRepository.save(player1);
-        player2.id = playerRepository.save(player2);
+        let player1 = new Player("Player 1");
+        let player2 = new Player("Player 2");
+        player1 = player1.withId(playerRepository.save(player1));
+        player2 = player2.withId(playerRepository.save(player2));
 
         const game = new Game();
         game.addPlayers(player1, player2);

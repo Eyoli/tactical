@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import InMemoryRepository from "../../in-memory-repository/adapter/in-memory-repository";
 import Game from "../../tactical/domain/model/game";
-import Field from "../../tactical/domain/model/field";
+import Field from "../../tactical/domain/model/field/field";
 import Player from "../../tactical/domain/model/player";
 import Unit from "../../tactical/domain/model/unit";
 import * as Assert from "assert";
@@ -16,6 +16,7 @@ import CounterIdGenerator from "../../in-memory-repository/adapter/counter-id-ge
 import GameService from "../../tactical/domain/service/game-service";
 import PlayerService from "../../tactical/domain/service/player-service";
 import UnitService from "../../tactical/domain/service/unit-service";
+import Position from "../../tactical/domain/model/position";
 
 describe('About games we should be able to...', () => {
 
@@ -23,13 +24,13 @@ describe('About games we should be able to...', () => {
     let playerRepository: RepositoryPort<Player>;
     let gameRepository: RepositoryPort<Game>;
     let unitRepository: RepositoryPort<Unit>;
-    let fieldRepository: RepositoryPort<Field>;
+    let fieldRepository: RepositoryPort<Field<Position>>;
 
     beforeEach(() => {
         playerRepository = new InMemoryRepository<Player>(new CounterIdGenerator("player"));
         gameRepository = new InMemoryRepository<Game>(new CounterIdGenerator("game"));
         unitRepository = new InMemoryRepository<Unit>(new CounterIdGenerator("unit"));
-        fieldRepository = new InMemoryRepository<Field>(new CounterIdGenerator("field"));
+        fieldRepository = new InMemoryRepository<Field<Position>>(new CounterIdGenerator("field"));
 
         gameService = new GameService(
             gameRepository, 

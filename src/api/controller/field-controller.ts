@@ -5,16 +5,15 @@ import { TYPES } from '../../types';
 import BadRequestError from '../error/bad-request-error';
 import CreateFieldRequest from '../request/create-field-request';
 import FieldDTO from '../dto/field-dto';
-import TileBasedField from '../../tactical/domain/model/tile-based-field/tile-based-field';
+import Position from '../../tactical/domain/model/position';
 
 const fieldRouter = express.Router();
 
-const fieldService = iocContainer.get<FieldServicePort<TileBasedField>>(TYPES.FIELD_SERVICE);
+const fieldService = iocContainer.get<FieldServicePort<Position>>(TYPES.FIELD_SERVICE);
 
 fieldRouter.get('/', function (req, res) {
-	const fields = fieldService.getFields()
-		.map(field => new FieldDTO(field));
-	res.json(fields);
+	const fields : any[] = fieldService.getFields();
+	res.json(fields.map(field => new FieldDTO(field)));
 });
 
 fieldRouter.post('/', function (req, res) {
@@ -48,7 +47,7 @@ fieldRouter.put('/:id', function (req, res) {
 
 fieldRouter.get('/:id', function (req, res) {
 	const id = req.params.id;
-	const field = fieldService.getField(id);
+	const field: any = fieldService.getField(id);
 	res.json(new FieldDTO(field));
 });
 

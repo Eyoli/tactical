@@ -1,8 +1,7 @@
-import Field from "../../tactical/domain/model/field";
+import Field from "../../tactical/domain/model/field/field";
 import Position from "../../tactical/domain/model/position";
-import UnitState from "../../tactical/domain/model/unit-state";
 
-export default class FakeField extends Field {
+export default class FakeField extends Field<Position> {
     private validPositions: boolean;
 
     constructor(name: string, validPositions = true) {
@@ -23,6 +22,10 @@ export default class FakeField extends Field {
     }
 
     getHeightDifference(p1: Position, p2: Position): number {
+        return 0;
+    }
+
+    distanceBetween(p1: Position, p2: Position): number {
         return 0;
     }
 }

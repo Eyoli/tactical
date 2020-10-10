@@ -5,9 +5,9 @@ import * as mocha from "mocha";
 import { FieldAlgorithmServicePort as FieldAlgorithmServicePort } from "../../tactical/domain/port/primary/services";
 import Position from "../../tactical/domain/model/position";
 import UnitState from "../../tactical/domain/model/unit-state";
-import TileBasedField from "../../tactical/domain/model/tile-based-field/tile-based-field";
+import TileBasedField from "../../tactical/domain/model/field/tile-based-field";
 import Statistics from "../../tactical/domain/model/statistics";
-import TileType from "../../tactical/domain/model/tile-based-field/tile-type";
+import TileType from "../../tactical/domain/model/field/tile-type";
 import { Range } from "../../tactical/domain/model/action/action-type";
 import { Direction } from "../../tactical/domain/model/enums";
 import FieldAlgorithmService from "../../tactical/domain/service/field-algorithm-service";
@@ -22,9 +22,9 @@ describe('About field algorithms...', () => {
 
     it('Getting positions in range...', () => {
         // arrange
-        const field = new TileBasedField("Field", 3, 3, 3)
-            .withId("fieldId")
-            .withTileTypes(new TileType(1, 10, ""))
+        const field = new TileBasedField("Field", 3, 3, 3);
+        field.withId("fieldId");
+        field.withTileTypes(new TileType(1, 10, ""))
             .withTiles(
                 [[1], [1], [1]],
                 [[1], [1, 1], [1]],
@@ -43,9 +43,9 @@ describe('About field algorithms...', () => {
 
         it('flat and homogeneous field', () => {
             // arrange
-            const field = new TileBasedField("Field", 3, 3, 3)
-                .withId("fieldId")
-                .withTileTypes(new TileType(1, 1, ""))
+            const field = new TileBasedField("Field", 3, 3, 3);
+            field.withId("fieldId");
+            field.withTileTypes(new TileType(1, 1, ""))
                 .withTiles(
                     [[1], [1], [1]],
                     [[1], [1], [1]],
@@ -63,9 +63,9 @@ describe('About field algorithms...', () => {
 
         it('heterogeneous field', () => {
             // arrange
-            const field = new TileBasedField("Field", 3, 3, 3)
-                .withId("fieldId")
-                .withTileTypes(new TileType(1, 1, ""), new TileType(2, 2, ""))
+            const field = new TileBasedField("Field", 3, 3, 3);
+            field.withId("fieldId");
+            field.withTileTypes(new TileType(1, 1, ""), new TileType(2, 2, ""))
                 .withTiles(
                     [[1], [1], [1]],
                     [[1], [2], [1]],
@@ -83,9 +83,9 @@ describe('About field algorithms...', () => {
 
         it('unlevel field', () => {
             // arrange
-            const field = new TileBasedField("Field", 3, 3, 3)
-                .withId("fieldId")
-                .withTileTypes(new TileType(1, 1, ""))
+            const field = new TileBasedField("Field", 3, 3, 3);
+            field.withId("fieldId");
+            field.withTileTypes(new TileType(1, 1, ""))
                 .withTiles(
                     [[1], [1], [1]],
                     [[1], [1, 1], [1]],
@@ -103,9 +103,9 @@ describe('About field algorithms...', () => {
 
         it('check position accessibility', () => {
             // arrange
-            const field = new TileBasedField("Field", 3, 3, 3)
-                .withId("fieldId")
-                .withTileTypes(new TileType(1, 1, ""))
+            const field = new TileBasedField("Field", 3, 3, 3);
+            field.withId("fieldId");
+            field.withTileTypes(new TileType(1, 1, ""))
                 .withTiles(
                     [[1], [1], [1]],
                     [[1], [1, 1], [1]],
@@ -129,11 +129,11 @@ describe('About field algorithms...', () => {
 
         it('get the shortest path to a position', () => {
             // arrange
-            const field = new TileBasedField("Field", 3, 3, 3)
-                .withId("fieldId")
-                .withTileTypes(
-                    new TileType(1, 1, ""),
-                    new TileType(2, 2, ""))
+            const field = new TileBasedField("Field", 3, 3, 3);
+            field.withId("fieldId");
+            field.withTileTypes(
+                new TileType(1, 1, ""),
+                new TileType(2, 2, ""))
                 .withTiles(
                     [[1], [1], [1]],
                     [[2], [1, 1], [1]],

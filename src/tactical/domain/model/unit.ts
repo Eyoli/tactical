@@ -7,9 +7,6 @@ export default class Unit {
     private weapon!: Weapon;
     private statistics!: Statistics;
 
-    constructor() {
-    }
-
     withId(id: string): Unit {
         this.id = id;
         return this;
@@ -30,11 +27,11 @@ export default class Unit {
         return this;
     }
 
-    getStatistics() {
+    getStatistics(): Statistics {
         return this.statistics;
     }
 
-    getWeapon() {
+    getWeapon(): Weapon {
         return this.weapon;
     }
 }
