@@ -10,7 +10,7 @@ describe('Changing unit state...', () => {
     it('Move', () => {
         // arrange
         const state = UnitState.init(
-            new Unit().withStatistics(new Statistics().withHealth(100)),
+            new Unit().withStatistics(new Statistics.Builder().withHealth(100).build()),
             new Position(1, 1, 0),
             Direction.DOWN);
 

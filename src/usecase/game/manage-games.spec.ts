@@ -44,7 +44,7 @@ describe('About games we should be able to...', () => {
     describe('create a new game', () => {
         it('valid case', () => {
             // arrange
-            const gameIn = new Game();
+            const gameIn = new Game.Builder().build();
             const fieldId = fieldRepository.save(new FakeField("Name"));
 
             // act
@@ -57,7 +57,7 @@ describe('About games we should be able to...', () => {
 
         it('no matching field', () => {
             // arrange
-            const gameIn = new Game();
+            const gameIn = new Game.Builder().build();
 
             // act
             const executor = () => gameService.createGame(gameIn, "fieldId");
@@ -69,8 +69,8 @@ describe('About games we should be able to...', () => {
 
     it('get the list of all existing games', () => {
         // arrange
-        gameRepository.save(new Game());
-        gameRepository.save(new Game());
+        gameRepository.save(new Game.Builder().build());
+        gameRepository.save(new Game.Builder().build());
 
         // act
         const games = gameService.getGames();
@@ -83,7 +83,7 @@ describe('About games we should be able to...', () => {
 
         it('get the current state of the game', () => {
             // arrange
-            const gameIn = new Game();
+            const gameIn = new Game.Builder().build();
             gameIn.id = gameRepository.save(gameIn);
 
             // act
@@ -95,7 +95,7 @@ describe('About games we should be able to...', () => {
 
         it('add a player', () => {
             // arrange
-            const gameId = gameRepository.save(new Game());
+            const gameId = gameRepository.save(new Game.Builder().build());
             const playerId = playerRepository.save(new Player("Player 1"));
 
             // act

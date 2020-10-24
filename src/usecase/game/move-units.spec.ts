@@ -50,8 +50,8 @@ describe('About field algorithms...', () => {
                     [[1], [1], [1]],
                     [[1], [1], [1]],
                     [[1], [1], [1]]);
-            const unit = new Unit().withStatistics(new Statistics()
-                .withMoves(2).withJumps(1));
+            const unit = new Unit().withStatistics(new Statistics.Builder()
+                .withMoves(2).withJumps(1).build());
             const unitState = UnitState.init(unit, new Position(0, 0, 0), Direction.DOWN);
 
             // act
@@ -70,8 +70,8 @@ describe('About field algorithms...', () => {
                     [[1], [1], [1]],
                     [[1], [2], [1]],
                     [[1], [1], [1]]);
-            const unit = new Unit().withStatistics(new Statistics()
-                .withMoves(2).withJumps(1));
+            const unit = new Unit().withStatistics(new Statistics.Builder()
+                .withMoves(2).withJumps(1).build());
             const unitState = UnitState.init(unit, new Position(0, 0, 0), Direction.DOWN);
 
             // act
@@ -90,8 +90,8 @@ describe('About field algorithms...', () => {
                     [[1], [1], [1]],
                     [[1], [1, 1], [1]],
                     [[1], [1], [1]]);
-            const unit = new Unit().withStatistics(new Statistics()
-                .withMoves(2).withJumps(0));
+            const unit = new Unit().withStatistics(new Statistics.Builder()
+                .withMoves(2).withJumps(0).build());
             const unitState = UnitState.init(unit, new Position(0, 0, 0), Direction.DOWN);
 
             // act
@@ -110,8 +110,8 @@ describe('About field algorithms...', () => {
                     [[1], [1], [1]],
                     [[1], [1, 1], [1]],
                     [[1], [1], [1]]);
-            const unit = new Unit().withStatistics(new Statistics()
-                .withMoves(2).withJumps(0));
+            const unit = new Unit().withStatistics(new Statistics.Builder()
+                .withMoves(2).withJumps(0).build());
             const unitState = UnitState.init(unit, new Position(0, 0, 0), Direction.DOWN);
 
             // act

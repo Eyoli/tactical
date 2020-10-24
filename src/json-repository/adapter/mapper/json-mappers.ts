@@ -41,7 +41,7 @@ export class UnitJsonMapper implements JsonMapperPort<Unit> {
         return {
             id: object.id,
             name: object.name,
-            statistics: object.getStatistics()
+            statistics: object.statistics
         };
     }
 }

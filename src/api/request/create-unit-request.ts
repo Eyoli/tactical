@@ -32,10 +32,11 @@ export default class CreateUnitRequest {
     toUnit(): Unit {
         const unit = new Unit()
             .withName(this.name)
-            .withStatistics(new Statistics()
+            .withStatistics(new Statistics.Builder()
                 .withHealth(100)
                 .withJumps(this.jumps)
-                .withMoves(this.moves))
+                .withMoves(this.moves)
+                .build())
             .withWeapon(
                 new Weapon(new Range(1, 4, 1),
                     new Damage(10, DamageType.CUTTING)));

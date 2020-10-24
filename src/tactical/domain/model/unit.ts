@@ -5,7 +5,7 @@ export default class Unit {
     id!: string;
     name!: string;
     private weapon!: Weapon;
-    private statistics!: Statistics;
+    statistics!: Readonly<Statistics>;
 
     withId(id: string): Unit {
         this.id = id;
@@ -25,10 +25,6 @@ export default class Unit {
     withWeapon(weapon: Weapon): Unit {
         this.weapon = weapon;
         return this;
-    }
-
-    getStatistics(): Statistics {
-        return this.statistics;
     }
 
     getWeapon(): Weapon {

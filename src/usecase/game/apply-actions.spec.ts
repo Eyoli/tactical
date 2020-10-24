@@ -8,7 +8,7 @@ import Position from "../../tactical/domain/model/position";
 import Statistics from "../../tactical/domain/model/statistics";
 import { Range } from "../../tactical/domain/model/action/action-type";
 import InMemoryActionTypeRepository from "../../in-memory-repository/adapter/in-memory-action-type-repository";
-import {DamageType, Direction} from "../../tactical/domain/model/enums";
+import { DamageType, Direction } from "../../tactical/domain/model/enums";
 
 describe('Actions should work correctly...', () => {
 
@@ -19,8 +19,8 @@ describe('Actions should work correctly...', () => {
     });
 
     describe('weapon attack', () => {
-        const srcUnit = new Unit().withStatistics(new Statistics());
-        const targetUnit = new Unit().withStatistics(new Statistics().withHealth(20));
+        const srcUnit = new Unit().withStatistics(new Statistics.Builder().build());
+        const targetUnit = new Unit().withStatistics(new Statistics.Builder().withHealth(20).build());
 
         it('valid case', () => {
             // arrange
@@ -57,8 +57,8 @@ describe('Actions should work correctly...', () => {
     });
 
     describe('non weapon attack', () => {
-        const srcUnit = new Unit().withStatistics(new Statistics());
-        const targetUnit = new Unit().withStatistics(new Statistics().withHealth(20));
+        const srcUnit = new Unit().withStatistics(new Statistics.Builder().build());
+        const targetUnit = new Unit().withStatistics(new Statistics.Builder().withHealth(20).build());
 
         it('valid case', () => {
             // arrange

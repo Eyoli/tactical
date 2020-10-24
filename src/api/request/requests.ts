@@ -19,8 +19,7 @@ export class CreateGameRequest {
     }
 
     toGame(): Game {
-        const game = new Game();
-        return game;
+        return new Game.Builder().build();
 	}
 }
 

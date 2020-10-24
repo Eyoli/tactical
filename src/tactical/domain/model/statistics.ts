@@ -1,47 +1,43 @@
 export default class Statistics {
     health = 0;
     spirit = 0;
-
     strength = 0;
     defense = 0;
     mind = 0;
     resistance = 0;
     speed = 0;
-
     jumps = 0;
     moves = 0;
 
-    withMoves(moves: number): Statistics {
-        this.moves = moves;
-        return this;
+    private constructor() {
+        //
     }
 
-    withJumps(jumps: number): Statistics {
-        this.jumps = jumps;
-        return this;
-    }
+    static Builder = class Builder {
+        private object = new Statistics();
 
-    withHealth(health: number): Statistics {
-        this.health = health;
-        return this;
-    }
+        withMoves(moves: number): Builder {
+            this.object.moves = moves;
+            return this;
+        }
 
-    withSpeed(speed: number): Statistics {
-        this.speed = speed;
-        return this;
-    }
+        withJumps(jumps: number): Builder {
+            this.object.jumps = jumps;
+            return this;
+        }
 
-    copy(): Statistics {
-        const statistics = new Statistics();
-        statistics.health = this.health;
-        statistics.spirit = this.spirit;
-        statistics.strength = this.strength;
-        statistics.defense = this.defense;
-        statistics.mind = this.mind;
-        statistics.resistance = this.resistance;
-        statistics.speed = this.speed;
-        statistics.jumps = this.jumps;
-        statistics.moves = this.moves;
-        return statistics;
+        withHealth(health: number): Builder {
+            this.object.health = health;
+            return this;
+        }
+
+        withSpeed(speed: number): Builder {
+            this.object.speed = speed;
+            return this;
+        }
+
+        build(): Statistics {
+            return this.object;
+        }
     }
 }

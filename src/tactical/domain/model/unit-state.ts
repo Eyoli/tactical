@@ -39,11 +39,11 @@ export default class UnitState {
     }
 
     getJumps(): number {
-        return this.unit.getStatistics().jumps;
+        return this.unit.statistics.jumps;
     }
 
     getMoves(): number {
-        return this.unit.getStatistics().moves;
+        return this.unit.statistics.moves;
     }
 
     computeWeaponDamage(): Damage {
@@ -116,8 +116,8 @@ export default class UnitState {
             unit,
             p,
             direction,
-            new HistorizedValue(unit.getStatistics().health),
-            unit.getStatistics().spirit
+            new HistorizedValue(unit.statistics.health),
+            unit.statistics.spirit
         );
     }
 }

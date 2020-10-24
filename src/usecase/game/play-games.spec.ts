@@ -18,7 +18,7 @@ import Statistics from "../../tactical/domain/model/statistics";
 import { GameServicePort } from "../../tactical/domain/port/primary/services";
 import { Damage } from "../../tactical/domain/model/weapon";
 import CounterIdGenerator from "../../in-memory-repository/adapter/counter-id-generator";
-import {DamageType} from "../../tactical/domain/model/enums";
+import { DamageType } from "../../tactical/domain/model/enums";
 import GameService from "../../tactical/domain/service/game-service";
 import PlayerService from "../../tactical/domain/service/player-service";
 import UnitService from "../../tactical/domain/service/unit-service";
@@ -176,7 +176,7 @@ describe('About playing we should be able to...', () => {
         actionService
             .withActionType(new ActionType("fireball", TargetType.AREA,
                 new Range(1, 1, 1), new Damage(10, DamageType.CUTTING), new Range(0, 2, 1)));
-        fieldAlgorithmService.withPositionsInRange([new Position(0,0,0)]);
+        fieldAlgorithmService.withPositionsInRange([new Position(0, 0, 0)]);
 
         // act
         gameService.actOnPosition(game.id, unit1.id, unitState2.position, "fireball");
@@ -250,8 +250,9 @@ describe('About playing we should be able to...', () => {
         player1 = player1.withId(playerRepository.save(player1));
         player2 = player2.withId(playerRepository.save(player2));
 
-        const game = new Game();
-        game.addPlayers(player1, player2);
+        const game = new Game.Builder()
+            .withPlayers(player1, player2)
+            .build();
         game.id = gameRepository.save(game);
 
         const field = new FakeField("Field", validPositions);
@@ -262,8 +263,8 @@ describe('About playing we should be able to...', () => {
     }
 
     function aUnitComposition(player1: Player, player2: Player) {
-        const unit1 = new Unit().withStatistics(new Statistics().withHealth(100));
-        const unit2 = new Unit().withStatistics(new Statistics().withHealth(200));
+        const unit1 = new Unit().withStatistics(new Statistics.Builder().withHealth(100).build());
+        const unit2 = new Unit().withStatistics(new Statistics.Builder().withHealth(200).build());
         unit1.id = unitRepository.save(unit1);
         unit2.id = unitRepository.save(unit2);
         const unitsComposition: UnitsComposition = new Map();

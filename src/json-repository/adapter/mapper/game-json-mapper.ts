@@ -25,11 +25,11 @@ export class GameJsonMapper implements JsonMapperPort<Game> {
         if (!field) {
             throw ResourceNotFoundError.fromClass(Field);
         }
-        const game = new Game();
-        game.field = field;
-        game.id = json.id;
-        game.players = this.playerRepository.loadSome(json.playerIds);
-        return game;
+        return new Game.Builder()
+            .withId(json.id)
+            .withField(field)
+            .withPlayers(...this.playerRepository.loadSome(json.playerIds))
+            .build();
     }
 
     toJson(object: Game): any {

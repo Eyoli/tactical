@@ -7,9 +7,8 @@ import Field from "../model/field/field";
 import ResourceNotFoundError from "../../domain/model/error/resource-not-found-error";
 import Position from "../../domain/model/position";
 import UnitState from "../../domain/model/unit-state";
-import { UnitsComposition, UnitsPlacement } from "../../domain/model/types";
+import { UnitsComposition } from "../../domain/model/types";
 import { GameError, GameErrorCode } from "../../domain/model/error/game-error";
-import Player from "../../domain/model/player";
 import { ActionType } from "../../domain/model/action/action-type";
 import { Direction } from "../../domain/model/enums";
 
@@ -45,6 +44,7 @@ export default class GameService implements GameServicePort {
         game.field = field;
 
         game.id = this.gameRepository.save(game);
+        this.gameRepository.update(game, game.id);
         return game.id;
     }
 
@@ -72,9 +72,10 @@ export default class GameService implements GameServicePort {
         }
 
         for (const player of game.players) {
-            const playerComposition = unitsComposition.get(player.id);
-            if (playerComposition) {
-                this.initUnitsState(game, player, playerComposition);
+            const unitsPositions = unitsComposition.get(player.id);
+            if (unitsPositions) {
+                const units = this.unitService.getUnits(Array.from(unitsPositions.keys()));
+                game.setUnits(player, units);
             }
         }
 
@@ -85,6 +86,9 @@ export default class GameService implements GameServicePort {
         }
 
         game.start();
+
+        this.initUnitsState(game, unitsComposition);
+
         this.gameRepository.update(game, gameId);
         return game;
     }
@@ -112,16 +116,19 @@ export default class GameService implements GameServicePort {
         return game;
     }
 
-    private initUnitsState(game: Game, player: Player, unitsPositions: UnitsPlacement): void {
-        const units = this.unitService.getUnits(Array.from(unitsPositions.keys()));
-
-        game.setUnits(player, units);
-        units.forEach(unit => {
-            const position = unitsPositions.get(unit.id);
-            if (position) {
-                game.integrate(false, UnitState.init(unit, position, Direction.DOWN));
+    private initUnitsState(game: Game, unitsComposition: UnitsComposition): void {
+        for (const player of game.players) {
+            const unitsPositions = unitsComposition.get(player.id);
+            if (unitsPositions) {
+                game.getUnits(player).forEach(unit => {
+                    const position = unitsPositions.get(unit.id);
+                    if (position) {
+                        game.integrate(false, UnitState.init(unit, position, Direction.DOWN));
+                    }
+                });
             }
-        });
+        }
+
     }
 
     getPositionsInRange(gameId: string, unitId: string, actionType: ActionType): Position[] {
@@ -158,7 +165,7 @@ export default class GameService implements GameServicePort {
             const positions: Position[] = [];
             if (actionType.area) {
                 positions.push(...this.fieldAlgorithmService.getPositionsInRange(
-                    game.field, position, actionType.area!));
+                    game.field, position, actionType.area));
             } else {
                 positions.push(position);
             }
@@ -181,14 +188,14 @@ export default class GameService implements GameServicePort {
             game.integrate(false, srcUnitState);
             const newStates: UnitState[] = [];
             targetUnitStates.forEach(targetUnitState => {
-                const action = this.actionService.generateAction(actionType, srcUnitState!, targetUnitState);
+                const action = this.actionService.generateAction(actionType, srcUnitState, targetUnitState);
                 if (action.validate() === true) {
                     const actionResult = action.apply();
                     game.integrate(true, ...actionResult);
                     this.gameRepository.update(game, gameId);
                     newStates.push(...actionResult);
                 }
-            })
+            });
             return newStates;
 
         }
@@ -208,13 +215,13 @@ export default class GameService implements GameServicePort {
             throw new GameError(GameErrorCode.IMPOSSIBLE_TO_MOVE_UNIT);
         }
 
-        if (!this.fieldAlgorithmService.isAccessible(game.field, unitState!, p)) {
+        if (!this.fieldAlgorithmService.isAccessible(game.field, unitState, p)) {
             throw new GameError(GameErrorCode.UNREACHABLE_POSITION);
         }
 
         const path = this.fieldAlgorithmService.getShortestPath(
             game.field, unitState.position, p, unitState.getJumps());
-        const newUnitState = unitState!.movingTo(p, path);
+        const newUnitState = unitState.movingTo(p, path);
         game.integrate(true, newUnitState);
         this.gameRepository.update(game, gameId);
         return newUnitState;
