@@ -47,7 +47,7 @@ export default class UnitState {
     }
 
     computeWeaponDamage(): Damage {
-        return this.unit.getWeapon().damage;
+        return this.unit.weapon.damage;
     }
 
     toNextTurn(): UnitState {

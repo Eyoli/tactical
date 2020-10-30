@@ -135,7 +135,7 @@ export default class GameService implements GameServicePort {
         const game = this.getGame(gameId);
         const unitState = game.getUnitState(unitId);
         if (unitState) {
-            const range = actionType.range || unitState.unit.getWeapon().range;
+            const range = actionType.range || unitState.unit.weapon.range;
             return this.fieldAlgorithmService.getPositionsInRange(
                 game.field, unitState.position, range);
         }

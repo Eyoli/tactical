@@ -3,7 +3,7 @@ import UnitState from "../../tactical/domain/model/unit-state";
 
 export default class GameDTO {
     private readonly state: string;
-    private readonly players: any;
+    private readonly players: any[];
     private readonly id: string;
     private readonly fieldId: string | undefined;
     private readonly unitStates?: UnitState[];

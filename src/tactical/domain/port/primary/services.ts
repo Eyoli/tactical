@@ -7,6 +7,8 @@ import UnitState from "../../model/unit-state";
 import Action from "../../model/action/action";
 import { ActionType, Range } from "../../model/action/action-type";
 import { ValueObject } from "immutable";
+import Inventory from "../../model/inventory";
+import Item from "../../model/item";
 
 export interface FieldServicePort<T extends ValueObject> {
     createField(field: Field<T>): string;
@@ -16,7 +18,7 @@ export interface FieldServicePort<T extends ValueObject> {
 }
 
 export interface GameServicePort {
-	getPositionsInRange(gameId: string, unitId: string, actionType: ActionType): Position[];
+    getPositionsInRange(gameId: string, unitId: string, actionType: ActionType): Position[];
     finishTurn(gameId: string): Game;
     startGame(gameId: string, unitsComposition: Map<string, Map<string, Position>>): Game;
     createGame(game: Game, fieldId: string): string;
@@ -51,4 +53,16 @@ export interface FieldAlgorithmServicePort {
     isAccessible(field: Field<Position>, unitState: UnitState, p: Position): boolean;
     getAccessiblePositions(field: Field<Position>, unitState: UnitState): Position[];
     getPositionsInRange(field: Field<Position>, position: Position, range: Range): Position[];
+}
+
+export interface InventoryServicePort {
+    createInventory(inventory: Inventory): string;
+    getInventory(id: string): Inventory;
+    add(id: string, itemId: string, quantity: number): boolean;
+    remove(id: string, itemId: string, quantity: number): boolean;
+}
+
+export interface ItemServicePort {
+    createItem(item: Item): string;
+    getItem(id: string): Item;
 }

@@ -4,8 +4,8 @@ import Statistics from "./statistics";
 export default class Unit {
     id!: string;
     name!: string;
-    private weapon!: Weapon;
-    statistics!: Readonly<Statistics>;
+    weapon!: Readonly<Weapon>;
+    statistics!: Statistics;
 
     withId(id: string): Unit {
         this.id = id;
@@ -25,9 +25,5 @@ export default class Unit {
     withWeapon(weapon: Weapon): Unit {
         this.weapon = weapon;
         return this;
-    }
-
-    getWeapon(): Weapon {
-        return this.weapon;
     }
 }

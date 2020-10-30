@@ -12,7 +12,7 @@ export default class AttackAction implements Action {
         this.actionType = actionType;
         this.srcUnitState = srcUnitState;
         this.targetUnitState = targetUnitState;
-        this.range = this.actionType.range || this.srcUnitState.unit.getWeapon().range;
+        this.range = this.actionType.range || this.srcUnitState.unit.weapon.range;
     }
 
     validate(): boolean {
