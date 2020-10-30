@@ -10,14 +10,18 @@ export default class CachedRepository<T extends Object> implements RepositoryPor
         this.cache = new Map();
     }
 
+    getId(): string {
+        return this.repository.getId();
+    }
+
     update(object: T, id: string): void {
         this.cache.delete(id);
         Logger.log(() => "remove " + object?.constructor.name + " : " + id + " from cache");
         this.repository.update(object, id);
     }
 
-    save(object: T): string {
-        return this.repository.save(object);
+    save(object: T, id: string): void {
+        this.repository.save(object, id);
     }
 
     load(id: string): T | undefined {

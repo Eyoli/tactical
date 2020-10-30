@@ -13,7 +13,7 @@ describe('About units we should be able to...', () => {
     let unitRepository: RepositoryPort<Unit>;
 
     beforeEach(() => {
-        unitRepository = new InMemoryRepository<Unit>(new CounterIdGenerator("unit")); 
+        unitRepository = new InMemoryRepository<Unit>(new CounterIdGenerator("unit"));
         unitService = new UnitService(unitRepository);
     });
 
@@ -29,10 +29,10 @@ describe('About units we should be able to...', () => {
 
     it('get an existing unit', () => {
         // arrange
-        const id = unitRepository.save(new Unit().withName("name"));
+        unitRepository.save(new Unit().withName("name"), "unit1");
 
         // act
-        const unit = unitService.getUnit(id);
+        const unit = unitService.getUnit("unit1");
 
         // assert
         Assert.deepStrictEqual(unit.name, "name");
@@ -40,12 +40,12 @@ describe('About units we should be able to...', () => {
 
     it('get a list of existing units', () => {
         // arrange
-        const id1 = unitRepository.save(new Unit());
-        const id2 = unitRepository.save(new Unit());
-        unitRepository.save(new Unit());
+        unitRepository.save(new Unit(), "unit1");
+        unitRepository.save(new Unit(), "unit2");
+        unitRepository.save(new Unit(), "unit3");
 
         // act
-        const units = unitService.getUnits([id1, id2]);
+        const units = unitService.getUnits(["unit1", "unit2"]);
 
         // assert
         Assert.deepStrictEqual(units.length, 2);
@@ -53,8 +53,8 @@ describe('About units we should be able to...', () => {
 
     it('get the list of all existing units', () => {
         // arrange
-        unitRepository.save(new Unit());
-        unitRepository.save(new Unit());
+        unitRepository.save(new Unit(), "unit1");
+        unitRepository.save(new Unit(), "unit2");
 
         // act
         const units = unitService.getUnits();

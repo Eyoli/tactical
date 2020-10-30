@@ -1,6 +1,7 @@
 export default interface RepositoryPort<T> {
+    getId(): string;
+    save(object: T, id: string): void;
     update(object: T, id: string): void;
-    save(object: T): string;
     load(id: string): T | undefined;
     loadSome(ids: string[]): T[];
     loadAll(): T[];

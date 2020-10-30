@@ -30,10 +30,10 @@ describe('About fields we should be able to...', () => {
 
     it('get an existing field', () => {
         // arrange
-        const fieldId = fieldRepository.save(new FakeField("Name"));
+        fieldRepository.save(new FakeField("Name"), "field");
 
         // act
-        const field = fieldService.getField(fieldId);
+        const field = fieldService.getField("field");
 
         // assert
         Assert.deepStrictEqual(field.name, "Name");
@@ -41,8 +41,8 @@ describe('About fields we should be able to...', () => {
 
     it('get the list of all existing fields', () => {
         // arrange
-        fieldRepository.save(new FakeField("Name"));
-        fieldRepository.save(new FakeField("Name"));
+        fieldRepository.save(new FakeField("Name"), "field1");
+        fieldRepository.save(new FakeField("Name"), "field2");
 
         // act
         const fields = fieldService.getFields();

@@ -18,9 +18,9 @@ export default class PlayerService implements PlayerServicePort {
     }
 
     createPlayer(player: Player): string {
-        const id = this.playerRepository.save(player);
-        this.playerRepository.update(player.withId(id), id);
-        return id;
+        player.id = this.playerRepository.getId();
+        this.playerRepository.save(player, player.id);
+        return player.id;
     }
 
     getPlayer(key: string): Player {

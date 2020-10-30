@@ -1,3 +1,3 @@
-export default interface IdGenerator<T, I> {
-    generate(object: T): I;
+export default interface IdGenerator<I> {
+    generate(): I;
 }

@@ -1,6 +1,6 @@
 import IdGenerator from "../port/id-generator";
 
-export default class CounterIdGenerator<T> implements IdGenerator<T, string> {
+export default class CounterIdGenerator implements IdGenerator<string> {
     private counter = 1;
     private prefix: string;
 
@@ -8,7 +8,7 @@ export default class CounterIdGenerator<T> implements IdGenerator<T, string> {
         this.prefix = prefix;
     }
 
-    generate(object: T): string {
+    generate(): string {
         const id = this.prefix + this.counter;
         this.counter++;
         return id;

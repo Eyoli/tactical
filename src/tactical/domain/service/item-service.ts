@@ -13,9 +13,8 @@ export default class ItemService implements ItemServicePort {
     }
 
     createItem(item: Item): string {
-        const id = this.itemRepository.save(item);
-        item.id = id;
-        this.itemRepository.update(item, id);
+        item.id = this.itemRepository.getId();
+        this.itemRepository.save(item, item.id);
         return item.id;
     }
 

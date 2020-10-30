@@ -1,15 +1,7 @@
 export default class Player {
-    readonly id!: string;
-    readonly name: string;
+    id!: string;
 
-    constructor(name: string, id?: string) {
+    constructor(readonly name: string) {
         this.name = name;
-        if (id) {
-            this.id = id;
-        }
-    }
-
-    withId(id: string): Player {
-        return new Player(this.name, id);
     }
 }

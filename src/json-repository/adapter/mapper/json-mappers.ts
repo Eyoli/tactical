@@ -50,7 +50,7 @@ export class UnitJsonMapper implements JsonMapperPort<Unit> {
 export class PlayerJsonMapper implements JsonMapperPort<Player> {
 
     fromJson(json: any): Player {
-        const player = new Player(json.id, json.name);
+        const player = new Player(json.name);
         return player;
     }
 

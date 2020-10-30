@@ -13,7 +13,7 @@ describe('About players we should be able to...', () => {
     let playerRepository: RepositoryPort<Player>;
 
     beforeEach(() => {
-        playerRepository = new InMemoryRepository<Player>(new CounterIdGenerator("player")); 
+        playerRepository = new InMemoryRepository<Player>(new CounterIdGenerator("player"));
         playerService = new PlayerService(playerRepository);
     });
 
@@ -29,10 +29,10 @@ describe('About players we should be able to...', () => {
 
     it('get an existing player', () => {
         // arrange
-        const playerId = playerRepository.save(new Player("Name"));
+        playerRepository.save(new Player("Name"), "player1");
 
         // act
-        const player = playerService.getPlayer(playerId);
+        const player = playerService.getPlayer("player1");
 
         // assert
         Assert.deepStrictEqual(player.name, "Name");
@@ -40,8 +40,8 @@ describe('About players we should be able to...', () => {
 
     it('get the list of all existing players', () => {
         // arrange
-        playerRepository.save(new Player("Name"));
-        playerRepository.save(new Player("Name"));
+        playerRepository.save(new Player("Name"), "player1");
+        playerRepository.save(new Player("Name"), "player2");
 
         // act
         const players = playerService.getPlayers();

@@ -33,10 +33,10 @@ describe('About games we should be able to...', () => {
         fieldRepository = new InMemoryRepository<Field<Position>>(new CounterIdGenerator("field"));
 
         gameService = new GameService(
-            gameRepository, 
+            gameRepository,
             new PlayerService(playerRepository),
-            new UnitService(unitRepository), 
-            fieldRepository, 
+            new UnitService(unitRepository),
+            fieldRepository,
             new FakeFieldAlgorithmService(),
             new FakeActionService());
     });
@@ -45,10 +45,10 @@ describe('About games we should be able to...', () => {
         it('valid case', () => {
             // arrange
             const gameIn = new Game.Builder().build();
-            const fieldId = fieldRepository.save(new FakeField("Name"));
+            fieldRepository.save(new FakeField("Name"), "field");
 
             // act
-            const id = gameService.createGame(gameIn, fieldId);
+            const id = gameService.createGame(gameIn, "field");
 
             // assert
             const gameOut = gameRepository.load(id);
@@ -69,8 +69,8 @@ describe('About games we should be able to...', () => {
 
     it('get the list of all existing games', () => {
         // arrange
-        gameRepository.save(new Game.Builder().build());
-        gameRepository.save(new Game.Builder().build());
+        gameRepository.save(new Game.Builder().build(), "game1");
+        gameRepository.save(new Game.Builder().build(), "game2");
 
         // act
         const games = gameService.getGames();
@@ -81,25 +81,25 @@ describe('About games we should be able to...', () => {
 
     describe('manage an existing game', () => {
 
-        it('get the current state of the game', () => {
+        it('get a game', () => {
             // arrange
-            const gameIn = new Game.Builder().build();
-            gameIn.id = gameRepository.save(gameIn);
+            const gameIn = new Game.Builder().withPlayers(new Player("player")).build();
+            gameRepository.save(gameIn, "game");
 
             // act
-            const gameOut = gameService.getGame(gameIn.id);
+            const gameOut = gameService.getGame("game");
 
             // assert
-            Assert.deepStrictEqual(gameOut?.id, gameIn.id);
+            Assert.deepStrictEqual(gameOut?.players[0]?.name, "player");
         });
 
         it('add a player', () => {
             // arrange
-            const gameId = gameRepository.save(new Game.Builder().build());
-            const playerId = playerRepository.save(new Player("Player 1"));
+            gameRepository.save(new Game.Builder().build(), "game");
+            playerRepository.save(new Player("Player 1"), "player");
 
             // act
-            const gameOut = gameService.addPlayers(gameId, [playerId]);
+            const gameOut = gameService.addPlayers("game", ["player"]);
 
             // assert
             Assert.deepStrictEqual(gameOut.players[0].name, "Player 1");

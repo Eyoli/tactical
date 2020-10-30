@@ -14,10 +14,9 @@ export default class InventoryService implements InventoryServicePort {
     }
 
     createInventory(inventory: Inventory): string {
-        const id = this.inventoryRepository.save(inventory);
-        inventory.id = id;
-        this.inventoryRepository.update(inventory, id);
-        return id;
+        inventory.id = this.inventoryRepository.getId();
+        this.inventoryRepository.save(inventory, inventory.id);
+        return inventory.id;
     }
 
     getInventory(id: string): Inventory {

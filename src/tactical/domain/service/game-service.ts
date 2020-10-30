@@ -42,9 +42,8 @@ export default class GameService implements GameServicePort {
             throw new ResourceNotFoundError("Field");
         }
         game.field = field;
-
-        game.id = this.gameRepository.save(game);
-        this.gameRepository.update(game, game.id);
+        game.id = this.gameRepository.getId();
+        this.gameRepository.save(game, game.id);
         return game.id;
     }
 

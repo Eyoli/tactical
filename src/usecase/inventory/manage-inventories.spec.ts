@@ -11,13 +11,13 @@ import Item from "../../tactical/domain/model/item";
 describe('About inventories we should be able to...', () => {
 
     let inventoryService: InventoryService;
-    let itemService: ItemService;
+    let itemRepository: RepositoryPort<Item>;
     let inventoryRepository: RepositoryPort<Inventory>;
 
     beforeEach(() => {
         inventoryRepository = new InMemoryRepository<Inventory>(new CounterIdGenerator("inventory"));
-        itemService = new ItemService(new InMemoryRepository<Item>(new CounterIdGenerator("item")));
-        inventoryService = new InventoryService(itemService, inventoryRepository);
+        itemRepository = new InMemoryRepository<Item>(new CounterIdGenerator("item"));
+        inventoryService = new InventoryService(new ItemService(itemRepository), inventoryRepository);
     });
 
     it('save an inventory', () => {
@@ -32,10 +32,10 @@ describe('About inventories we should be able to...', () => {
 
     it('get an existing inventory', () => {
         // arrange
-        const id = inventoryRepository.save(new Inventory(1));
+        inventoryRepository.save(new Inventory(1), "inv");
 
         // act
-        const inventory = inventoryService.getInventory(id);
+        const inventory = inventoryService.getInventory("inv");
 
         // assert
         Assert.deepStrictEqual(inventory?.size, 1);
@@ -43,65 +43,65 @@ describe('About inventories we should be able to...', () => {
 
     it('add an item', () => {
         // arrange
-        const id = inventoryRepository.save(new Inventory(1));
-        const itemId = itemService.createItem(new Item("item", "linkedId", "img"));
+        inventoryRepository.save(new Inventory(1), "inv");
+        itemRepository.save(new Item("item", "linkedId", "img"), "item");
 
         // act
-        const result = inventoryService.add(id, itemId, 1);
+        const result = inventoryService.add("inv", "item", 1);
 
         // assert
-        const inventory = inventoryRepository.load(id);
+        const inventory = inventoryRepository.load("inv");
         Assert.deepStrictEqual(result, true);
         Assert.deepStrictEqual(inventory?.items.size, 1);
-        Assert.deepStrictEqual(Array.from(inventory?.items.keys())[0], "item1");
+        Assert.deepStrictEqual(Array.from(inventory?.items.keys())[0], "item");
     });
 
     it("can't have more of an item than its limit", () => {
         // arrange
-        const itemId = itemService.createItem(new Item("item", "linkedId", "img", 2));
+        itemRepository.save(new Item("item", "linkedId", "img", 2), "item");
         const items = new Map<string, number>();
-        items.set(itemId, 2);
-        const id = inventoryRepository.save(new Inventory(1, items));
+        items.set("item", 2);
+        inventoryRepository.save(new Inventory(1, items), "inv");
 
         // act
-        const result = inventoryService.add(id, itemId, 1);
+        const result = inventoryService.add("inv", "item", 1);
 
         // assert
-        const inventory = inventoryRepository.load(id);
+        const inventory = inventoryRepository.load("inv");
         Assert.deepStrictEqual(result, true);
         Assert.deepStrictEqual(inventory?.items.size, 1);
-        Assert.deepStrictEqual(Array.from(inventory?.items.keys())[0], "item1");
+        Assert.deepStrictEqual(Array.from(inventory?.items.keys())[0], "item");
         Assert.deepStrictEqual(Array.from(inventory?.items.values())[0], 2);
     });
 
     it('remove an item', () => {
         // arrange
-        const itemId = itemService.createItem(new Item("item", "linkedId", "img"));
+        itemRepository.save(new Item("item", "linkedId", "img"), "item");
         const items = new Map<string, number>();
-        items.set(itemId, 1);
-        const id = inventoryRepository.save(new Inventory(1, items));
+        items.set("item", 1);
+        inventoryRepository.save(new Inventory(1, items), "inv");
 
         // act
-        const result = inventoryService.remove(id, itemId, 1);
+        const result = inventoryService.remove("inv", "item", 1);
 
         // assert
-        const inventory = inventoryRepository.load(id);
+        const inventory = inventoryRepository.load("inv");
         Assert.deepStrictEqual(result, true);
         Assert.deepStrictEqual(inventory?.items.size, 0);
     });
 
     it("can't remove specific items", () => {
         // arrange
-        const itemId = itemService.createItem(new Item("item", "linkedId", "img", 1, true, false));
+        itemRepository.save(new Item("item", "linkedId", "img", 1, true, false), "item");
         const items = new Map<string, number>();
-        items.set(itemId, 1);
-        const id = inventoryRepository.save(new Inventory(1, items));
+        items.set("item", 1);
+        inventoryRepository.save(new Inventory(1, items), "inv");
 
         // act
-        const result = inventoryService.remove(id, itemId, 1);
+        const result = inventoryService.remove("inv", "item", 1);
 
         // assert
-        const inventory = inventoryRepository.load(id);
+        const inventory = inventoryRepository.load("inv");
         Assert.deepStrictEqual(result, false);
         Assert.deepStrictEqual(inventory?.items.size, 1);
     });

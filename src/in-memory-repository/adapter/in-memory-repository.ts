@@ -4,20 +4,23 @@ import IdGenerator from "../port/id-generator";
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export default class InMemoryRepository<T extends Object> implements RepositoryPort<T> {
-    private idGenerator: IdGenerator<T, string>;
+    private idGenerator: IdGenerator<string>;
     private content: Map<string, T>;
 
-    constructor(idGenerator: IdGenerator<T, string>) {
+    constructor(idGenerator: IdGenerator<string>) {
         this.idGenerator = idGenerator;
         this.content = new Map();
+    }
+
+    getId(): string {
+        return this.idGenerator.generate();
     }
 
     update(object: T, id: string): void {
         this.content.set(id, object);
     }
 
-    save(object: T): string {
-        const id = this.idGenerator.generate(object);
+    save(object: T, id: string): string {
         this.content.set(id, object);
         return id;
     }

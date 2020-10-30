@@ -20,7 +20,8 @@ export default class FieldService<T extends ValueObject> implements FieldService
     }
 
     createField(field: Field<T>): string {
-        field.withId(this.fieldRepository.save(field));
+        field.id = this.fieldRepository.getId();
+        this.fieldRepository.save(field, field.id);
         return field.id;
     }
 
@@ -30,7 +31,7 @@ export default class FieldService<T extends ValueObject> implements FieldService
 
     getField(id: string): Field<T> {
         const field = this.fieldRepository.load(id);
-        if(!field) {
+        if (!field) {
             throw ResourceNotFoundError.fromClass(Field);
         }
         return field;

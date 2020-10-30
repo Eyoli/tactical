@@ -14,25 +14,26 @@ export default class UnitService implements UnitServicePort {
     }
 
     getUnits(ids?: string[]): Unit[] {
-        if(ids) {
+        if (ids) {
             const units = this.unitRepository.loadSome(ids);
-            if(units.length !== ids.length) {
+            if (units.length !== ids.length) {
                 throw ResourceNotFoundError.fromClass(Unit);
             }
             return units;
         }
-        
+
         return this.unitRepository.loadAll();
     }
 
     createUnit(unit: Unit): string {
-        unit.id = this.unitRepository.save(unit);
+        unit.id = this.unitRepository.getId();
+        this.unitRepository.save(unit, unit.id);
         return unit.id;
     }
 
     getUnit(key: string): Unit {
         const unit = this.unitRepository.load(key);
-        if(!unit) {
+        if (!unit) {
             throw ResourceNotFoundError.fromClass(Unit);
         }
         return unit;

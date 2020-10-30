@@ -16,6 +16,10 @@ export class InJsonFileRepository<T> implements RepositoryPort<T> {
         this.jsonMapper = jsonMapper;
     }
 
+    getId(): string {
+        return UUID.v4();
+    }
+
     withBaseUrl(baseUrl: string) {
         this.baseUrl = baseUrl + "/";
         return this;
@@ -24,11 +28,9 @@ export class InJsonFileRepository<T> implements RepositoryPort<T> {
     update(object: T, id: string): void {
         this.writeFile(id, object, true);
     }
-    
-    save(object: T) {
-        const id = UUID.v4();
+
+    save(object: T, id: string): void {
         this.writeFile(id, object, false);
-        return id;
     }
 
     load(id: string): T | undefined {
@@ -39,10 +41,10 @@ export class InJsonFileRepository<T> implements RepositoryPort<T> {
     }
 
     loadSome(ids: string[]): T[] {
-        if(ids.length > 0) {
+        if (ids.length > 0) {
             return fs.readdirSync(this.baseUrl)
-            .filter(fileName => ids.includes(fileName.split(FILE_SUFFIX)[0]))
-            .map(fileName => this.readFile(fileName));
+                .filter(fileName => ids.includes(fileName.split(FILE_SUFFIX)[0]))
+                .map(fileName => this.readFile(fileName));
         }
         return [];
     }
@@ -62,8 +64,8 @@ export class InJsonFileRepository<T> implements RepositoryPort<T> {
             const json = this.jsonMapper.toJson(object);
             json.id = id;
             fs.writeFileSync(
-                this.baseUrl + id + FILE_SUFFIX, 
-                JSON.stringify(json), 
+                this.baseUrl + id + FILE_SUFFIX,
+                JSON.stringify(json),
                 FILE_ENCODING);
         }
     }

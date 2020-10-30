@@ -244,20 +244,24 @@ describe('About playing we should be able to...', () => {
         Assert.deepStrictEqual(unitState?.position, new Position(1, 2, 0));
     });
 
-    function aGameWithTwoPlayers(validPositions = true) {
-        let player1 = new Player("Player 1");
-        let player2 = new Player("Player 2");
-        player1 = player1.withId(playerRepository.save(player1));
-        player2 = player2.withId(playerRepository.save(player2));
+    function aGameWithTwoPlayers(validPositions = true): Game {
+        const player1 = new Player("Player 1");
+        const player2 = new Player("Player 2");
+        player1.id = "player1";
+        player2.id = "player2";
+        playerRepository.save(player1, player1.id);
+        playerRepository.save(player2, player2.id);
+
+        const field = new FakeField("Field", validPositions);
+        field.id = "field";
+        fieldRepository.save(field, field.id);
 
         const game = new Game.Builder()
             .withPlayers(player1, player2)
             .build();
-        game.id = gameRepository.save(game);
-
-        const field = new FakeField("Field", validPositions);
-        field.id = fieldRepository.save(field);
+        game.id = "game";
         game.field = field;
+        gameRepository.save(game, game.id);
 
         return game;
     }
@@ -265,8 +269,10 @@ describe('About playing we should be able to...', () => {
     function aUnitComposition(player1: Player, player2: Player) {
         const unit1 = new Unit().withStatistics(new Statistics.Builder().withHealth(100).build());
         const unit2 = new Unit().withStatistics(new Statistics.Builder().withHealth(200).build());
-        unit1.id = unitRepository.save(unit1);
-        unit2.id = unitRepository.save(unit2);
+        unit1.id = "unit1";
+        unit2.id = "unit2";
+        unitRepository.save(unit1, unit1.id);
+        unitRepository.save(unit2, unit2.id);
         const unitsComposition: UnitsComposition = new Map();
         const player1UnitsPlacement: UnitsPlacement = new Map();
         player1UnitsPlacement.set(unit1.id, new Position(1, 0, 0));
