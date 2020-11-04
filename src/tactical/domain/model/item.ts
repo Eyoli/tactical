@@ -9,4 +9,9 @@ export default class Item {
         readonly use = false,
         readonly remove = true) {
     }
+
+    withId(id: string): Item {
+        this.id = id;
+        return this;
+    }
 }

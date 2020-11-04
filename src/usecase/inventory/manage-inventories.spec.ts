@@ -44,7 +44,7 @@ describe('About inventories we should be able to...', () => {
     it('add an item', () => {
         // arrange
         inventoryRepository.save(new Inventory(1), "inv");
-        itemRepository.save(new Item("item", "linkedId", "img"), "item");
+        itemRepository.save(new Item("item", "linkedId", "img").withId("item"), "item");
 
         // act
         const result = inventoryService.add("inv", "item", 1);
@@ -58,7 +58,7 @@ describe('About inventories we should be able to...', () => {
 
     it("can't have more of an item than its limit", () => {
         // arrange
-        itemRepository.save(new Item("item", "linkedId", "img", 2), "item");
+        itemRepository.save(new Item("item", "linkedId", "img", 2).withId("item"), "item");
         const items = new Map<string, number>();
         items.set("item", 2);
         inventoryRepository.save(new Inventory(1, items), "inv");
@@ -76,7 +76,7 @@ describe('About inventories we should be able to...', () => {
 
     it('remove an item', () => {
         // arrange
-        itemRepository.save(new Item("item", "linkedId", "img"), "item");
+        itemRepository.save(new Item("item", "linkedId", "img").withId("item"), "item");
         const items = new Map<string, number>();
         items.set("item", 1);
         inventoryRepository.save(new Inventory(1, items), "inv");
@@ -92,7 +92,7 @@ describe('About inventories we should be able to...', () => {
 
     it("can't remove specific items", () => {
         // arrange
-        itemRepository.save(new Item("item", "linkedId", "img", 1, true, false), "item");
+        itemRepository.save(new Item("item", "linkedId", "img", 1, true, false).withId("item"), "item");
         const items = new Map<string, number>();
         items.set("item", 1);
         inventoryRepository.save(new Inventory(1, items), "inv");

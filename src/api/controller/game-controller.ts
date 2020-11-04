@@ -15,14 +15,14 @@ const actionService = iocContainer.get<ActionServicePort>(TYPES.ACTION_SERVICE);
 
 gameRouter.get('/', function (req, res) {
 	const games = gameService.getGames();
-	res.json(games.map(game =>new GameDTO(game)));
+	res.json(games.map(game => new GameDTO(game)));
 });
 
 gameRouter.post('/', function (req, res) {
 	const data = new CreateGameRequest(req.body);
-	const errors = data.validate();	
-	if (errors.length > 0) { 
-        throw new BadRequestError(errors.toString());
+	const errors = data.validate();
+	if (errors.length > 0) {
+		throw new BadRequestError(errors.toString());
 	}
 
 	const game = data.toGame();
@@ -85,7 +85,7 @@ gameRouter.get('/:id/units/:unitId/actions/:actionTypeId/info', function (req, r
 	const unitId = req.params.unitId;
 	const actionTypeId = req.params.actionTypeId;
 	const actionType = actionService.getActionType(actionTypeId);
-	const positions = gameService.getPositionsInRange(id, unitId, actionType);
+	const positions = gameService.getPositionsInRange(id, unitId, actionTypeId);
 	res.json(new ActionInfoDTO(actionType, positions));
 });
 

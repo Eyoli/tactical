@@ -14,7 +14,8 @@ describe('A turn manager...', () => {
             .withStatistics(new Statistics.Builder().withSpeed(3).build());
         const unit3 = new Unit().withId("unit3")
             .withStatistics(new Statistics.Builder().withSpeed(2).build());
-        const turnManager = new TurnManager([unit1, unit2, unit3]);
+        const turnManager = new TurnManager();
+        turnManager.init([unit1, unit2, unit3]);
 
         // act
         const units = [];

@@ -17,25 +17,16 @@ class HistorizedValue {
 }
 
 export default class UnitState {
-    readonly unit: Unit;
-    readonly position: Position;
-    readonly direction: Direction;
-    readonly health: HistorizedValue;
-    readonly spirit: number;
-    readonly moved: boolean;
-    readonly acted: boolean;
-    readonly path?: Position[];
 
-    private constructor(unit: Unit, position: Position, direction: Direction, health: HistorizedValue, spirit: number,
-        moved = false, acted = false, path?: Position[]) {
-        this.unit = unit;
-        this.position = position;
-        this.direction = direction;
-        this.health = health;
-        this.spirit = spirit;
-        this.moved = moved;
-        this.acted = acted;
-        this.path = path;
+    private constructor(
+        readonly unit: Unit,
+        readonly position: Position,
+        readonly direction: Direction,
+        readonly health: HistorizedValue,
+        readonly spirit: number,
+        readonly moved = false,
+        readonly acted = false,
+        readonly path?: Position[]) {
     }
 
     getJumps(): number {
@@ -94,6 +85,10 @@ export default class UnitState {
             this.moved,
             this.acted
         );
+    }
+
+    isDead(): boolean {
+        return this.health.current <= 0;
     }
 
     private computeDirection(start: Position, end: Position): Direction {

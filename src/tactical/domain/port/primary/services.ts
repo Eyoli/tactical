@@ -18,7 +18,7 @@ export interface FieldServicePort<T extends ValueObject> {
 }
 
 export interface GameServicePort {
-    getPositionsInRange(gameId: string, unitId: string, actionType: ActionType): Position[];
+    getPositionsInRange(gameId: string, unitId: string, actionTypeId: string): Position[];
     finishTurn(gameId: string): Game;
     startGame(gameId: string, unitsComposition: Map<string, Map<string, Position>>): Game;
     createGame(game: Game, fieldId: string): string;

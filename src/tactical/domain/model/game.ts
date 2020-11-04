@@ -5,17 +5,18 @@ import UnitState from "./unit-state";
 import TurnManager from "./turn-manager";
 import Position from "./position";
 import { GameState } from "./enums";
+import { Goal } from "./goal";
 
 export default class Game {
-    id!: string;
-    field!: Field<Position>;
-    private turnManager!: TurnManager;
 
     static Builder = class Builder {
         private id?: string;
         private field?: Field<Position>;
         private players?: Player[];
         private state?: GameState;
+        private readonly units: Map<string, Unit> = new Map();
+        private readonly unitsPerPlayer: Map<string, string[]> = new Map();
+        private readonly goalsPerPlayer: Map<string, Goal[]> = new Map();
 
         withId(id: string): Builder {
             this.id = id;
@@ -32,25 +33,56 @@ export default class Game {
             return this;
         }
 
-        started(): Builder {
-            this.state = GameState.STARTED;
+        withGoals(player: Player, ...goals: Goal[]): Builder {
+            this.goalsPerPlayer.set(player.id, goals);
+            return this;
+        }
+
+        withUnit(player: Player, unit: Unit): Builder {
+            this.units.set(unit.id, unit);
+            let playerUnits = this.unitsPerPlayer.get(player.id);
+            if (!playerUnits) {
+                playerUnits = [];
+                this.unitsPerPlayer.set(player.id, playerUnits);
+            }
+            playerUnits.push(unit.id);
             return this;
         }
 
         build(): Game {
-            return new Game(this.state, this.players);
+            return new Game(
+                this.state,
+                this.players,
+                this.goalsPerPlayer,
+                this.units,
+                this.unitsPerPlayer);
         }
     }
+
+    id!: string;
+    field!: Field<Position>;
+    private turnManager!: TurnManager;
+    winner?: Player;
 
     private constructor(
         private state: GameState = GameState.INITIATED,
         readonly players: Player[] = [],
+        private readonly goalsPerPlayer: Map<string, Goal[]> = new Map(),
         private readonly units: Map<string, Unit> = new Map(),
         private readonly unitsPerPlayer: Map<string, string[]> = new Map()) {
     }
 
     addPlayers(...players: Player[]): void {
         this.players.push(...players);
+    }
+
+    addGoal(player: Player, goal: Goal): void {
+        let playerGoals = this.goalsPerPlayer.get(player.id);
+        if (!playerGoals) {
+            playerGoals = [];
+            this.goalsPerPlayer.set(player.id, playerGoals);
+        }
+        playerGoals.push(goal);
     }
 
     setUnits(player: Player, units: Unit[]): void {
@@ -76,7 +108,7 @@ export default class Game {
     }
 
     getCurrentUnit(): Readonly<Unit> | undefined {
-        if (this.hasStarted()) {
+        if (this.started()) {
             return this.turnManager.get().unit;
         }
     }
@@ -85,23 +117,29 @@ export default class Game {
         return this.state;
     }
 
-    start(): void {
+    start(turnManager: TurnManager): Game {
         this.state = GameState.STARTED;
-        this.turnManager = new TurnManager(Array.from(this.units.values()));
+        this.turnManager = turnManager;
+        this.turnManager.init(Array.from(this.units.values()));
+        return this;
     }
 
-    hasStarted(): boolean {
+    started(): boolean {
         return this.state === GameState.STARTED;
     }
 
+    finished(): boolean {
+        return this.state === GameState.FINISHED;
+    }
+
     finishTurn(): void {
-        if (this.hasStarted()) {
+        if (this.started()) {
             this.turnManager.next();
         }
     }
 
     canMove(unit: Unit): boolean {
-        if (this.hasStarted()) {
+        if (this.started()) {
             const unitState = this.getUnitState(unit.id);
             return unitState.moved === false
                 && this.turnManager.get().unit.id === unit.id;
@@ -110,7 +148,7 @@ export default class Game {
     }
 
     canAct(unit: Unit): boolean {
-        if (this.hasStarted()) {
+        if (this.started()) {
             const unitState = this.getUnitState(unit.id);
             return unitState.acted === false
                 && this.turnManager.get().unit.id === unit.id;
@@ -131,11 +169,23 @@ export default class Game {
         return this.turnManager.get().getAllStates();
     }
 
-    integrate(saveStateChanges: boolean, ...newStates: UnitState[]): void {
+    integrate(saveStateChanges: boolean, ...newStates: UnitState[]): Game {
         this.turnManager.get().integrate(saveStateChanges, newStates);
+        if (saveStateChanges) {
+            this.winner = this.determineWinner();
+            if (this.winner) {
+                this.state = GameState.FINISHED;
+            }
+        }
+        return this;
     }
 
     rollbackLastAction(): void {
         this.turnManager.get().rollbackLastAction();
+    }
+
+    private determineWinner(): Player | undefined {
+        return this.players
+            .find(player => this.goalsPerPlayer.get(player.id)?.every(goal => goal.reached(this)));
     }
 }

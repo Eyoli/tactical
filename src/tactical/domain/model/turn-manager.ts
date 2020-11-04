@@ -2,11 +2,11 @@ import Turn from "./turn";
 import Unit from "./unit";
 
 export default class TurnManager {
-    private currentTurnUnitIndex: number;
-    private units: Unit[];
-    private turn: Turn;
+    private currentTurnUnitIndex!: number;
+    private units!: Unit[];
+    private turn!: Turn;
 
-    constructor(units: Unit[]) {
+    init(units: Unit[]): void {
         this.units = units.sort((u1, u2) => u2.statistics.speed - u1.statistics.speed);
         this.currentTurnUnitIndex = 0;
         this.turn = new Turn(this.getCurrentUnit());

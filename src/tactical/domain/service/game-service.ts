@@ -9,8 +9,9 @@ import Position from "../../domain/model/position";
 import UnitState from "../../domain/model/unit-state";
 import { UnitsComposition } from "../../domain/model/types";
 import { GameError, GameErrorCode } from "../../domain/model/error/game-error";
-import { ActionType } from "../../domain/model/action/action-type";
 import { Direction } from "../../domain/model/enums";
+import TurnManager from "../model/turn-manager";
+import { KillThemAll } from "../model/goal";
 
 @injectable()
 export default class GameService implements GameServicePort {
@@ -56,7 +57,7 @@ export default class GameService implements GameServicePort {
 
     startGame(gameId: string, unitsComposition: UnitsComposition): Game {
         const game = this.getGame(gameId);
-        if (game.hasStarted()) {
+        if (game.started()) {
             throw new GameError(GameErrorCode.GAME_ALREADY_STARTED);
         }
         if (game.players.length < 2) {
@@ -71,6 +72,7 @@ export default class GameService implements GameServicePort {
         }
 
         for (const player of game.players) {
+            game.addGoal(player, new KillThemAll(player));
             const unitsPositions = unitsComposition.get(player.id);
             if (unitsPositions) {
                 const units = this.unitService.getUnits(Array.from(unitsPositions.keys()));
@@ -84,7 +86,7 @@ export default class GameService implements GameServicePort {
             throw new GameError(GameErrorCode.NOT_ENOUGH_UNITS);
         }
 
-        game.start();
+        game.start(new TurnManager());
 
         this.initUnitsState(game, unitsComposition);
 
@@ -127,12 +129,12 @@ export default class GameService implements GameServicePort {
                 });
             }
         }
-
     }
 
-    getPositionsInRange(gameId: string, unitId: string, actionType: ActionType): Position[] {
+    getPositionsInRange(gameId: string, unitId: string, actionTypeId: string): Position[] {
         const game = this.getGame(gameId);
         const unitState = game.getUnitState(unitId);
+        const actionType = this.actionService.getActionType(actionTypeId);
         if (unitState) {
             const range = actionType.range || unitState.unit.weapon.range;
             return this.fieldAlgorithmService.getPositionsInRange(
@@ -152,7 +154,7 @@ export default class GameService implements GameServicePort {
 
     actOnPosition(gameId: string, srcUnitId: string, position: Position, actionTypeId: string): UnitState[] {
         const game = this.getGame(gameId);
-        if (!game.hasStarted()) {
+        if (!game.started()) {
             throw new GameError(GameErrorCode.GAME_NOT_STARTED);
         }
 
@@ -203,7 +205,7 @@ export default class GameService implements GameServicePort {
 
     moveUnit(gameId: string, unitId: string, p: Position): UnitState {
         const game = this.getGame(gameId);
-        if (!game.hasStarted()) {
+        if (!game.started()) {
             throw new GameError(GameErrorCode.GAME_NOT_STARTED);
         }
 

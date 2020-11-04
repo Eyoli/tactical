@@ -4,4 +4,9 @@ export default class Player {
     constructor(readonly name: string) {
         this.name = name;
     }
+
+    withId(id: string): Player {
+        this.id = id;
+        return this;
+    }
 }
